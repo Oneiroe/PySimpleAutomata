@@ -1,6 +1,7 @@
 import io
 import json
 from copy import deepcopy
+import itertools
 
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s 0 , ρ, F ), where
@@ -120,7 +121,30 @@ def dfa_complementation(dfa, side_effect):
     dfa_c['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
     return dfa_c
 
+
 ### DFAs intersection
+def dfa_intersection(dfa_1, dfa_2):
+    # if dfa_1['alphabet'].difference(dfa_2['alphabet'])!=set():
+    #     return False
+    intersection = {}
+    intersection['alphabet'] = dfa_1['alphabet']
+    intersection['states'] = set(itertools.product(dfa_1['states'], dfa_2['states']))
+    intersection['initial_states'] = set(itertools.product(dfa_1['initial_states'], dfa_2['initial_states']))
+    intersection['accepting_states'] = set(itertools.product(dfa_1['accepting_states'], dfa_2['accepting_states']))
+
+    intersection['transitions'] = {}
+    for s in intersection['states']:
+        for a in intersection['alphabet']:
+            try:
+                s1 = dfa_1['transitions'][s[0], a]
+            except KeyError:
+                continue
+            try:
+                s2 = dfa_2['transitions'][s[1], a]
+            except KeyError:
+                continue
+            intersection['transitions'][s, a] = (s1, s2)
+    return intersection
 
 ### DFAs union
 
