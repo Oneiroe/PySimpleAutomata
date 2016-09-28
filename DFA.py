@@ -111,9 +111,14 @@ def dfa_completion(dfa, side_effect):
 
 
 ### DFA complementation
-def dfa_complementation(dfa):
-    dfa_completion(dfa,True)
-#     TODO
+def dfa_complementation(dfa, side_effect):
+    dfa = dfa_completion(dfa, side_effect)
+    if side_effect == True:
+        dfa_c = dfa
+    else:
+        dfa_c = deepcopy(dfa)
+    dfa_c['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
+    return dfa_c
 
 ### DFAs intersection
 
