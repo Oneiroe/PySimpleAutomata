@@ -1,5 +1,6 @@
 import io
 import json
+from copy import deepcopy
 
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s 0 , ρ, F ), where
@@ -23,8 +24,8 @@ import json
 # dfa = [alphabet, states, initial_state, final, transition]
 
 # Guided DFA constructor
+# TODO
 def dfa_creator_assistant():
-    # TODO
     alphabet = set()
     states = set()
     initial_states = set()
@@ -43,12 +44,14 @@ def dfa_creator_assistant():
 
     return [alphabet, states, initial_states, accepting_states, transitions]
 
+
 # Export a dfa "object" to a json file
+# TODO
 def dfa_to_json(dfa):
-    # TODO
     return
 
 
+# Import a dfa from a json file
 def dfa_json_importer(input_file):
     file = open(input_file)
     json_file = json.load(file)
@@ -61,16 +64,56 @@ def dfa_json_importer(input_file):
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
-    return [alphabet, states, initial_states, accepting_states, transitions]
+    # return list
+    # return [alphabet, states, initial_states, accepting_states, transitions]
+
+    # return map
+    dfa = {}
+    dfa['alphabet'] = alphabet
+    dfa['states'] = states
+    dfa['initial_states'] = initial_states
+    dfa['accepting_states'] = accepting_states
+    dfa['transitions'] = transitions
+    return dfa
 
 
-### accepting run function
-def run_acceptance(automata, run):
+### Checks if a given dfa accepts a run on a given input word
+def run_acceptance(dfa, run, word):
+    # If run fist state is not an initial state return False
+    if run[0] not in dfa['initial_states']:
+        return False
+    # If last run state is not an accepting state return False
+    if run[-1] not in dfa['accepting_states']:
+        return False
+    for i in range(len(word) - 1):
+        try:
+            if dfa['transitions'][run[i], word[i]] != run[i + 1]:
+                return False
+        except KeyError:
+            return False
     return True
 
+
 ### DFA completion
+def dfa_completion(dfa, side_effect):
+    if side_effect == True:
+        dfa_t = dfa
+    else:
+        dfa_t = deepcopy(dfa)
+    dfa_t['states'].add('sink')
+    for s in dfa_t['states']:
+        for a in dfa_t['alphabet']:
+            try:
+                dfa_t['transitions'][s, a]
+            except KeyError:
+                dfa_t['transitions'][s, a] = 'sink'
+    return dfa_t
+
 
 ### DFA complementation
+def dfa_complementation(dfa):
+    dfa_completion(dfa,True)
+#     TODO
 
 ### DFAs intersection
 
