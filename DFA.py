@@ -146,7 +146,30 @@ def dfa_intersection(dfa_1, dfa_2):
             intersection['transitions'][s, a] = (s1, s2)
     return intersection
 
+
 ### DFAs union
+def dfa_union(dfa_1, dfa_2):
+    dfa_completion(dfa_1, True)
+    dfa_completion(dfa_2, True)
+    # TODO handle side-effect on original DFAs
+
+    union = {}
+    union['alphabet'] = dfa_1['alphabet']
+    union['states'] = set(itertools.product(dfa_1['states'], dfa_2['states']))
+    union['initial_states'] = set(itertools.product(dfa_1['initial_states'], dfa_2['initial_states']))
+
+    union['accepting_states'] = \
+        set(itertools.product(dfa_1['accepting_states'], dfa_2['states'])).union(
+            set(itertools.product(dfa_1['states'], dfa_2['accepting_states']))
+        )
+
+    union['transitions'] = {}
+    for s in union['states']:
+        for a in union['alphabet']:
+            s1 = dfa_1['transitions'][s[0], a]
+            s2 = dfa_2['transitions'][s[1], a]
+            union['transitions'][s, a] = (s1, s2)
+    return union
 
 ###*DFA minimization [greatest fix point]
 
