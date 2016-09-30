@@ -279,20 +279,23 @@ def dfa_co_reachable(dfa):
     # set of states reaching final states
     s_r = dfa['accepting_states'].copy()
     s_r_stack = s_r.copy()
+
+    # inverse transition function
+    inv_transitions = {}
+    for k, v in dfa['transitions'].items():
+        inv_transitions.setdefault(v, set()).add(k)
+
     while s_r_stack:
         s = s_r_stack.pop()
-        for s_app in dfa['states']:
-            for a in dfa['alphabet']:
-                try:
-                    if s_app in s_r:
-                        pass
-                    elif dfa['transitions'][s_app, a] == s:
-                        s_r_stack.add(s_app)
-                        s_r.add(s_app)
-                    else:
-                        pass
-                except KeyError:
+        for s_app in inv_transitions[s]:
+            try:
+                if s_app[0] in s_r:
                     pass
+                else:
+                    s_r_stack.add(s_app[0])
+                    s_r.add(s_app[0])
+            except KeyError:
+                pass
     dfa['states'] = s_r
     dfa['initial_states'] = dfa['initial_states'].intersection(dfa['states'])
 
