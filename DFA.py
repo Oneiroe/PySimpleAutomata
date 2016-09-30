@@ -3,6 +3,10 @@ import json
 from copy import deepcopy
 import itertools
 
+# ###
+# TO-DO
+# TODO handle side-effects through input instead of manual handling in function:
+#    pass as value of funtion a copy, not the data link
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s 0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
@@ -311,9 +315,11 @@ def dfa_co_reachable(dfa):
 ### DFA trimming
 def dfa_trimming(dfa):
     # Reachable DFA
+    dfa = dfa_reachable(dfa)
     # Co-reachable DFA
+    dfa = dfa_co_reachable(dfa)
     # trimmed DFA
-    return False
+    return dfa
 
 ### DFA projection out ( the operation that removes from a word all occurrence of symbols in X )
 # DFA -> NFA
