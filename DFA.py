@@ -243,10 +243,46 @@ def dfa_minimization(dfa):
 
     return dfa_min
 
+
+# remove unreachable states from a dfa
+def dfa_reachable(dfa):
+    # TODO handle side effect
+    # set of reachable states from initial states
+    s_r = dfa['initial_states'].copy()
+    s_r_stack = s_r.copy()
+    while s_r_stack:
+        s = s_r_stack.pop()
+        for a in dfa['alphabet']:
+            try:
+                if dfa['transitions'][s, a] in s_r:
+                    pass
+                else:
+                    s_r_stack.add(dfa['transitions'][s, a])
+                    s_r.add(dfa['transitions'][s, a])
+            except KeyError:
+                pass
+    dfa['states'] = s_r
+    dfa['final_states'] = dfa['accepting_states'].intersection(dfa['states'])
+
+    for p in dfa['transitions']:
+        if p[0] not in dfa['states']:
+            dfa['transitions'].remove(p)
+        if dfa['transitions'][p] not in dfa['states']:
+            dfa['transitions'].remove(p)
+
+    return dfa
+
+# remove states that do not reach a final state from dfa
+def dfa_co_reachable(dfa):
+    return False
+
+
 ### DFA trimming
-# Reachable DFA
-# Co-reachable DFA
-# trimmed DFA
+def dfa_trimming(dfa):
+    # Reachable DFA
+    # Co-reachable DFA
+    # trimmed DFA
+    return False
 
 ### DFA projection out ( the operation that removes from a word all occurrence of symbols in X )
 # DFA -> NFA
