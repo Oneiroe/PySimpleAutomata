@@ -25,7 +25,7 @@ import itertools
 # dfa = [alphabet, states, initial_state, final, transition]
 
 # Guided DFA constructor
-# TODO
+# TODO dfa_creator_assistant()
 def dfa_creator_assistant():
     alphabet = set()
     states = set()
@@ -47,7 +47,7 @@ def dfa_creator_assistant():
 
 
 # Export a dfa "object" to a json file
-# TODO
+# TODO dfa_to_json
 def dfa_to_json(dfa):
     return
 
@@ -118,6 +118,7 @@ def dfa_complementation(dfa, side_effect):
         dfa_c = dfa
     else:
         dfa_c = deepcopy(dfa)
+
     dfa_c['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
     return dfa_c
 
@@ -171,7 +172,76 @@ def dfa_union(dfa_1, dfa_2):
             union['transitions'][s, a] = (s1, s2)
     return union
 
+
 ###*DFA minimization [greatest fix point]
+def dfa_minimization(dfa):
+    dfa_completion(dfa, True)
+    # TODO handle side-effect on original DFA
+
+    # Greatest-fixpoint
+
+    # cartesian product of DFA states
+    z_current = set(itertools.product(dfa['states'], dfa['states']))
+
+    z_next = deepcopy(z_current);
+
+    # First bisimulation condition check (can be done just once)
+    # s ∈ F iff t ∈ F
+    for element in z_current:
+        if (element[0] in dfa['accepting_states'] and element[1] not in dfa['accepting_states']) or (
+                        element[0] not in dfa['accepting_states'] and element[1] in dfa['accepting_states']):
+            z_next.remove(element)
+    z_current = z_next
+
+    # Second and third condition of bisimularity check, while succeed or emptied
+    while z_current:
+        z_next = deepcopy(z_current);
+        for element in z_current:
+            # for all s0,a s.t. ρ(s, a) = s 0 , there exists t 0 s.t. ρ(t, a) = t 0 and (s 0 , t 0 ) ∈ Z i ;
+            for a in dfa['alphabet']:
+                try:
+                    if (dfa['transitions'][element[0], a], dfa['transitions'][element[1], a]) not in z_current:
+                        z_next.remove(element)
+                        break
+                except KeyError:
+                    # action a not possible in state element[0] or element[1]
+                    z_next.remove(element)
+
+        if z_next == z_current:
+            break
+        z_current = z_next
+
+    # Equivalence Sets
+    equivalence = {}
+    for element in z_current:
+        if element[0] not in equivalence:
+            equivalence[element[0]] = set()
+        equivalence[element[0]].add(element[1])
+
+    # Minimal DFA construction
+    dfa_min = {}
+    dfa_min['alphabet'] = dfa['alphabet']
+
+    dfa_min['states'] = set()
+
+    # select one element for each equivalence set
+    for element in equivalence.values():
+        if dfa_min['states'].isdisjoint(element):
+            e = element.pop()
+            dfa_min['states'].add(e)
+            element.add(e)
+
+    dfa_min['initial_states'] = dfa_min['states'].intersection(dfa['initial_states'])
+    dfa_min['accepting_states'] = dfa_min['states'].intersection(dfa['accepting_states'])
+
+    dfa_min['transitions'] = deepcopy(dfa['transitions'])
+    for p in dfa['transitions']:
+        if p[0] not in dfa_min['states']:
+            dfa_min['transitions'].pop(p)
+        if dfa['transitions'][p] not in dfa_min['states']:
+            dfa_min['transitions'][p] = equivalence[dfa['transitions'][p]].intersection(dfa_min['states']).pop()
+
+    return dfa_min
 
 ### DFA trimming
 # Reachable DFA
