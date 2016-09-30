@@ -272,9 +272,37 @@ def dfa_reachable(dfa):
 
     return dfa
 
+
 # remove states that do not reach a final state from dfa
 def dfa_co_reachable(dfa):
-    return False
+    # TODO handle side-effect
+    # set of states reaching final states
+    s_r = dfa['accepting_states'].copy()
+    s_r_stack = s_r.copy()
+    while s_r_stack:
+        s = s_r_stack.pop()
+        for s_app in dfa['states']:
+            for a in dfa['alphabet']:
+                try:
+                    if s_app in s_r:
+                        pass
+                    elif dfa['transitions'][s_app, a] == s:
+                        s_r_stack.add(s_app)
+                        s_r.add(s_app)
+                    else:
+                        pass
+                except KeyError:
+                    pass
+    dfa['states'] = s_r
+    dfa['initial_states'] = dfa['initial_states'].intersection(dfa['states'])
+
+    for p in dfa['transitions']:
+        if p[0] not in dfa['states']:
+            dfa['transitions'].remove(p)
+        if dfa['transitions'][p] not in dfa['states']:
+            dfa['transitions'].remove(p)
+
+    return dfa
 
 
 ### DFA trimming
