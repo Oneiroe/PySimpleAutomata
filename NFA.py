@@ -80,3 +80,37 @@ def nfa_json_importer(input_file):
     nfa['accepting_states'] = accepting_states
     nfa['transitions'] = transitions
     return nfa
+
+
+# - NFAs intersection
+def nfa_intersection(nfa_1, nfa_2):
+    intersection = {}
+    intersection['alphabet'] = nfa_1['alphabet']
+    intersection['states'] = set(itertools.product(nfa_1['states'], nfa_2['states']))
+    intersection['initial_states'] = set(itertools.product(nfa_1['initial_states'], nfa_2['initial_states']))
+    intersection['accepting_states'] = set(itertools.product(nfa_1['accepting_states'], nfa_2['accepting_states']))
+
+    intersection['transitions'] = {}
+    for s in intersection['states']:
+        for a in intersection['alphabet']:
+            try:
+                s1 = nfa_1['transitions'][s[0], a]
+            except KeyError:
+                continue
+            try:
+                s2 = nfa_2['transitions'][s[1], a]
+            except KeyError:
+                continue
+            for next_1 in s1:
+                for next_2 in s2:
+                    intersection['transitions'].setdefault((s, a), set()).add((next_1, next_2))
+
+    return intersection
+
+# - NFAs union
+# - NFA determinization
+# 	NFA -> DFA
+# - NFA complementation
+# - NFA nonemptiness
+# - NFA nonuniversality
+# - NFA interestingness check
