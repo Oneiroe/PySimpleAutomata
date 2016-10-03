@@ -1,20 +1,24 @@
-import io
 import json
-from copy import deepcopy
+from itertools import product as cartesian_product
 import itertools
 
 # ###
-# TO-DO
-# TODO handle side-effects through input instead of manual handling in function:
+# MEMO
+# handle side-effects through input instead of manual handling in function:
 #    pass as value of funtion a copy, not the data link
 
-# A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s 0 , ρ, F ), where
+
+# ###
+# TO-DO
+# TODO change initial state from set to single element
+
+# A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
 # • S is a finite nonempty set of states;
-# • s 0 ∈ S is the initial state;
+# • s_0 ∈ S is the initial state;
 # • F ⊆ S is the set of accepting states;
 # • ρ : S × Σ → S is a transition function, which can be a partial function. Intuitively,
-#       s 0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the
+#       s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the
 #       symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
 
 
@@ -22,33 +26,11 @@ import itertools
 
 # alphabet = set()
 # states = set()
-# initial_states = 0
+# initial_state = 0
 # accepting_states = set()
 # transitions = {}  # key (state in states, action in alphabet) value [arriving state in states]
 #
 # dfa = [alphabet, states, initial_state, final, transition]
-
-# Guided DFA constructor
-# TODO dfa_creator_assistant()
-def dfa_creator_assistant():
-    alphabet = set()
-    states = set()
-    initial_states = set()
-    accepting_states = set()
-    transitions = {}  # key [state in states, action in alphabet] value [arriving state in states]
-
-    print('Insert states...')
-
-    print('Which ones are initial states?')
-
-    print('Which ones are final states?')
-
-    print('Insert actions...')
-
-    print('Insert transitions')
-
-    return [alphabet, states, initial_states, accepting_states, transitions]
-
 
 # Export a dfa "object" to a json file
 # TODO dfa_to_json
@@ -65,7 +47,7 @@ def dfa_json_importer(input_file):
     states = set(json_file['states'])
     initial_states = set(json_file['initial_states'])
     accepting_states = set(json_file['accepting_states'])
-    transitions = {}  # key [state in states, action in alphabet] value [arriving state in states]
+    transitions = {}  # key [state ∈ states, action ∈ alphabet] value [arriving state ∈ states]
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
@@ -84,89 +66,71 @@ def dfa_json_importer(input_file):
 
 ### Checks if a given dfa accepts a run on a given input word
 def run_acceptance(dfa, run, word):
-    # If run fist state is not an initial state return False
+    # If 'run' fist state is not an initial state return False
     if run[0] not in dfa['initial_states']:
         return False
-    # If last run state is not an accepting state return False
+    # If last 'run' state is not an accepting state return False
     if run[-1] not in dfa['accepting_states']:
         return False
     for i in range(len(word) - 1):
-        try:
+        if (run[i], word[i]) in dfa['transitions']:
             if dfa['transitions'][run[i], word[i]] != run[i + 1]:
                 return False
-        except KeyError:
+        else:
             return False
     return True
 
 
 ### DFA completion
-def dfa_completion(dfa, side_effect):
-    if side_effect == True:
-        dfa_t = dfa
-    else:
-        dfa_t = deepcopy(dfa)
-    dfa_t['states'].add('sink')
-    for s in dfa_t['states']:
-        for a in dfa_t['alphabet']:
-            try:
-                dfa_t['transitions'][s, a]
-            except KeyError:
-                dfa_t['transitions'][s, a] = 'sink'
-    return dfa_t
+def dfa_completion(dfa):
+    dfa['states'].add('sink')
+    for s in dfa['states']:
+        for a in dfa['alphabet']:
+            if (s, a) not in dfa['transitions']:
+                dfa['transitions'][s, a] = 'sink'
+    return dfa
 
 
 ### DFA complementation
-def dfa_complementation(dfa, side_effect):
-    dfa = dfa_completion(dfa, side_effect)
-    if side_effect == True:
-        dfa_c = dfa
-    else:
-        dfa_c = deepcopy(dfa)
-
-    dfa_c['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
-    return dfa_c
+def dfa_complementation(dfa):
+    dfa_complemented = dfa_completion(dfa)
+    dfa_complemented['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
+    return dfa_complemented
 
 
 ### DFAs intersection
 def dfa_intersection(dfa_1, dfa_2):
-    # if dfa_1['alphabet'].difference(dfa_2['alphabet'])!=set():
-    #     return False
     intersection = {}
     intersection['alphabet'] = dfa_1['alphabet']
-    intersection['states'] = set(itertools.product(dfa_1['states'], dfa_2['states']))
-    intersection['initial_states'] = set(itertools.product(dfa_1['initial_states'], dfa_2['initial_states']))
-    intersection['accepting_states'] = set(itertools.product(dfa_1['accepting_states'], dfa_2['accepting_states']))
+    intersection['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
+    intersection['initial_states'] = set(cartesian_product(dfa_1['initial_states'], dfa_2['initial_states']))
+    intersection['accepting_states'] = set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states']))
 
     intersection['transitions'] = {}
     for s in intersection['states']:
         for a in intersection['alphabet']:
-            try:
+            if (s[0], a) in dfa_1['transitions'] and (s[1], a) in dfa_2['transitions']:
                 s1 = dfa_1['transitions'][s[0], a]
-            except KeyError:
-                continue
-            try:
                 s2 = dfa_2['transitions'][s[1], a]
-            except KeyError:
+                intersection['transitions'][s, a] = (s1, s2)
+            else:
                 continue
-            intersection['transitions'][s, a] = (s1, s2)
     return intersection
 
 
 ### DFAs union
 def dfa_union(dfa_1, dfa_2):
-    dfa_completion(dfa_1, True)
-    dfa_completion(dfa_2, True)
-    # TODO handle side-effect on original DFAs
+    dfa_1 = dfa_completion(dfa_1)
+    dfa_2 = dfa_completion(dfa_2)
 
     union = {}
     union['alphabet'] = dfa_1['alphabet']
-    union['states'] = set(itertools.product(dfa_1['states'], dfa_2['states']))
-    union['initial_states'] = set(itertools.product(dfa_1['initial_states'], dfa_2['initial_states']))
+    union['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
+    union['initial_states'] = set(cartesian_product(dfa_1['initial_states'], dfa_2['initial_states']))
 
-    union['accepting_states'] = \
-        set(itertools.product(dfa_1['accepting_states'], dfa_2['states'])).union(
-            set(itertools.product(dfa_1['states'], dfa_2['accepting_states']))
-        )
+    union['accepting_states'] = set(cartesian_product(dfa_1['accepting_states'], dfa_2['states'])).union(
+        set(cartesian_product(dfa_1['states'], dfa_2['accepting_states']))
+    )
 
     union['transitions'] = {}
     for s in union['states']:
@@ -179,15 +143,14 @@ def dfa_union(dfa_1, dfa_2):
 
 ###*DFA minimization [greatest fix point]
 def dfa_minimization(dfa):
-    dfa_completion(dfa, True)
-    # TODO handle side-effect on original DFA
+    dfa = dfa_completion(dfa)
 
-    # Greatest-fixpoint
+    ##  Greatest-fixpoint
 
     # cartesian product of DFA states
-    z_current = set(itertools.product(dfa['states'], dfa['states']))
+    z_current = set(cartesian_product(dfa['states'], dfa['states']))
 
-    z_next = deepcopy(z_current);
+    z_next = z_current.copy();
 
     # First bisimulation condition check (can be done just once)
     # s ∈ F iff t ∈ F
@@ -197,17 +160,17 @@ def dfa_minimization(dfa):
             z_next.remove(element)
     z_current = z_next
 
-    # Second and third condition of bisimularity check, while succeed or emptied
+    # Second and third condition of bisimularity check, while succeed or fail
     while z_current:
-        z_next = deepcopy(z_current);
+        z_next = z_current.copy();
         for element in z_current:
-            # for all s0,a s.t. ρ(s, a) = s 0 , there exists t 0 s.t. ρ(t, a) = t 0 and (s 0 , t 0 ) ∈ Z i ;
+            # for all s0,a s.t. ρ(s, a) = s_0 , there exists t 0 s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
             for a in dfa['alphabet']:
-                try:
+                if (element[0], a) in dfa['transitions'] and (element[1], a) in dfa['transitions']:
                     if (dfa['transitions'][element[0], a], dfa['transitions'][element[1], a]) not in z_current:
                         z_next.remove(element)
                         break
-                except KeyError:
+                else:
                     # action a not possible in state element[0] or element[1]
                     z_next.remove(element)
 
@@ -215,30 +178,28 @@ def dfa_minimization(dfa):
             break
         z_current = z_next
 
-    # Equivalence Sets
+    ## Equivalence Sets
     equivalence = {}
     for element in z_current:
-        if element[0] not in equivalence:
-            equivalence[element[0]] = set()
-        equivalence[element[0]].add(element[1])
+        equivalence.setdefault(element[0], set()).add(element[1])
 
-    # Minimal DFA construction
+    ## Minimal DFA construction
     dfa_min = {}
-    dfa_min['alphabet'] = dfa['alphabet']
+    dfa_min['alphabet'] = dfa['alphabet'].copy()
 
     dfa_min['states'] = set()
 
     # select one element for each equivalence set
-    for element in equivalence.values():
-        if dfa_min['states'].isdisjoint(element):
-            e = element.pop()
+    for equivalence_set in equivalence.values():
+        if dfa_min['states'].isdisjoint(equivalence_set):
+            e = equivalence_set.pop()
             dfa_min['states'].add(e)
-            element.add(e)
+            equivalence_set.add(e)
 
     dfa_min['initial_states'] = dfa_min['states'].intersection(dfa['initial_states'])
     dfa_min['accepting_states'] = dfa_min['states'].intersection(dfa['accepting_states'])
 
-    dfa_min['transitions'] = deepcopy(dfa['transitions'])
+    dfa_min['transitions'] = dfa['transitions'].copy()
     for p in dfa['transitions']:
         if p[0] not in dfa_min['states']:
             dfa_min['transitions'].pop(p)
@@ -250,23 +211,20 @@ def dfa_minimization(dfa):
 
 # remove unreachable states from a dfa
 def dfa_reachable(dfa):
-    # TODO handle side effect
     # set of reachable states from initial states
     s_r = dfa['initial_states'].copy()
     s_r_stack = s_r.copy()
     while s_r_stack:
         s = s_r_stack.pop()
         for a in dfa['alphabet']:
-            try:
-                if dfa['transitions'][s, a] in s_r:
-                    pass
-                else:
+            if (s, a) in dfa['transitions']:
+                if dfa['transitions'][s, a] not in s_r:
                     s_r_stack.add(dfa['transitions'][s, a])
                     s_r.add(dfa['transitions'][s, a])
-            except KeyError:
+            else:
                 pass
     dfa['states'] = s_r
-    dfa['final_states'] = dfa['accepting_states'].intersection(dfa['states'])
+    dfa['accepting_states'] = dfa['accepting_states'].intersection(dfa['states'])
 
     for p in dfa['transitions']:
         if p[0] not in dfa['states']:
@@ -279,7 +237,6 @@ def dfa_reachable(dfa):
 
 # remove states that do not reach a final state from dfa
 def dfa_co_reachable(dfa):
-    # TODO handle side-effect
     # set of states reaching final states
     s_r = dfa['accepting_states'].copy()
     s_r_stack = s_r.copy()
@@ -292,14 +249,10 @@ def dfa_co_reachable(dfa):
     while s_r_stack:
         s = s_r_stack.pop()
         for s_app in inv_transitions[s]:
-            try:
-                if s_app[0] in s_r:
-                    pass
-                else:
-                    s_r_stack.add(s_app[0])
-                    s_r.add(s_app[0])
-            except KeyError:
-                pass
+            if s_app[0] not in s_r:
+                s_r_stack.add(s_app[0])
+                s_r.add(s_app[0])
+
     dfa['states'] = s_r
     dfa['initial_states'] = dfa['initial_states'].intersection(dfa['states'])
 
@@ -321,5 +274,20 @@ def dfa_trimming(dfa):
     # trimmed DFA
     return dfa
 
+
 ### DFA projection out ( the operation that removes from a word all occurrence of symbols in X )
+# Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an nfa A π X that recognizes the language π X (L(A)).
 # DFA -> NFA
+def dfa_projection(dfa, x, word):
+    nfa = dfa.copy()
+    nfa['alphabet'] = dfa['alphabet'].difference(x)
+
+    for transition in dfa['transitions']:
+        if transition[1] not in nfa['alphabet']:
+            nfa['transitions'].remove(transition)
+
+    e_x = set()
+
+    # TODO
+
+    return nfa
