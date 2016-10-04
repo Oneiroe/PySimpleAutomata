@@ -1,16 +1,16 @@
 import json
 from itertools import product as cartesian_product
-import itertools
+
 
 # ###
 # MEMO
 # handle side-effects through input instead of manual handling in function:
-#    pass as value of funtion a copy, not the data link
+#    pass as value of function a copy, not the data link
 
 
 # ###
 # TO-DO
-# TODO change initial state from set to single element
+# TODO check correctness of imported automata from json
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
@@ -45,20 +45,20 @@ def dfa_json_importer(input_file):
     # TODO exception handling while JSON deconding/IO error
     alphabet = set(json_file['alphabet'])
     states = set(json_file['states'])
-    initial_states = set(json_file['initial_states'])
+    initial_state = json_file['initial_state']
     accepting_states = set(json_file['accepting_states'])
     transitions = {}  # key [state ∈ states, action ∈ alphabet] value [arriving state ∈ states]
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
     # return list
-    # return [alphabet, states, initial_states, accepting_states, transitions]
+    # return [alphabet, states, initial_state, accepting_states, transitions]
 
     # return map
     dfa = {}
     dfa['alphabet'] = alphabet
     dfa['states'] = states
-    dfa['initial_states'] = initial_states
+    dfa['initial_state'] = initial_state
     dfa['accepting_states'] = accepting_states
     dfa['transitions'] = transitions
     return dfa
@@ -67,7 +67,7 @@ def dfa_json_importer(input_file):
 ### Checks if a given dfa accepts a run on a given input word
 def run_acceptance(dfa, run, word):
     # If 'run' fist state is not an initial state return False
-    if run[0] not in dfa['initial_states']:
+    if run[0] != dfa['initial_state']:
         return False
     # If last 'run' state is not an accepting state return False
     if run[-1] not in dfa['accepting_states']:
@@ -103,7 +103,7 @@ def dfa_intersection(dfa_1, dfa_2):
     intersection = {}
     intersection['alphabet'] = dfa_1['alphabet']
     intersection['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
-    intersection['initial_states'] = set(cartesian_product(dfa_1['initial_states'], dfa_2['initial_states']))
+    intersection['initial_state'] = (dfa_1['initial_state'], dfa_2['initial_state'])
     intersection['accepting_states'] = set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states']))
 
     intersection['transitions'] = {}
@@ -126,7 +126,7 @@ def dfa_union(dfa_1, dfa_2):
     union = {}
     union['alphabet'] = dfa_1['alphabet']
     union['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
-    union['initial_states'] = set(cartesian_product(dfa_1['initial_states'], dfa_2['initial_states']))
+    union['initial_state'] = (dfa_1['initial_state'], dfa_2['initial_state'])
 
     union['accepting_states'] = set(cartesian_product(dfa_1['accepting_states'], dfa_2['states'])).union(
         set(cartesian_product(dfa_1['states'], dfa_2['accepting_states']))
@@ -196,7 +196,7 @@ def dfa_minimization(dfa):
             dfa_min['states'].add(e)
             equivalence_set.add(e)
 
-    dfa_min['initial_states'] = dfa_min['states'].intersection(dfa['initial_states'])
+    dfa_min['initial_state'] = dfa['initial_state']
     dfa_min['accepting_states'] = dfa_min['states'].intersection(dfa['accepting_states'])
 
     dfa_min['transitions'] = dfa['transitions'].copy()
@@ -212,7 +212,8 @@ def dfa_minimization(dfa):
 # remove unreachable states from a dfa
 def dfa_reachable(dfa):
     # set of reachable states from initial states
-    s_r = dfa['initial_states'].copy()
+    s_r = set()
+    s_r.add(dfa['initial_state'])
     s_r_stack = s_r.copy()
     while s_r_stack:
         s = s_r_stack.pop()
@@ -254,7 +255,9 @@ def dfa_co_reachable(dfa):
                 s_r.add(s_app[0])
 
     dfa['states'] = s_r
-    dfa['initial_states'] = dfa['initial_states'].intersection(dfa['states'])
+    # TODO check non reachabilility
+    # if dfa['initial_state'] not in dfa['states']:
+    #     return False
 
     for p in dfa['transitions']:
         if p[0] not in dfa['states']:
