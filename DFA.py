@@ -1,6 +1,7 @@
 import json
 from itertools import product as cartesian_product
 from copy import deepcopy
+import graphviz
 
 
 # ###
@@ -66,6 +67,17 @@ def dfa_json_importer(input_file):
     dfa['accepting_states'] = accepting_states
     dfa['transitions'] = transitions
     return dfa
+
+
+def dfa_render(dfa, name):
+    g = graphviz.Digraph(format='svg')
+    for state in dfa['states']:
+        g.node(state)
+
+    for transition in dfa['transitions']:
+        g.edge(transition[0], dfa['transitions'][transition], label=transition[1])
+
+    g.render(filename='img/' + name)
 
 
 ### Checks if a given dfa accepts a run on a given input word
