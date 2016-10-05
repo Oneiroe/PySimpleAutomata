@@ -1,5 +1,6 @@
 import json
 from itertools import product as cartesian_product
+from copy import deepcopy
 
 
 # ###
@@ -11,6 +12,9 @@ from itertools import product as cartesian_product
 # ###
 # TO-DO
 # TODO check correctness of imported automata from json
+# TODO Graphviz DOT graph handling IN-OUT
+# TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
+#         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
@@ -281,16 +285,58 @@ def dfa_trimming(dfa):
 ### DFA projection out ( the operation that removes from a word all occurrence of symbols in X )
 # Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an nfa A π X that recognizes the language π X (L(A)).
 # DFA -> NFA
-def dfa_projection(dfa, x, word):
+def dfa_projection(dfa, X):
     nfa = dfa.copy()
-    nfa['alphabet'] = dfa['alphabet'].difference(x)
+    nfa['alphabet'] = dfa['alphabet'].difference(X)
+    nfa['transitions'] = {}
+    e_x = {}
+    # ε_X ⊆ S×S formed by the pairs of states (s, s_0) such that s_0 is reachable from s through transition symbols ∈ X
 
+    # mark each transition using symbol a ∈ X
     for transition in dfa['transitions']:
         if transition[1] not in nfa['alphabet']:
-            nfa['transitions'].remove(transition)
+            # nfa['transitions'][transition[0], 'epsilon'] = dfa['transitions'][transition]
+            e_x.setdefault(transition[0], set()).add(dfa['transitions'][transition])
+            # nfa['transitions'].pop(transition)
+        else:
+            nfa['transitions'].setdefault(transition, set()).add(dfa['transitions'][transition])
 
-    e_x = set()
+    current = deepcopy(e_x)
+    while True:
+        for state in current.keys():
+            for direct in current[state]:
+                if direct in current:
+                    for reached in current[direct]:
+                        e_x[state].add(reached)
+        if current == e_x:
+            break
+        current = deepcopy(e_x)
 
-    # TODO
+    # NFA initial states
+    nfa.pop('initial_state')
+    nfa['initial_states'] = e_x[dfa['initial_state']]
+    nfa['initial_states'].add(dfa['initial_state'])
+
+    # inverse transition function
+    inv_e_x = {}
+    for k, v in e_x.items():
+        for s in v:
+            inv_e_x.setdefault(s, set()).add(k)
+
+    # NFA transitions
+    for transition in dfa['transitions']:
+        if transition[1] in nfa['alphabet']:
+            nfa['transitions'].setdefault(transition, set()).add(dfa['transitions'][transition])
+
+            # add all forward reachable set
+            if dfa['transitions'][transition] in e_x:
+                for reached in e_x[dfa['transitions'][transition]]:
+                    nfa['transitions'].setdefault(transition, set()).add(reached)
+
+            # link all states that reach transition[0] to forward reachable set
+            for reached in nfa['transitions'][transition]:
+                if transition[0] in inv_e_x:
+                    for past in inv_e_x[transition[0]]:
+                        nfa['transitions'].setdefault((past, transition[1]), set()).add(reached)
 
     return nfa
