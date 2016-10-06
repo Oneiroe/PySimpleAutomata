@@ -2,6 +2,7 @@ import json
 from itertools import product as cartesian_product
 from copy import deepcopy
 import graphviz
+import pydot
 
 
 # ###
@@ -12,10 +13,10 @@ import graphviz
 
 # ###
 # TO-DO
-# TODO check correctness of imported automata from json
-# TODO Graphviz DOT graph handling IN-OUT
+# TODO check correctness of imported automata from json & DOT
 # TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
 #         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
+# TODO move graph render in a separate file to take dfa function independent from it
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
@@ -40,6 +41,12 @@ import graphviz
 # Export a dfa "object" to a json file
 # TODO dfa_to_json
 def dfa_to_json(dfa):
+    return
+
+
+# Export a dfa "object" to a DOT file
+# TODO dfa_to_json
+def dfa_to_dot(dfa):
     return
 
 
@@ -69,6 +76,50 @@ def dfa_json_importer(input_file):
     return dfa
 
 
+# Import a dfa from a DOT file
+def dfa_dot_importer(input_file):
+    # NOTE
+    # shape=doublecircle -> accepting node
+    # root=true -> initial node
+    # label="a" -> action in alphabet
+    # fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
+    # fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+
+    # #pyDot Object
+    g = pydot.graph_from_dot_file(input_file)[0]
+
+    states = set()
+    initial_state = 0
+    accepting_states = set()
+    for node in g.get_nodes():
+        if node.get_name() == 'fake':
+            continue
+        states.add(node.get_name())
+        for attribute in node.get_attributes():
+            if attribute == 'root':
+                initial_state = node.get_name()
+            if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
+                accepting_states.add(node.get_name())
+
+    alphabet = set()
+    transitions = {}
+    for edge in g.get_edges():
+        if edge.get_source() == 'fake':
+            continue
+        alphabet.add(edge.get_label().replace('"', ''))
+        transitions[edge.get_source(), edge.get_label().replace('"', '')] = edge.get_destination()
+
+    # return map
+    dfa = {}
+    dfa['alphabet'] = alphabet
+    dfa['states'] = states
+    dfa['initial_state'] = initial_state
+    dfa['accepting_states'] = accepting_states
+    dfa['transitions'] = transitions
+    return dfa
+
+
+# Print in output a DOT file and an image of the given DFA
 def dfa_render(dfa, name):
     g = graphviz.Digraph(format='svg')
     for state in dfa['states']:
