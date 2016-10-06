@@ -120,15 +120,42 @@ def dfa_dot_importer(input_file):
 
 
 # Print in output a DOT file and an image of the given DFA
+# graphviz library
 def dfa_render(dfa, name):
     g = graphviz.Digraph(format='svg')
     for state in dfa['states']:
         g.node(state)
+        # TODO case initial node
+        # TODO case accepting node
 
     for transition in dfa['transitions']:
         g.edge(transition[0], dfa['transitions'][transition], label=transition[1])
 
     g.render(filename='img/' + name)
+
+# Print in output a DOT file and an image of the given DFA
+# pydot library
+def pydot_dfa_render(dfa, name):
+    # TODO special view for sink node?
+    g = pydot.Dot(graph_type='digraph')
+
+    fake = pydot.Node('fake', style='invisible')
+    g.add_node(fake)
+    for state in dfa['states']:
+        node = pydot.Node(state)
+        if state == dfa['initial_state']:
+            node.set_root(True)
+            g.add_edge(pydot.Edge(fake, node, style='bold'))
+
+        if state in dfa['accepting_states']:
+            node.set_shape('doublecircle')
+        g.add_node(node)
+
+    for transition in dfa['transitions']:
+        g.add_edge(pydot.Edge(transition[0], dfa['transitions'][transition], label=transition[1]))
+
+    g.write_svg('img/' + name+'.svg')
+    g.write_dot('img/' + name+'.dot')
 
 
 ### Checks if a given dfa accepts a run on a given input word
