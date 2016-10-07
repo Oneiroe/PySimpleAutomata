@@ -133,6 +133,7 @@ def dfa_render(dfa, name):
 
     g.render(filename='img/' + name)
 
+
 # Print in output a DOT file and an image of the given DFA
 # pydot library
 def pydot_dfa_render(dfa, name):
@@ -154,8 +155,8 @@ def pydot_dfa_render(dfa, name):
     for transition in dfa['transitions']:
         g.add_edge(pydot.Edge(transition[0], dfa['transitions'][transition], label=transition[1]))
 
-    g.write_svg('img/' + name+'.svg')
-    g.write_dot('img/' + name+'.dot')
+    g.write_svg('img/' + name + '.svg')
+    g.write_dot('img/' + name + '.dot')
 
 
 ### Checks if a given dfa accepts a run on a given input word

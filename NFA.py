@@ -73,6 +73,30 @@ def nfa_dot_importer(input_file):
     return nfa
 
 
+def nfa_render(nfa, name):
+    g = pydot.Dot(graph_type='digraph')
+
+    fake = pydot.Node('fake', style='invisible')
+    g.add_node(fake)
+    for state in nfa['states']:
+        node = pydot.Node(state)
+        if state in nfa['initial_states']:
+            node.set_root(True)
+            g.add_edge(pydot.Edge(fake, node, style='bold'))
+
+        if state in nfa['accepting_states']:
+            node.set_shape('doublecircle')
+        g.add_node(node)
+
+    for transition in nfa['transitions']:
+        for dest in nfa['transitions'][transition]:
+            g.add_edge(pydot.Edge(transition[0], dest, label=transition[1]))
+
+    g.write_svg('img/' + name + '.svg')
+    g.write_dot('img/' + name + '.dot')
+    return
+
+
 # - NFAs intersection
 def nfa_intersection(nfa_1, nfa_2):
     intersection = {}
@@ -111,8 +135,43 @@ def nfa_union(nfa_1, nfa_2):
 
     return union
 
+
 # - NFA determinization
-# 	NFA -> DFA
+def nfa_determinization(nfa):
+    # 	TODO check correctness more deeply
+    dfa = {}
+    dfa['alphabet'] = nfa['alphabet']
+    dfa['initial_state'] = str(nfa['initial_states'])
+    dfa['states'] = set()
+    dfa['states'].add(str(nfa['initial_states']))
+    dfa['accepting_states'] = set()
+    dfa['transitions'] = {}
+
+    states = list()
+    stack = list()
+    stack.append(nfa['initial_states'])
+    states.append(nfa['initial_states'])
+    while stack:
+        current_set = stack.pop(0)
+        for a in dfa['alphabet']:
+            next_set = set()
+            for state in current_set:
+                if (state, a) in nfa['transitions']:
+                    for next_state in nfa['transitions'][state, a]:
+                        next_set.add(next_state)
+            if len(next_set) == 0:
+                continue
+            if next_set not in states:
+                states.append(next_set)
+                stack.append(next_set)
+                dfa['states'].add(str(next_set))
+                if len(next_set.intersection(nfa['accepting_states'])) > 0:
+                    dfa['accepting_states'].add(str(next_set))
+
+            dfa['transitions'][str(current_set), a] = str(next_set)
+
+    return dfa
+
 # - NFA complementation
 # - NFA nonemptiness
 # - NFA nonuniversality
