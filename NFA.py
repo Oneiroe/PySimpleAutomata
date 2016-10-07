@@ -151,6 +151,8 @@ def nfa_determinization(nfa):
     stack = list()
     stack.append(nfa['initial_states'])
     states.append(nfa['initial_states'])
+    if len(states[0].intersection(nfa['accepting_states'])) > 0:
+        dfa['accepting_states'].add(str(states[0]))
     while stack:
         current_set = stack.pop(0)
         for a in dfa['alphabet']:
