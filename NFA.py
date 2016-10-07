@@ -1,7 +1,7 @@
-import io
 import json
 from copy import deepcopy
-import itertools
+from itertools import product as cartesian_product
+import pydot
 
 
 # ###
@@ -28,31 +28,15 @@ import itertools
 #
 # nfa = [alphabet, states, initial_state, final, transition]
 
-# Guided NFA constructor
-# TODO nfa_creator_assistant()
-def nfa_creator_assistant():
-    alphabet = set()
-    states = set()
-    initial_states = set()
-    accepting_states = set()
-    transitions = {}  # key [state in states, action in alphabet] value [arriving state in states]
-
-    print('Insert states...')
-
-    print('Which ones are initial states?')
-
-    print('Which ones are final states?')
-
-    print('Insert actions...')
-
-    print('Insert transitions')
-
-    return [alphabet, states, initial_states, accepting_states, transitions]
-
-
 # Export a nfa "object" to a json file
 # TODO nfa_to_json
 def nfa_to_json(nfa):
+    return
+
+
+# Export a dfa "object" to a DOT file
+# TODO dfa_to_dot
+def nfa_to_dot(dfa):
     return
 
 
@@ -82,35 +66,48 @@ def nfa_json_importer(input_file):
     return nfa
 
 
+# Import a nfa from a dot file
+# TODO
+def nfa_dot_importer(input_file):
+    nfa = {}
+    return nfa
+
+
 # - NFAs intersection
 def nfa_intersection(nfa_1, nfa_2):
     intersection = {}
     intersection['alphabet'] = nfa_1['alphabet']
-    intersection['states'] = set(itertools.product(nfa_1['states'], nfa_2['states']))
-    intersection['initial_states'] = set(itertools.product(nfa_1['initial_states'], nfa_2['initial_states']))
-    intersection['accepting_states'] = set(itertools.product(nfa_1['accepting_states'], nfa_2['accepting_states']))
+    intersection['states'] = set(cartesian_product(nfa_1['states'], nfa_2['states']))
+    intersection['initial_states'] = set(cartesian_product(nfa_1['initial_states'], nfa_2['initial_states']))
+    intersection['accepting_states'] = set(cartesian_product(nfa_1['accepting_states'], nfa_2['accepting_states']))
 
     intersection['transitions'] = {}
     for s in intersection['states']:
         for a in intersection['alphabet']:
-            try:
-                s1 = nfa_1['transitions'][s[0], a]
-            except KeyError:
+            if (s[0], a) not in nfa_1['transitions'] or (s[1], a) not in nfa_2['transitions']:
                 continue
-            try:
-                s2 = nfa_2['transitions'][s[1], a]
-            except KeyError:
-                continue
+            s1 = nfa_1['transitions'][s[0], a]
+            s2 = nfa_2['transitions'][s[1], a]
+
             for next_1 in s1:
                 for next_2 in s2:
                     intersection['transitions'].setdefault((s, a), set()).add((next_1, next_2))
 
     return intersection
 
+
 # - NFAs union
+def nfa_union(nfa_1, nfa_2):
+    union = {}
+    # TODO
+    return union
+
 # - NFA determinization
 # 	NFA -> DFA
 # - NFA complementation
 # - NFA nonemptiness
 # - NFA nonuniversality
 # - NFA interestingness check
+
+# ### Checks if a given dfa accepts a run on a given input word
+# def run_acceptance(dfa, run, word):

@@ -45,7 +45,7 @@ def dfa_to_json(dfa):
 
 
 # Export a dfa "object" to a DOT file
-# TODO dfa_to_json
+# TODO dfa_to_dot
 def dfa_to_dot(dfa):
     return
 
