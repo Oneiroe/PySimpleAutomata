@@ -99,7 +99,16 @@ def nfa_intersection(nfa_1, nfa_2):
 # - NFAs union
 def nfa_union(nfa_1, nfa_2):
     union = {}
-    # TODO
+    union['alphabet'] = nfa_1['alphabet']
+    union['states'] = nfa_1['states'].union(nfa_2['states'])
+    union['initial_states'] = nfa_1['initial_states'].union(nfa_2['initial_states'])
+    union['accepting_states'] = nfa_1['accepting_states'].union(nfa_2['accepting_states'])
+
+    union['transitions'] = nfa_1['transitions'].copy()
+    for transition in nfa_2['transitions']:
+        for elem in nfa_2['transitions'][transition]:
+            union['transitions'].setdefault(transition, set()).add(elem)
+
     return union
 
 # - NFA determinization
