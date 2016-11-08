@@ -201,7 +201,20 @@ def nfa_nonemptiness_check(nfa):
                         stack.append(next_state)
     return False
 
+
 # - NFA nonuniversality
+def nfa_nonuniversality_check(nfa):
+    # Ā is the complementary automaton of A. Thus, to test A for nonuniversality, it suffices to test Ā for nonemptiness
+
+    # NAIVE Very inefficient (exponential space) : simply construct Ā and then test it for nonemptiness
+    complemented_nfa = nfa_complementation(nfa)
+    return DFA.dfa_nonemptiness_check(complemented_nfa)
+
+    # TODO CORRECT:
+    # construct Ā “on-the-fly”: whenever the nonemptiness algorithm wants to move from a state t 1 of Ā to a state t 2,
+    # the algorithm guesses t 2 and checks that it is directly connected to t 1 . Once this has been verified,
+    # the algorithm can discard t 1 .
+
 # - NFA interestingness check
 
 # ### Checks if a given dfa accepts a run on a given input word

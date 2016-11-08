@@ -431,3 +431,20 @@ def dfa_projection(dfa, X):
                         nfa['transitions'].setdefault((past, transition[1]), set()).add(reached)
 
     return nfa
+
+
+# - DFA nonemptiness
+def dfa_nonemptiness_check(dfa):
+    # BFS
+    stack = [dfa['initial_state']]
+    visited = set()
+    visited.add(dfa['initial_state'])
+    while stack:
+        state = stack.pop()  # TODO tweak popping order (now the last element is chosen)
+        for a in dfa['alphabet']:
+            if (state, a) in dfa['transitions']:
+                if dfa['transitions'][state, a] in dfa['accepting_states']:
+                    return True
+                if dfa['transitions'][state, a] not in visited:
+                    stack.append(dfa['transitions'][state, a])
+    return False
