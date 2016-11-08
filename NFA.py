@@ -215,7 +215,10 @@ def nfa_nonuniversality_check(nfa):
     # the algorithm guesses t 2 and checks that it is directly connected to t 1 . Once this has been verified,
     # the algorithm can discard t 1 .
 
+
 # - NFA interestingness check
+def nfa_interestingness_check(nfa):
+    return nfa_nonemptiness_check(nfa) and nfa_nonuniversality_check(nfa)
 
 # ### Checks if a given dfa accepts a run on a given input word
 # def run_acceptance(dfa, run, word):
