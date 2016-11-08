@@ -2,6 +2,7 @@ import json
 from copy import deepcopy
 from itertools import product as cartesian_product
 import pydot
+import DFA
 
 
 # ###
@@ -174,8 +175,32 @@ def nfa_determinization(nfa):
 
     return dfa
 
+
 # - NFA complementation
+def nfa_complementation(nfa):
+    determinized_nfa = nfa_determinization(nfa)
+    return DFA.dfa_complementation(determinized_nfa)
+
+
 # - NFA nonemptiness
+def nfa_nonemptiness_check(nfa):
+    # BFS
+    stack = []
+    visited = set()
+    for state in nfa['initial_states']:
+        visited.add(state)
+        stack.append(state)
+    while stack:
+        state = stack.pop()  # TODO tweak popping order (now the last element is chosen)
+        for a in nfa['alphabet']:
+            if (state, a) in nfa['transitions']:
+                for next_state in nfa['transitions'][state, a]:
+                    if next_state in nfa['accepting_states']:
+                        return True
+                    if next_state not in visited:
+                        stack.append(next_state)
+    return False
+
 # - NFA nonuniversality
 # - NFA interestingness check
 
