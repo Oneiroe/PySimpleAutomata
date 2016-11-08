@@ -220,5 +220,21 @@ def nfa_nonuniversality_check(nfa):
 def nfa_interestingness_check(nfa):
     return nfa_nonemptiness_check(nfa) and nfa_nonuniversality_check(nfa)
 
-# ### Checks if a given dfa accepts a run on a given input word
-# def run_acceptance(dfa, run, word):
+
+# - Checks if a given nfa accepts a run on a given input word
+def run_acceptance(nfa, run, word):
+    # If 'run' fist state is not an initial state return False
+    if run[0] not in nfa['initial_states']:
+        return False
+    # If last 'run' state is not an accepting state return False
+    if run[-1] not in nfa['accepting_states']:
+        return False
+    current_level = set()
+    current_level.add(run[0])
+    for i in range(len(word) - 1):
+        if (run[i], word[i]) in nfa['transitions']:
+            if run[i + 1] not in nfa['transitions'][run[i], word[i]]:
+                return False
+        else:
+            return False
+    return True
