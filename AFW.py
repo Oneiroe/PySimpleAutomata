@@ -1,5 +1,6 @@
 import json
 from itertools import product as cartesian_product
+import NFA
 
 
 # ###
@@ -22,9 +23,10 @@ from itertools import product as cartesian_product
 # states = set()
 # initial_state = 0
 # accepting_states = set()
-# transitions = {} # key (state ∈ states, action ∈ alphabet) value [list of disjointed sets of conjuncted states ∈ states]
+# transitions = {} # key (state ∈ states, action ∈ alphabet) value [string representing a PYTHON boolean expression
+#   over states; where we also allow the formulas true and false]
 #
-# afw = [alphabet, states, initial_state, final, transition]
+# afw = [alphabet, states, initial_state, accepting_states, transitions]
 
 # Export a afw "object" to a json file
 # TODO afw_to_json
@@ -42,9 +44,9 @@ def afw_json_importer(input_file):
     initial_state = json_file['initial_state']
     accepting_states = set(json_file['accepting_states'])
 
-    transitions = {}  # key [state in states, action in alphabet] value [et of arriving states in states]
+    transitions = {}  # key [state in states, action in alphabet] value [string representing boolean expression]
     for p in json_file['transitions']:
-        transitions.setdefault((p[0], p[1]), list()).append(set(p[2]))
+        transitions[p[0], p[1]] = p[2]
 
     # return list
     # return [alphabet, states, initial_state, accepting_states, transitions]
@@ -58,9 +60,31 @@ def afw_json_importer(input_file):
     afw['transitions'] = transitions
     return afw
 
-# - AFW definition
-# - AFW to AFW conversion
-# - AFW to AFW conversion
+
+# - AFW run acceptance
+
+# - NFA to AFW conversion
+def nfa_to_afw_conversion(nfa):
+    afw = {}
+    afw['alphabet'] = nfa['alphabet']
+    afw['states'] = nfa['states']
+    afw['states'].add('s_alpha')
+    afw['initial_state'] = 's_alpha'
+    afw['accepting_states'] = nfa['accepting_states']
+    afw['transitions'] = {}
+
+    for t in nfa['transitions']:
+        boolean_formula = ''
+        for state in nfa['transitions'][t]:
+            boolean_formula = boolean_formula + state + ' or '
+        boolean_formula = boolean_formula[0:-4]
+        afw['transitions'][t] = boolean_formula
+        if t[0] in nfa['initial_states']:
+            afw['transitions']['s_alpha', t[1]] = boolean_formula
+
+    return afw
+
+# - AFW to NFA conversion
 # - AFW complementation
 # - AFW nonemptiness
 # - AFW nonuniversality
