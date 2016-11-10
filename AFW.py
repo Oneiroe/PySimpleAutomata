@@ -1,6 +1,8 @@
 import json
 from itertools import product as cartesian_product
 import NFA
+import itertools
+import re
 
 
 # ###
@@ -68,8 +70,8 @@ def nfa_to_afw_conversion(nfa):
     afw = {}
     afw['alphabet'] = nfa['alphabet']
     afw['states'] = nfa['states']
-    afw['states'].add('s_alpha')
-    afw['initial_state'] = 's_alpha'
+    afw['states'].add('states')
+    afw['initial_state'] = 's_root'
     afw['accepting_states'] = nfa['accepting_states']
     afw['transitions'] = {}
 
@@ -80,11 +82,58 @@ def nfa_to_afw_conversion(nfa):
         boolean_formula = boolean_formula[0:-4]
         afw['transitions'][t] = boolean_formula
         if t[0] in nfa['initial_states']:
-            afw['transitions']['s_alpha', t[1]] = boolean_formula
+            afw['transitions']['s_root', t[1]] = boolean_formula
 
     return afw
 
+
 # - AFW to NFA conversion
+def afw_to_nfa_conversion(afw):
+    # TODO check correctness
+    nfa = {}
+    nfa['alphabet'] = afw['alphabet']
+    nfa['initial_states'] = {afw['initial_state']}
+
+    nfa['states'] = afw['states']
+    nfa['accepting_states'] = afw['accepting_states']
+    nfa['transitions'] = {}
+
+    i = len(afw['states'])
+    while i > 1:
+        nfa['states'] = nfa['states'].union(set(itertools.combinations(afw['states'], i)))
+        i -= 1
+
+    i = len(afw['accepting_states'])
+    while i > 1:
+        nfa['accepting_states'] = nfa['accepting_states'].union(set(itertools.combinations(afw['accepting_states'], i)))
+        i -= 1
+
+    for transition in afw['transitions']:
+        # NAIVE
+        # mapping = dict.fromkeys(afw['states'], False)
+        # for state in nfa['states']:
+        #     for s in state:
+        #         mapping[s] = True
+        #     if eval(afw['transitions'][transition], mapping):
+        #         nfa['transitions'].setdefault(transition, set()).add(state)
+        #     for s in state:
+        #         mapping[s] = False
+
+        # SLIGHTLY BETTER
+        # set with states involved in the boolean formula of the transition
+        involved_states = list(
+            set(re.findall(r"[\w']+", afw['transitions'][transition])).difference({'and', 'or', 'True', 'False'}))
+        # all the possible True/False assignment to these states
+        possible_assignments = list(itertools.product([True, False], repeat=len(involved_states)))
+        for assignment in possible_assignments:
+            mapping = dict(zip(involved_states, assignment))
+            if eval(afw['transitions'][transition], mapping):
+                for state in mapping:
+                    if mapping[state] == True:
+                        nfa['transitions'].setdefault(transition, set()).add(state)
+
+    return nfa
+
 # - AFW complementation
 # - AFW nonemptiness
 # - AFW nonuniversality
