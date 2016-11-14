@@ -8,6 +8,7 @@ import re
 # ###
 # TO-DO
 # TODO correctness check of json imported automata
+# TODO think of graphviz usage for these automata
 
 # an afw (alternating finite automaton on words) is a tuple A = (Σ, S, s0, ρ, F ), where:
 # • Σ is a finite nonempty alphabet;
@@ -85,7 +86,7 @@ def recursive_acceptance(afw, state, remaining_word):
             ok = True
             mapping.pop('__builtins__')
             for mapped_state in mapping:
-                if not mapping[mapped_state]:
+                if mapping[mapped_state] == False:
                     continue
                 if not recursive_acceptance(afw, mapped_state, remaining_word[1:]):
                     ok = False
@@ -170,8 +171,27 @@ def afw_to_nfa_conversion(afw):
 
     return nfa
 
+
+def replace_all(repls, str):
+    # return re.sub('|'.join(repls.keys()), lambda k: repls[k.group(0)], str)
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()),
+                  lambda k: repls[k.group(0)], str)
+
+
+# - AFW complementation
+def afw_complementation(afw):
+    complemented_afw = {}
+    complemented_afw['alphabet'] = afw['alphabet']
+    complemented_afw['states'] = afw['states']
+    complemented_afw['initial_state'] = afw['states']
+    complemented_afw['accepting_states'] = afw['states'].difference(afw['accepting_states'])
+    complemented_afw['transitions'] = {}
+
+    conversion_dictionary = {'and': 'or', 'or': 'and', 'True': 'False', 'False': 'True'}
+    for transition in afw['transitions']:
+        complemented_afw['transitions'][transition] = replace_all(conversion_dictionary, afw['transitions'][transition])
+
 # - AFW Union
 # - AFW Intersection
-# - AFW complementation
 # - AFW nonemptiness
 # - AFW nonuniversality
