@@ -238,3 +238,23 @@ def run_acceptance(nfa, run, word):
         else:
             return False
     return True
+
+
+### Checks if a given word is accepted by a NFA
+def word_acceptance(nfa, word):
+    current_level = set()
+    current_level = current_level.union(nfa['initial_states'])
+    next_level = set()
+    for action in word:
+        for state in current_level:
+            if (state, action) in nfa['transitions']:
+                next_level = next_level.union(nfa['transitions'][state, action])
+        if len(next_level) < 1:
+            return False
+        current_level = next_level
+        next_level = set()
+
+    if current_level.intersection(nfa['accepting_states']):
+        return True
+    else:
+        return False

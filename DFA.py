@@ -17,6 +17,7 @@ import pydot
 # TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
 #         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
 # TODO move graph render in a separate file to take dfa function independent from it
+# TODO lambda functions
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
 # • Σ is a finite nonempty alphabet;
@@ -174,6 +175,20 @@ def run_acceptance(dfa, run, word):
         else:
             return False
     return True
+
+
+### Checks if a given word is accepted by a dfa
+def word_acceptance(dfa, word):
+    current_state = dfa['initial_state']
+    for action in word:
+        if (current_state, action) in dfa['transitions']:
+            current_state = dfa['transitions'][current_state, action]
+        else:
+            return False
+    if current_state in dfa['accepting_states']:
+        return True
+    else:
+        return False
 
 
 ### DFA completion
