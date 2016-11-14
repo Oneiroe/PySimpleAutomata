@@ -63,14 +63,50 @@ def afw_json_importer(input_file):
     return afw
 
 
-# - AFW run acceptance
+# recursive call for word acceptance
+def recursive_acceptance(afw, state, remaining_word):
+    if len(remaining_word) == 0:
+        if state in afw['accepting_states']:
+            return True
+        else:
+            return False
+
+    action = remaining_word[0]
+    if (state, action) not in afw['transitions']:
+        return False
+
+    transition = (state, action)
+    involved_states = list(
+        set(re.findall(r"[\w']+", afw['transitions'][transition])).difference({'and', 'or', 'True', 'False'}))
+    possible_assignments = set(itertools.product([True, False], repeat=len(involved_states)))
+    for assignment in possible_assignments:
+        mapping = dict(zip(involved_states, assignment))
+        if eval(afw['transitions'][transition], mapping):
+            ok = True
+            mapping.pop('__builtins__')
+            for mapped_state in mapping:
+                if not mapping[mapped_state]:
+                    continue
+                if not recursive_acceptance(afw, mapped_state, remaining_word[1:]):
+                    ok = False
+                    break
+            if ok:
+                return True
+    return False
+
+
+# - Checks if a word is accepted by a AFW
+def word_acceptance(afw, word):
+    # TODO check correctness
+    return recursive_acceptance(afw, afw['initial_state'], word)
+
 
 # - NFA to AFW conversion
 def nfa_to_afw_conversion(nfa):
     afw = {}
     afw['alphabet'] = nfa['alphabet']
     afw['states'] = nfa['states']
-    afw['states'].add('states')
+    afw['states'].add('s_root')
     afw['initial_state'] = 's_root'
     afw['accepting_states'] = nfa['accepting_states']
     afw['transitions'] = {}
@@ -134,6 +170,8 @@ def afw_to_nfa_conversion(afw):
 
     return nfa
 
+# - AFW Union
+# - AFW Intersection
 # - AFW complementation
 # - AFW nonemptiness
 # - AFW nonuniversality
