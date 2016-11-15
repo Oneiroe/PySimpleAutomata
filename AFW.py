@@ -9,6 +9,8 @@ import re
 # TO-DO
 # TODO correctness check of json imported automata
 # TODO think of graphviz usage for these automata
+# TODO change name to new initial state when creating AFWs:
+#      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
 
 # an afw (alternating finite automaton on words) is a tuple A = (Σ, S, s0, ρ, F ), where:
 # • Σ is a finite nonempty alphabet;
@@ -193,7 +195,33 @@ def afw_complementation(afw):
 
     return complemented_afw
 
+
 # - AFW Union
+def afw_union(afw_1, afw_2):
+    # TODO check equality between AFWs alphabets
+    union = {}
+    union['alphabet'] = afw_1['alphabet']
+    union['states'] = afw_1['states'].union(afw_2['states']).union({'s_root'})
+    union['initial_state'] = 's_root'
+    union['accepting_states'] = afw_1['accepting_states'].union(afw_2['accepting_states'])
+    union['transitions'] = afw_1['transitions'].copy()
+
+    for transition in afw_2['transitions']:
+        if transition in union['transitions']:
+            union['transitions'][transition] += ' or ' + afw_2['transitions'][transition]
+        else:
+            union['transitions'][transition] = afw_2['transitions'][transition]
+
+    for action in union['alphabet']:
+        if (afw_1['initial_state'], action) in afw_1['transitions']:
+            union['transitions']['s_root', action] = afw_1['transitions'][afw_1['initial_state'], action]
+            if (afw_2['initial_state'], action) in afw_2['transitions']:
+                union['transitions']['s_root', action] += ' or ' + afw_2['transitions'][afw_2['initial_state'], action]
+        elif (afw_2['initial_state'], action) in afw_2['transitions']:
+            union['transitions']['s_root', action] = afw_2['transitions'][afw_2['initial_state'], action]
+
+    return union
+
 # - AFW Intersection
 # - AFW nonemptiness
 # - AFW nonuniversality
