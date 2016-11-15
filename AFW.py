@@ -183,13 +183,15 @@ def afw_complementation(afw):
     complemented_afw = {}
     complemented_afw['alphabet'] = afw['alphabet']
     complemented_afw['states'] = afw['states']
-    complemented_afw['initial_state'] = afw['states']
+    complemented_afw['initial_state'] = afw['initial_state']
     complemented_afw['accepting_states'] = afw['states'].difference(afw['accepting_states'])
     complemented_afw['transitions'] = {}
 
     conversion_dictionary = {'and': 'or', 'or': 'and', 'True': 'False', 'False': 'True'}
     for transition in afw['transitions']:
         complemented_afw['transitions'][transition] = replace_all(conversion_dictionary, afw['transitions'][transition])
+
+    return complemented_afw
 
 # - AFW Union
 # - AFW Intersection
