@@ -253,4 +253,12 @@ def afw_intersection(afw_1, afw_2):
 
 
 # - AFW nonemptiness
+def afw_nonemptiness_check(afw):
+    nfa = afw_to_nfa_conversion(afw)
+    return NFA.nfa_nonemptiness_check(nfa)
+
+
 # - AFW nonuniversality
+def afw_nonuniversality_check(afw):
+    nfa = afw_to_nfa_conversion(afw)
+    return NFA.nfa_nonemptiness_check(nfa)
