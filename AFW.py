@@ -117,7 +117,7 @@ def nfa_to_afw_conversion(nfa):
     for t in nfa['transitions']:
         boolean_formula = ''
         for state in nfa['transitions'][t]:
-            boolean_formula = boolean_formula + state + ' or '
+            boolean_formula += state + ' or '
         boolean_formula = boolean_formula[0:-4]
         afw['transitions'][t] = boolean_formula
         if t[0] in nfa['initial_states']:
@@ -222,6 +222,35 @@ def afw_union(afw_1, afw_2):
 
     return union
 
+
 # - AFW Intersection
+def afw_intersection(afw_1, afw_2):
+    # unsure on correctness of the source material [lecture06a.pdf]
+    # TODO check equality between AFWs alphabets
+    intersection = {}
+    intersection['alphabet'] = afw_1['alphabet']
+    intersection['states'] = afw_1['states'].union(afw_2['states']).union({'s_root'})
+    intersection['initial_state'] = 's_root'
+    intersection['accepting_states'] = afw_1['accepting_states'].union(afw_2['accepting_states'])
+    intersection['transitions'] = afw_1['transitions'].copy()
+
+    for transition in afw_2['transitions']:
+        if transition in intersection['transitions']:
+            intersection['transitions'][transition] += ' or ' + afw_2['transitions'][transition]
+        else:
+            intersection['transitions'][transition] = afw_2['transitions'][transition]
+
+    for action in intersection['alphabet']:
+        if (afw_1['initial_state'], action) in afw_1['transitions']:
+            intersection['transitions']['s_root', action] = afw_1['transitions'][afw_1['initial_state'], action]
+            if (afw_2['initial_state'], action) in afw_2['transitions']:
+                intersection['transitions']['s_root', action] += ' and ' + afw_2['transitions'][
+                    afw_2['initial_state'], action]
+        elif (afw_2['initial_state'], action) in afw_2['transitions']:
+            intersection['transitions']['s_root', action] = afw_2['transitions'][afw_2['initial_state'], action]
+
+    return intersection
+
+
 # - AFW nonemptiness
 # - AFW nonuniversality
