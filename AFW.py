@@ -167,6 +167,7 @@ def afw_to_nfa_conversion(afw):
         for assignment in possible_assignments:
             mapping = dict(zip(involved_states, assignment))
             if eval(afw['transitions'][transition], mapping):
+                mapping.pop('__builtins__')
                 for state in mapping:
                     if mapping[state] == True:
                         nfa['transitions'].setdefault(transition, set()).add(state)
