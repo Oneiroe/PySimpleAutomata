@@ -10,6 +10,7 @@ from copy import deepcopy
 
 # ###
 # TO-DO
+# TODO handle side effects
 # TODO check correctness of imported automata from json & DOT
 # TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
 #         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
@@ -36,10 +37,16 @@ from copy import deepcopy
 #   dfa = [alphabet, states, initial_state, final, transition]
 
 
-
-
-### Checks if a given dfa accepts a run on a given input word
 def run_acceptance(dfa, run, word):
+    """ Checks if the given 'run' of states in 'dfa' accepts the given 'word', returning True/False.
+
+    TODO short-detailed explanation of run acceptance
+
+    :param dfa: dict() representing a dfa
+    :param run: list() of states ∈ dfa['states']
+    :param word: list() of actions ∈ dfa['alphabet']
+    :return: bool, True if the word is accepted, False in the other case
+    """
     # If 'run' fist state is not an initial state return False
     if run[0] != dfa['initial_state']:
         return False
@@ -55,8 +62,15 @@ def run_acceptance(dfa, run, word):
     return True
 
 
-### Checks if a given word is accepted by a dfa
 def word_acceptance(dfa, word):
+    """ Checks if a given 'word' is accepted by a 'dfa', returning True/false.
+
+    TODO short-detailed explanation of word acceptance
+
+    :param dfa: dict() representing a dfa
+    :param word: list() of actions ∈ dfa['alphabet']
+    :return: bool, True if the word is accepted, False in the other case
+    """
     current_state = dfa['initial_state']
     for action in word:
         if (current_state, action) in dfa['transitions']:
@@ -69,8 +83,15 @@ def word_acceptance(dfa, word):
         return False
 
 
-### DFA completion
+# Side effect on input dfa
 def dfa_completion(dfa):
+    """ It completes the dfa assigning to each state a transition for each letter in the alphabet.
+
+    TODO short-detailed explanation of DFAs completion
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the completed dfa
+    """
     dfa['states'].add('sink')
     for s in dfa['states']:
         for a in dfa['alphabet']:
@@ -79,15 +100,28 @@ def dfa_completion(dfa):
     return dfa
 
 
-### DFA complementation
 def dfa_complementation(dfa):
+    """ Generates a dfa that accepts any word but he one accepted by input 'dfa'.
+
+    TODO short-detailed explanation of DFAs complementation
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the complement of the input dfa
+    """
     dfa_complemented = dfa_completion(dfa)
     dfa_complemented['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
     return dfa_complemented
 
 
-### DFAs intersection
 def dfa_intersection(dfa_1, dfa_2):
+    """ Returns a dfa accepting the intersection of the dfas in input.
+
+    TODO short-detailed explanation of DFAs intersection
+
+    :param dfa_1: dict() representing a dfa
+    :param dfa_2: dict() representing a dfa
+    :return: dict() representing the intersected dfa
+    """
     intersection = {}
     intersection['alphabet'] = dfa_1['alphabet']
     intersection['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
@@ -106,8 +140,15 @@ def dfa_intersection(dfa_1, dfa_2):
     return intersection
 
 
-### DFAs union
 def dfa_union(dfa_1, dfa_2):
+    """ Returns a dfa accepting the union of the dfas in input.
+
+    TODO short-detailed explanation of DFAs union
+
+    :param dfa_1: dict() representing a dfa
+    :param dfa_2: dict() representing a dfa
+    :return: dict() representing the united dfa
+    """
     dfa_1 = dfa_completion(dfa_1)
     dfa_2 = dfa_completion(dfa_2)
 
@@ -129,8 +170,15 @@ def dfa_union(dfa_1, dfa_2):
     return union
 
 
-###*DFA minimization [greatest fix point]
+# Side effects on input dfa
 def dfa_minimization(dfa):
+    """ Returns the minimization of the dfa in input through a greatest fix-point method.
+
+    TODO short-detailed explanation of DFAs mionimization
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the minimized dfa
+    """
     dfa = dfa_completion(dfa)
 
     ##  Greatest-fixpoint
@@ -197,10 +245,16 @@ def dfa_minimization(dfa):
     return dfa_min
 
 
-# remove unreachable states from a dfa
+# Side effects on input variable
 def dfa_reachable(dfa):
-    # set of reachable states from initial states
-    s_r = set()
+    """ Removes unreachable states of a dfa and returns the pruned dfa.
+
+    TODO short-detailed explanation of reachable DFAs
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the pruned dfa
+    """
+    s_r = set()  # set of reachable states from initial states
     s_r.add(dfa['initial_state'])
     s_r_stack = s_r.copy()
     while s_r_stack:
@@ -224,10 +278,15 @@ def dfa_reachable(dfa):
     return dfa
 
 
-# remove states that do not reach a final state from dfa
 def dfa_co_reachable(dfa):
-    # set of states reaching final states
-    s_r = dfa['accepting_states'].copy()
+    """ Removes states that do not reach a final state from 'dfa' and returns the pruned dfa.
+
+    TODO short-detailed explanation of co-reachable DFAs
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the pruned dfa
+    """
+    s_r = dfa['accepting_states'].copy()  # set of states reaching final states
     s_r_stack = s_r.copy()
 
     # inverse transition function
@@ -256,8 +315,15 @@ def dfa_co_reachable(dfa):
     return dfa
 
 
-### DFA trimming
+# Side effects on input variable
 def dfa_trimming(dfa):
+    """ Returns the dfa in input trimmed.
+
+    TODO short-detailed explanation of DFAs trimming
+
+    :param dfa: dict() representing a dfa
+    :return: dict() representing the trimmed input dfa
+    """
     # Reachable DFA
     dfa = dfa_reachable(dfa)
     # Co-reachable DFA
@@ -266,17 +332,23 @@ def dfa_trimming(dfa):
     return dfa
 
 
-### DFA projection out ( the operation that removes from a word all occurrence of symbols in X )
-# Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an nfa A π X that recognizes the language π X (L(A)).
-# DFA -> NFA
-def dfa_projection(dfa, X):
-    nfa = dfa.copy()
-    nfa['alphabet'] = dfa['alphabet'].difference(X)
-    nfa['transitions'] = {}
-    e_x = {}
-    # ε_X ⊆ S×S formed by the pairs of states (s, s_0) such that s_0 is reachable from s through transition symbols ∈ X
+def dfa_projection(dfa, symbols_to_project):
+    """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in X are projected out.
 
-    # mark each transition using symbol a ∈ X
+    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in X )
+    Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an nfa A π X that recognizes the language π X (L(A)).
+
+    :param dfa: dict() representing a dfa
+    :param symbols_to_project: set() containing symbols ∈ dfa['alphabet'] to be projected out from dfa
+    :return: dict() representing a NFA
+    """
+    nfa = dfa.copy()
+    nfa['alphabet'] = dfa['alphabet'].difference(symbols_to_project)
+    nfa['transitions'] = {}
+    # ε_X ⊆ S×S formed by the pairs of states (s, s_0) such that s_0 is reachable from s through transition symbols ∈ X
+    e_x = {}
+
+    # mark each transition using symbol a ∈ symbols_to_project
     for transition in dfa['transitions']:
         if transition[1] not in nfa['alphabet']:
             # nfa['transitions'][transition[0], 'epsilon'] = dfa['transitions'][transition]
@@ -326,8 +398,12 @@ def dfa_projection(dfa, X):
     return nfa
 
 
-# - DFA nonemptiness
 def dfa_nonemptiness_check(dfa):
+    """ Checks if the input dfa is nonempty, so if it recognize at least a language except the empty one
+
+    :param dfa: dict() representing a dfa
+    :return: bool, True if the dfa is nonempty, False in the other case
+    """
     # BFS
     stack = [dfa['initial_state']]
     visited = set()
