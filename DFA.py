@@ -11,11 +11,11 @@ Formally a DFA, Deterministic Finite Automaton, is a tuple (Σ, S, s_0 , ρ, F )
 In this module a DFA is defined as follows
 
  DFA = dict() with the following keys-values:
-   alphabet         => set()
-   states           => set()
-   initial_state    => 'state_0'
-   accepting_states => set()
-   transitions      => dict()  # key (state in states, action in alphabet) value [arriving state in states]
+    alphabet         => set()
+    states           => set()
+    initial_state    => 'state_0'
+    accepting_states => set()
+    transitions      => dict()  # key (state in states, action in alphabet) value [arriving state in states]
 """
 
 from itertools import product as cartesian_product
