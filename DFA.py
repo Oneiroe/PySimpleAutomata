@@ -1,3 +1,25 @@
+"""
+Formally a DFA, Deterministic Finite Automaton, is a tuple (Σ, S, s_0 , ρ, F ), where
+ • Σ is a finite nonempty alphabet;
+ • S is a finite nonempty set of states;
+ • s_0 ∈ S is the initial state;
+ • F ⊆ S is the set of accepting states;
+ • ρ : S × Σ → S is a transition function, which can be a partial function. Intuitively,
+       s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the
+       symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
+
+
+In this module a DFA is defined as follows definition
+
+ DFA= dict() with the following keys-values:
+   alphabet         => set()
+   states           => set()
+   initial_state    => 'state_0'
+   accepting_states => set()
+   transitions      => dict()  # key (state in states, action in alphabet) value [arriving state in states]
+
+"""
+
 from itertools import product as cartesian_product
 from copy import deepcopy
 
@@ -16,28 +38,8 @@ from copy import deepcopy
 #         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
 # TODO lambda functions
 
-# A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
-# • Σ is a finite nonempty alphabet;
-# • S is a finite nonempty set of states;
-# • s_0 ∈ S is the initial state;
-# • F ⊆ S is the set of accepting states;
-# • ρ : S × Σ → S is a transition function, which can be a partial function. Intuitively,
-#       s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the
-#       symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
 
-
-### DFA definition
-# DFA= dict() with the following keys-values:
-#   alphabet = set()
-#   states = set()
-#   initial_state = 'state_0'
-#   accepting_states = set()
-#   transitions = {}  # key (state in states, action in alphabet) value [arriving state in states]
-#
-#   dfa = [alphabet, states, initial_state, final, transition]
-
-
-def run_acceptance(dfa, run, word):
+def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     """ Checks if the given 'run' of states in 'dfa' accepts the given 'word', returning True/False.
 
     TODO short-detailed explanation of run acceptance
@@ -62,7 +64,7 @@ def run_acceptance(dfa, run, word):
     return True
 
 
-def word_acceptance(dfa, word):
+def word_acceptance(dfa: dict, word: list) -> bool:
     """ Checks if a given 'word' is accepted by a 'dfa', returning True/false.
 
     TODO short-detailed explanation of word acceptance
@@ -84,7 +86,7 @@ def word_acceptance(dfa, word):
 
 
 # Side effect on input dfa
-def dfa_completion(dfa):
+def dfa_completion(dfa: dict) -> dict:
     """ It completes the dfa assigning to each state a transition for each letter in the alphabet.
 
     TODO short-detailed explanation of DFAs completion
@@ -100,7 +102,7 @@ def dfa_completion(dfa):
     return dfa
 
 
-def dfa_complementation(dfa):
+def dfa_complementation(dfa: dict) -> dict:
     """ Generates a dfa that accepts any word but he one accepted by input 'dfa'.
 
     TODO short-detailed explanation of DFAs complementation
@@ -113,7 +115,7 @@ def dfa_complementation(dfa):
     return dfa_complemented
 
 
-def dfa_intersection(dfa_1, dfa_2):
+def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the intersection of the dfas in input.
 
     TODO short-detailed explanation of DFAs intersection
@@ -140,7 +142,7 @@ def dfa_intersection(dfa_1, dfa_2):
     return intersection
 
 
-def dfa_union(dfa_1, dfa_2):
+def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the union of the dfas in input.
 
     TODO short-detailed explanation of DFAs union
@@ -171,10 +173,10 @@ def dfa_union(dfa_1, dfa_2):
 
 
 # Side effects on input dfa
-def dfa_minimization(dfa):
+def dfa_minimization(dfa: dict) -> dict:
     """ Returns the minimization of the dfa in input through a greatest fix-point method.
 
-    TODO short-detailed explanation of DFAs mionimization
+    TODO short-detailed explanation of DFAs minimization
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the minimized dfa
@@ -246,7 +248,7 @@ def dfa_minimization(dfa):
 
 
 # Side effects on input variable
-def dfa_reachable(dfa):
+def dfa_reachable(dfa: dict) -> dict:
     """ Removes unreachable states of a dfa and returns the pruned dfa.
 
     TODO short-detailed explanation of reachable DFAs
@@ -278,7 +280,7 @@ def dfa_reachable(dfa):
     return dfa
 
 
-def dfa_co_reachable(dfa):
+def dfa_co_reachable(dfa: dict) -> dict:
     """ Removes states that do not reach a final state from 'dfa' and returns the pruned dfa.
 
     TODO short-detailed explanation of co-reachable DFAs
@@ -316,7 +318,7 @@ def dfa_co_reachable(dfa):
 
 
 # Side effects on input variable
-def dfa_trimming(dfa):
+def dfa_trimming(dfa: dict) -> dict:
     """ Returns the dfa in input trimmed.
 
     TODO short-detailed explanation of DFAs trimming
@@ -332,7 +334,7 @@ def dfa_trimming(dfa):
     return dfa
 
 
-def dfa_projection(dfa, symbols_to_project):
+def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in X are projected out.
 
     Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in X )
@@ -398,7 +400,7 @@ def dfa_projection(dfa, symbols_to_project):
     return nfa
 
 
-def dfa_nonemptiness_check(dfa):
+def dfa_nonemptiness_check(dfa: dict) -> bool:
     """ Checks if the input dfa is nonempty, so if it recognize at least a language except the empty one
 
     :param dfa: dict() representing a dfa
