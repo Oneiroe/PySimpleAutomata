@@ -1,3 +1,23 @@
+"""
+Formally a NFA, Nondeterministic Finite Automaton, is a tuple (Σ, S, S^0 , ρ, F ), where
+ • Σ is a finite nonempty alphabet;
+ • S is a finite nonempty set of states;
+ • S^0 is the nonempty set of initial states;
+ • F is the set of accepting states;
+ • ρ : S × Σ × S is a transition relation. Intuitively, (s, a, s' ) ∈ ρ states that A can
+       move from s into s' when it reads the symbol a. It is allowed that (s, a, s' ) ∈ ρ and
+       (s, a, s'' ) ∈ ρ with S' != S'' .
+
+In this module a NFA is defined as follows
+
+ NFA = dict() with the following keys-values:
+    alphabet         => set()
+    states           => set()
+    initial_states   => set()
+    accepting_states => set()
+    transitions      => dict()  # key (state in states, action in alphabet) value {set of arriving states in states}
+"""
+
 from copy import deepcopy
 from itertools import product as cartesian_product
 import DFA
@@ -5,31 +25,17 @@ import DFA
 
 # ###
 # TO-DO
-# 
-
-# An nfa, nondeterministic finite automaton, A is a tuple A = (Σ, S, S^0 , ρ, F ), where
-# • Σ is a finite nonempty alphabet;
-# • S is a finite nonempty set of states;
-# • S^0 is the nonempty set of initial states;
-# • F is the set of accepting states;
-# • ρ : S × Σ × S is a transition relation. Intuitively, (s, a, s' ) ∈ ρ states that A can
-#       move from s into s' when it reads the symbol a. It is allowed that (s, a, s' ) ∈ ρ and
-#       (s, a, s'' ) ∈ ρ with S' != S'' .
-
-
-### NFA definition
-
-# alphabet = set()
-# states = set()
-# initial_states = set()
-# accepting_states = set()
-# transitions = {}  # key (state in states, action in alphabet) value [set of arriving stateS in states]
 #
-# nfa = [alphabet, states, initial_state, final, transition]
 
+def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
+    """ Returns a nfa that reads the intersection of the languages read by nfa_1 and nfa_2.
 
-# - NFAs intersection
-def nfa_intersection(nfa_1, nfa_2):
+    TODO short-detailed explanation of NFAs intersection
+
+    :param nfa_1: dict() representing a nfa
+    :param nfa_2: dict() representing a nfa
+    :return: dict() representing the intersected nfa
+    """
     intersection = {}
     intersection['alphabet'] = nfa_1['alphabet']
     intersection['states'] = set(cartesian_product(nfa_1['states'], nfa_2['states']))
@@ -51,8 +57,15 @@ def nfa_intersection(nfa_1, nfa_2):
     return intersection
 
 
-# - NFAs union
-def nfa_union(nfa_1, nfa_2):
+def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
+    """ Returns a nfa that reads union of the languages read by nfa_1 and nfa_2.
+
+    TODO short-detailed explanation of NFAs union
+
+    :param nfa_1: dict() representing a nfa
+    :param nfa_2: dict() representing a nfa
+    :return: dict() representing a united nfa
+    """
     union = {}
     union['alphabet'] = nfa_1['alphabet']
     union['states'] = nfa_1['states'].union(nfa_2['states'])
@@ -67,9 +80,16 @@ def nfa_union(nfa_1, nfa_2):
     return union
 
 
-# - NFA determinization
-def nfa_determinization(nfa):
-    # 	TODO check correctness more deeply
+# NFA to DFA
+# 	TODO check correctness more deeply
+def nfa_determinization(nfa: dict) -> dict:
+    """ Returns a dfa that reads the same language of the input nfa.
+
+    TODO short-detailed explanation of NFAs determinization
+
+    :param nfa: dict() representing a nfa
+    :return: dict() representing a dfa
+    """
     dfa = {}
     dfa['alphabet'] = nfa['alphabet']
     dfa['initial_state'] = str(nfa['initial_states'])
@@ -106,14 +126,26 @@ def nfa_determinization(nfa):
     return dfa
 
 
-# - NFA complementation
-def nfa_complementation(nfa):
+def nfa_complementation(nfa: dict) -> dict:
+    """ Returns a dfa reading the complemented language read by input nfa.
+
+    TODO short-detailed explanation of NFAs complementation
+
+    :param nfa: dict() representing a nfa
+    :return: dict() representing a dfa
+    """
     determinized_nfa = nfa_determinization(nfa)
     return DFA.dfa_complementation(determinized_nfa)
 
 
-# - NFA nonemptiness
-def nfa_nonemptiness_check(nfa):
+def nfa_nonemptiness_check(nfa: dict) -> dict:
+    """ Checks if the input nfa reads any language other than the empty one, returning True/False.
+
+    TODO short-detailed explanation of NFAs nonemptiness
+
+    :param nfa: dict() representing a nfa
+    :return: bool, True if the input nfa is nonempty, False otherwise
+    """
     # BFS
     stack = []
     visited = set()
@@ -132,10 +164,14 @@ def nfa_nonemptiness_check(nfa):
     return False
 
 
-# - NFA nonuniversality
-def nfa_nonuniversality_check(nfa):
-    # Ā is the complementary automaton of A. Thus, to test A for nonuniversality, it suffices to test Ā for nonemptiness
+def nfa_nonuniversality_check(nfa: dict) -> bool:
+    """ Checks if the language read by the input nfa is different from Σ∗, returning True/False.
 
+    To test nfa A for nonuniversality, it suffices to test Ā (complementary automaton of A) for nonemptiness
+
+    :param nfa: dict() representing a nfa
+    :return: bool, True if input nfa is nonuniversal, False otherwise
+    """
     # NAIVE Very inefficient (exponential space) : simply construct Ā and then test it for nonemptiness
     complemented_nfa = nfa_complementation(nfa)
     return DFA.dfa_nonemptiness_check(complemented_nfa)
@@ -146,13 +182,27 @@ def nfa_nonuniversality_check(nfa):
     # the algorithm can discard t 1 .
 
 
-# - NFA interestingness check
-def nfa_interestingness_check(nfa):
+def nfa_interestingness_check(nfa: dict) -> bool:
+    """ Checks if the input nfa is interesting, returning True/False.
+
+    TODO short-detailed explanation of NFAs interestingness
+
+    :param nfa: dict() representing a nfa
+    :return: bool, True if the input nfa is interesting, False otherwise
+    """
     return nfa_nonemptiness_check(nfa) and nfa_nonuniversality_check(nfa)
 
 
-# - Checks if a given nfa accepts a run on a given input word
-def run_acceptance(nfa, run, word):
+def run_acceptance(nfa: dict, run: list, word: list) -> bool:
+    """ Checks if a given 'run' on a 'nfa' accepts a given input 'word'
+
+    TODO short-detailed explanation of NFAs run acceptance
+
+    :param nfa: dict() representing a nfa
+    :param run: list() of states ∈ nfa['states']
+    :param word: list() of symbols ∈ nfa['alphabet']
+    :return: bool, True if the run is accepted, False otherwise
+    """
     # If 'run' fist state is not an initial state return False
     if run[0] not in nfa['initial_states']:
         return False
@@ -170,8 +220,15 @@ def run_acceptance(nfa, run, word):
     return True
 
 
-### Checks if a given word is accepted by a NFA
-def word_acceptance(nfa, word):
+def word_acceptance(nfa: dict, word: list) -> bool:
+    """ Checks if a given word is accepted by a NFA
+
+    TODO short-detailed explanation of NFAs word acceptance
+
+    :param nfa: dict() representing a nfa
+    :param word: list() of symbols ∈ nfa['alphabet']
+    :return: bool, True if the word is accepted, False otherwise
+    """
     current_level = set()
     current_level = current_level.union(nfa['initial_states'])
     next_level = set()
