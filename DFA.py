@@ -1,8 +1,5 @@
-import json
 from itertools import product as cartesian_product
 from copy import deepcopy
-import graphviz
-import pydot
 
 
 # ###
@@ -16,7 +13,6 @@ import pydot
 # TODO check correctness of imported automata from json & DOT
 # TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
 #         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
-# TODO move graph render in a separate file to take dfa function independent from it
 # TODO lambda functions
 
 # A dfa, deterministic finite automaton, A is a tuple A = (Σ, S, s_0 , ρ, F ), where
@@ -30,134 +26,16 @@ import pydot
 
 
 ### DFA definition
-
-# alphabet = set()
-# states = set()
-# initial_state = 0
-# accepting_states = set()
-# transitions = {}  # key (state in states, action in alphabet) value [arriving state in states]
+# DFA= dict() with the following keys-values:
+#   alphabet = set()
+#   states = set()
+#   initial_state = 'state_0'
+#   accepting_states = set()
+#   transitions = {}  # key (state in states, action in alphabet) value [arriving state in states]
 #
-# dfa = [alphabet, states, initial_state, final, transition]
-
-# Export a dfa "object" to a json file
-# TODO dfa_to_json
-def dfa_to_json(dfa):
-    return
+#   dfa = [alphabet, states, initial_state, final, transition]
 
 
-# Export a dfa "object" to a DOT file
-# TODO dfa_to_dot
-def dfa_to_dot(dfa):
-    return
-
-
-# Import a dfa from a json file
-def dfa_json_importer(input_file):
-    file = open(input_file)
-    json_file = json.load(file)
-    # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_state = json_file['initial_state']
-    accepting_states = set(json_file['accepting_states'])
-    transitions = {}  # key [state ∈ states, action ∈ alphabet] value [arriving state ∈ states]
-    for p in json_file['transitions']:
-        transitions[p[0], p[1]] = p[2]
-
-    # return list
-    # return [alphabet, states, initial_state, accepting_states, transitions]
-
-    # return map
-    dfa = {}
-    dfa['alphabet'] = alphabet
-    dfa['states'] = states
-    dfa['initial_state'] = initial_state
-    dfa['accepting_states'] = accepting_states
-    dfa['transitions'] = transitions
-    return dfa
-
-
-# Import a dfa from a DOT file
-def dfa_dot_importer(input_file):
-    # NOTE
-    # shape=doublecircle -> accepting node
-    # root=true -> initial node
-    # label="a" -> action in alphabet
-    # fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
-    # fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
-
-    # #pyDot Object
-    g = pydot.graph_from_dot_file(input_file)[0]
-
-    states = set()
-    initial_state = 0
-    accepting_states = set()
-    for node in g.get_nodes():
-        if node.get_name() == 'fake':
-            continue
-        states.add(node.get_name())
-        for attribute in node.get_attributes():
-            if attribute == 'root':
-                initial_state = node.get_name()
-            if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
-                accepting_states.add(node.get_name())
-
-    alphabet = set()
-    transitions = {}
-    for edge in g.get_edges():
-        if edge.get_source() == 'fake':
-            continue
-        alphabet.add(edge.get_label().replace('"', ''))
-        transitions[edge.get_source(), edge.get_label().replace('"', '')] = edge.get_destination()
-
-    # return map
-    dfa = {}
-    dfa['alphabet'] = alphabet
-    dfa['states'] = states
-    dfa['initial_state'] = initial_state
-    dfa['accepting_states'] = accepting_states
-    dfa['transitions'] = transitions
-    return dfa
-
-
-# Print in output a DOT file and an image of the given DFA
-# graphviz library
-def dfa_render(dfa, name):
-    g = graphviz.Digraph(format='svg')
-    for state in dfa['states']:
-        g.node(state)
-        # TODO case initial node
-        # TODO case accepting node
-
-    for transition in dfa['transitions']:
-        g.edge(transition[0], dfa['transitions'][transition], label=transition[1])
-
-    g.render(filename='img/' + name)
-
-
-# Print in output a DOT file and an image of the given DFA
-# pydot library
-def pydot_dfa_render(dfa, name):
-    # TODO special view for sink node?
-    g = pydot.Dot(graph_type='digraph')
-
-    fake = pydot.Node('fake', style='invisible')
-    g.add_node(fake)
-    for state in dfa['states']:
-        node = pydot.Node(state)
-        if state == dfa['initial_state']:
-            node.set_root(True)
-            g.add_edge(pydot.Edge(fake, node, style='bold'))
-
-        if state in dfa['accepting_states']:
-            node.set_shape('doublecircle')
-        g.add_node(node)
-
-    for transition in dfa['transitions']:
-        g.add_edge(pydot.Edge(transition[0], dfa['transitions'][transition], label=transition[1]))
-
-    g.write_svg('img/' + name + '.svg')
-    g.write_dot('img/' + name + '.dot')
 
 
 ### Checks if a given dfa accepts a run on a given input word

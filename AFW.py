@@ -1,4 +1,3 @@
-import json
 from itertools import product as cartesian_product
 import NFA
 import itertools
@@ -7,8 +6,6 @@ import re
 
 # ###
 # TO-DO
-# TODO correctness check of json imported automata
-# TODO think of graphviz usage for these automata
 # TODO change name to new initial state when creating AFWs:
 #      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
 
@@ -32,38 +29,6 @@ import re
 #   over states; where we also allow the formulas true and false]
 #
 # afw = [alphabet, states, initial_state, accepting_states, transitions]
-
-# Export a afw "object" to a json file
-# TODO afw_to_json
-def afw_to_json(afw):
-    return
-
-
-# Import a afw from a json file
-def afw_json_importer(input_file):
-    file = open(input_file)
-    json_file = json.load(file)
-    # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_state = json_file['initial_state']
-    accepting_states = set(json_file['accepting_states'])
-
-    transitions = {}  # key [state in states, action in alphabet] value [string representing boolean expression]
-    for p in json_file['transitions']:
-        transitions[p[0], p[1]] = p[2]
-
-    # return list
-    # return [alphabet, states, initial_state, accepting_states, transitions]
-
-    # return map
-    afw = {}
-    afw['alphabet'] = alphabet
-    afw['states'] = states
-    afw['initial_state'] = initial_state
-    afw['accepting_states'] = accepting_states
-    afw['transitions'] = transitions
-    return afw
 
 
 # recursive call for word acceptance
@@ -106,6 +71,7 @@ def word_acceptance(afw, word):
 
 # - NFA to AFW conversion
 def nfa_to_afw_conversion(nfa):
+    # TODO "We take an empty disjunction in the definition of AFW to be equivalent to False."
     afw = {}
     afw['alphabet'] = nfa['alphabet']
     afw['states'] = nfa['states']
@@ -129,6 +95,7 @@ def nfa_to_afw_conversion(nfa):
 # - AFW to NFA conversion
 def afw_to_nfa_conversion(afw):
     # TODO check correctness
+    # TODO "We take an empty conjunction in the definition of ρ N to be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
     nfa = {}
     nfa['alphabet'] = afw['alphabet']
     nfa['initial_states'] = {afw['initial_state']}
@@ -158,7 +125,7 @@ def afw_to_nfa_conversion(afw):
         #     for s in state:
         #         mapping[s] = False
 
-        # SLIGHTLY BETTER
+        # SLIGHTLY BETTER #TODO uncorrect for now, NAIVE is instead
         # set with states involved in the boolean formula of the transition
         involved_states = list(
             set(re.findall(r"[\w']+", afw['transitions'][transition])).difference({'and', 'or', 'True', 'False'}))
@@ -168,17 +135,19 @@ def afw_to_nfa_conversion(afw):
             mapping = dict(zip(involved_states, assignment))
             if eval(afw['transitions'][transition], mapping):
                 mapping.pop('__builtins__')
+                next_state = set()
                 for state in mapping:
                     if mapping[state] == True:
-                        nfa['transitions'].setdefault(transition, set()).add(state)
+                        next_state.add(state)
+                nfa['transitions'].setdefault(transition, set()).update(next_state)
+                # TODO make a transition for each set of states leading to the conjunction of destination of the single states
 
     return nfa
 
 
-def replace_all(repls, str):
+def __replace_all(repls, str):
     # return re.sub('|'.join(repls.keys()), lambda k: repls[k.group(0)], str)
-    return re.sub('|'.join(re.escape(key) for key in repls.keys()),
-                  lambda k: repls[k.group(0)], str)
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
 
 # - AFW complementation
@@ -192,7 +161,8 @@ def afw_complementation(afw):
 
     conversion_dictionary = {'and': 'or', 'or': 'and', 'True': 'False', 'False': 'True'}
     for transition in afw['transitions']:
-        complemented_afw['transitions'][transition] = replace_all(conversion_dictionary, afw['transitions'][transition])
+        complemented_afw['transitions'][transition] = __replace_all(conversion_dictionary,
+                                                                    afw['transitions'][transition])
 
     return complemented_afw
 
