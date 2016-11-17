@@ -1,2 +1,5 @@
 # PyCharm IDE conf file
 /.idea/*
+
+# Sphynx Documentation
+/doc/_build/
