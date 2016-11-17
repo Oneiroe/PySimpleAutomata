@@ -1,10 +1,10 @@
-automataCode
+API
 ============
 
 .. toctree::
    :maxdepth: 4
 
-   AFW
    DFA
    NFA
+   AFW
    automata_IO
