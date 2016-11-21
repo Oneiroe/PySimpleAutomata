@@ -37,12 +37,24 @@ class TestRunAcceptance(TestCase):
 
 class TestWordAcceptance(TestCase):
     def setUp(self):
-        self.dfa = automata_IO.dfa_json_importer('../json/dfa_test.json')
-        self.dfa_2 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
-        self.dfa_3 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
+        self.dfa_word_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_word_acceptance_test_01.dot')
+        self.dfa_word_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_word_acceptance_test_02.dot')
 
     def test_word_acceptance(self):
-        self.assertEqual(DFA.word_acceptance(self.dfa, ['5c', '10c', 'gum', '5c', '10c', 'gum']), True)
+        """ Tests a correct word """
+        self.assertTrue(DFA.word_acceptance(self.dfa_word_acceptance_test_01, ['5c', '10c', 'gum', '5c', '10c', 'gum']))
+
+    def test_word_acceptance_false(self):
+        """ Tests a non correct word, with good alphabet"""
+        self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_01, ['5c', '10c', 'gum', '5c', '10c']))
+
+    def test_word_acceptance_wrong_alphabet(self):
+        """ Tests a non correct word, with letters not form the dfa alphabet """
+        self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_01, ['5c', '10c', 'wrong']))
+
+    def test_word_acceptance_empty(self):
+        """ Tests a non correct word, with letters not form the dfa alphabet """
+        self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_02, []))
 
 
 class TestDfaCompletion(TestCase):
