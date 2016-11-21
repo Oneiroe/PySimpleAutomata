@@ -7,6 +7,7 @@ import automata_IO
 class TestRunAcceptance(TestCase):
     def setUp(self):
         self.dfa_run_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_01.dot')
+        self.dfa_run_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_02.dot')
 
     # def tearDown(self):
     #     self.dfa = automata_IO.dfa_json_importer('./dot/dfa_run_acceptance_test_01.dot')
@@ -29,6 +30,16 @@ class TestRunAcceptance(TestCase):
         """ Tests a non correct run with states not present in the dfa"""
         self.assertFalse(
             DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 'fake', 's0'], ['5c', '10c', 'gum']))
+
+    def test_run_acceptance_empty(self):
+        """ Tests an empty run """
+        self.assertFalse(
+            DFA.run_acceptance(self.dfa_run_acceptance_test_02, [], []))
+
+    def test_run_acceptance_wrong_sizes(self):
+        """ Tests run and word with wrong sizes """
+        self.assertFalse(
+            DFA.run_acceptance(self.dfa_run_acceptance_test_02, ['s0', 's1', 's3'], ['5c']))
 
     @unittest.expectedFailure
     def test_run_acceptance_test_expected_failure(self):
@@ -53,7 +64,7 @@ class TestWordAcceptance(TestCase):
         self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_01, ['5c', '10c', 'wrong']))
 
     def test_word_acceptance_empty(self):
-        """ Tests a non correct word, with letters not form the dfa alphabet """
+        """ Tests an empty word"""
         self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_02, []))
 
 

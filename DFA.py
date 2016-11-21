@@ -47,12 +47,23 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     :param word: list() of actions ∈ dfa['alphabet']
     :return: bool, True if the word is accepted, False in the other case
     """
-    # If 'run' fist state is not an initial state return False
-    if run[0] != dfa['initial_state']:
+
+    if len(run) > 0:
+        # If 'run' fist state is not an initial state return False
+        if run[0] != dfa['initial_state']:
+            return False
+        # If last 'run' state is not an accepting state return False
+        if run[-1] not in dfa['accepting_states']:
+            return False
+    else:
+        # If empty input check if the initial state is also accepting
+        if dfa['initial_state'] in dfa['accepting_states']:
+            return True
+        else:
+            return False
+    if len(word) != len(run) - 1:
         return False
-    # If last 'run' state is not an accepting state return False
-    if run[-1] not in dfa['accepting_states']:
-        return False
+
     for i in range(len(word)):
         if (run[i], word[i]) in dfa['transitions']:
             if dfa['transitions'][run[i], word[i]] != run[i + 1]:
