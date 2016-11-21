@@ -47,13 +47,20 @@ def dfa_json_importer(input_file):
 
 
 # Import a dfa from a DOT file
-def dfa_dot_importer(input_file):
-    # NOTE
-    # shape=doublecircle -> accepting node
-    # root=true -> initial node
-    # label="a" -> action in alphabet
-    # fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
-    # fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+def dfa_dot_importer(input_file: str) -> dict:
+    """ Import a dfa from a .dot file
+
+    Of .dot files are recognized the following attributes
+
+        nodeX   shape=doublecircle -> accepting node
+        nodeX   root=true -> initial node
+        edgeX   label="a" -> action in alphabet
+        fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
+        fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+
+    :param input_file: path to the .dot file
+    :return: dict representing a dfa
+    """
 
     # #pyDot Object
     g = pydot.graph_from_dot_file(input_file)[0]
@@ -67,6 +74,8 @@ def dfa_dot_importer(input_file):
         states.add(node.get_name())
         for attribute in node.get_attributes():
             if attribute == 'root':
+                # if initial_state!=0:
+                #   TODO raise exception for wrong formatted dfa: dfa accepts only one initial state
                 initial_state = node.get_name()
             if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
                 accepting_states.add(node.get_name())
@@ -77,7 +86,15 @@ def dfa_dot_importer(input_file):
         if edge.get_source() == 'fake':
             continue
         alphabet.add(edge.get_label().replace('"', ''))
+        # if (edge.get_source(), edge.get_label().replace('"', '')) in transitions:
+        #   TODO raise exception for wrong formatted dfa: dfa accepts only one transition from a state given a letter
         transitions[edge.get_source(), edge.get_label().replace('"', '')] = edge.get_destination()
+
+    # if len(initial_state) == 0:
+    #   TODO raise exception for wrong formatted dfa: there must be an initial state
+
+    # if len(accepting_states)==0:
+    #     TODO raise exception for wrong formatted dfa: there must be at least an accepting state
 
     # return map
     dfa = {}

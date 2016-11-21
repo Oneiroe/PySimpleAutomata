@@ -53,7 +53,7 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     # If last 'run' state is not an accepting state return False
     if run[-1] not in dfa['accepting_states']:
         return False
-    for i in range(len(word) - 1):
+    for i in range(len(word)):
         if (run[i], word[i]) in dfa['transitions']:
             if dfa['transitions'][run[i], word[i]] != run[i + 1]:
                 return False
