@@ -118,7 +118,7 @@ def dfa_completion(dfa: dict) -> dict:
 def dfa_complementation(dfa: dict) -> dict:
     """ Generates a dfa that accepts any word but he one accepted by input 'dfa'.
 
-    TODO short-detailed explanation of DFAs complementation
+    Let A be a completed DFA, Ā = (Σ, S, s_0 , ρ, S − F ) is the DFA that runs A but accepts whatever word A does not.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the complement of the input dfa
