@@ -70,43 +70,43 @@ class TestWordAcceptance(TestCase):
 
 class TestDfaCompletion(TestCase):
     def setUp(self):
-        self.test_dfa_completion_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_01.dot')
-        self.test_dfa_completion_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_02.dot')
-        self.test_dfa_completion_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_03.dot')
-        self.test_dfa_completion_test_01_completed = automata_IO.dfa_dot_importer(
+        self.dfa_completion_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_01.dot')
+        self.dfa_completion_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_02.dot')
+        self.dfa_completion_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_03.dot')
+        self.dfa_completion_test_01_completed = automata_IO.dfa_dot_importer(
             './dot/dfa_completion_test_01_completed.dot')
-        self.test_dfa_completion_test_02_completed = automata_IO.dfa_dot_importer(
+        self.dfa_completion_test_02_completed = automata_IO.dfa_dot_importer(
             './dot/dfa_completion_test_02_completed.dot')
-        self.test_dfa_completion_test_03_completed = automata_IO.dfa_dot_importer(
+        self.dfa_completion_test_03_completed = automata_IO.dfa_dot_importer(
             './dot/dfa_completion_test_03_completed.dot')
 
     def test_dfa_completion(self):
         """ Tests a correct completion """
-        self.assertDictEqual(DFA.dfa_completion(self.test_dfa_completion_test_01),
-                             self.test_dfa_completion_test_01_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_01),
+                             self.dfa_completion_test_01_completed)
 
     @unittest.expectedFailure
     def test_dfa_completion_empty_input(self):
         """ Tests an empty dfa completion """
         self.assertDictEqual(DFA.dfa_completion({}),
-                             self.test_dfa_completion_test_01_completed)
+                             self.dfa_completion_test_01_completed)
 
     def test_dfa_completion_empty_states(self):
         """ Tests a completion of a dfa without states"""
-        self.assertDictEqual(DFA.dfa_completion(self.test_dfa_completion_test_02),
-                             self.test_dfa_completion_test_02_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_02),
+                             self.dfa_completion_test_02_completed)
 
     def test_dfa_completion_empty_transitions(self):
         """ Tests a completion of a dfa without transitions"""
-        self.assertDictEqual(DFA.dfa_completion(self.test_dfa_completion_test_03),
-                             self.test_dfa_completion_test_03_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_03),
+                             self.dfa_completion_test_03_completed)
 
 
 class TestDfaComplementation(TestCase):
     def setUp(self):
-        self.dfa = automata_IO.dfa_json_importer('../json/dfa_test.json')
-        self.dfa_2 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
-        self.dfa_3 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
+        self.dfa_complementation_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_01.dot')
+        self.dfa_complementation_test_01_complemented = automata_IO.dfa_dot_importer(
+            './dot/dfa_complementation_test_01_complemented.dot')
 
     @unittest.skip("TestDfaComplementation TODO")
     def test_dfa_complementation(self):
