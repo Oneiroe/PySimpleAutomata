@@ -137,13 +137,14 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     :param dfa_2: dict() representing a dfa
     :return: dict() representing the intersected dfa
     """
-    intersection = {}
-    intersection['alphabet'] = dfa_1['alphabet']
-    intersection['states'] = set(cartesian_product(dfa_1['states'], dfa_2['states']))
-    intersection['initial_state'] = (dfa_1['initial_state'], dfa_2['initial_state'])
-    intersection['accepting_states'] = set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states']))
+    intersection = {
+        'alphabet': dfa_1['alphabet'],
+        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
+        'accepting_states': set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states'])),
+        'transitions': dict()
+    }
 
-    intersection['transitions'] = {}
     for s in intersection['states']:
         for a in intersection['alphabet']:
             if (s[0], a) in dfa_1['transitions'] and (s[1], a) in dfa_2['transitions']:
