@@ -1,31 +1,31 @@
 digraph{
     fake [style=invisible]
-    "s0,t0" [root=true]
+    "(s0,t0)" [root=true]
 
-    fake -> "s0,t0" [style=bold]
+    fake -> "('s0','t0')" [style=bold]
 
     "('s3','t1')"
-    "s1,t4"
-    "s0,t3"
-    "s3,t0"
-    "s1,t3"
-    "s2,t0"
-    "s2,t3"
-    "s1,t0"
-    "s0,t2"
-    "s2,t5"
-    "s3,t3"
-    "s1,t5"
-    "s1,t2"
-    "s0,t1"
-    "s2,t2"
-    "s0,t5" [shape=doublecircle]
-    "s0,t4" [shape=doublecircle]
-    "s3,t5"
-    "s3,t2"
-    "s2,t1"
-    "s1,t1"
-    "s3,t4"
-    "s0,t0"
-    "s2,t4"
+    "('s1','t4')"
+    "('s0','t3')"
+    "('s3','t0')"
+    "('s1','t3')"
+    "('s2','t0')"
+    "('s2','t3')"
+    "('s1','t0')"
+    "('s0','t2')"
+    "('s2','t5')"
+    "('s3','t3')"
+    "('s1','t5')"
+    "('s1','t2')"
+    "('s0','t1')"
+    "('s2','t2')"
+    "('s0','t5')" [shape=doublecircle]
+    "('s0','t4')" [shape=doublecircle]
+    "('s3','t5')"
+    "('s3','t2')"
+    "('s2','t1')"
+    "('s1','t1')"
+    "('s3','t4')"
+    "('s0','t0')"
+    "('s2','t4')"
 }

@@ -2,6 +2,7 @@ import DFA, NFA, AFW
 import json
 import graphviz
 import pydot
+import re
 
 
 # ###
@@ -46,6 +47,10 @@ def dfa_json_importer(input_file):
     return dfa
 
 
+def __replace_all(repls, str):
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
+
+
 # Import a dfa from a DOT file
 def dfa_dot_importer(input_file: str) -> dict:
     """ Import a dfa from a .dot file
@@ -58,6 +63,12 @@ def dfa_dot_importer(input_file: str) -> dict:
         fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
         fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
 
+    Forbidden names:
+        'fake'  used for graphical purpose to drawn the arrow of the initial state
+        'sink'  used as additional state when completing a DFA
+    Forbidden characters:
+        '"' "'" '(' ')' ' '
+
     :param input_file: path to the .dot file
     :return: dict representing a dfa
     """
@@ -68,27 +79,47 @@ def dfa_dot_importer(input_file: str) -> dict:
     states = set()
     initial_state = 0
     accepting_states = set()
+
+    replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
     for node in g.get_nodes():
-        if node.get_name() == 'fake':
+        if node.get_name() == 'fake' or node.get_name() == 'graph' or node.get_name() == 'node':
             continue
-        states.add(node.get_name())
+        # states.add(node.get_name())
+
+        node_reference = __replace_all(replacements, node.get_name()).split(',')
+        if len(node_reference) > 1:
+            node_reference = tuple(node_reference)
+        else:
+            node_reference = node_reference[0]
+        states.add(node_reference)
         for attribute in node.get_attributes():
             if attribute == 'root':
                 # if initial_state!=0:
                 #   TODO raise exception for wrong formatted dfa: dfa accepts only one initial state
-                initial_state = node.get_name()
+                initial_state = node_reference
             if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
-                accepting_states.add(node.get_name())
+                accepting_states.add(node_reference)
 
     alphabet = set()
     transitions = {}
     for edge in g.get_edges():
         if edge.get_source() == 'fake':
             continue
-        alphabet.add(edge.get_label().replace('"', ''))
+        label = __replace_all(replacements, edge.get_label())
+        alphabet.add(label)
+        source = __replace_all(replacements, edge.get_source()).split(',')
+        if len(source) > 1:
+            source = tuple(source)
+        else:
+            source = source[0]
+        destination = __replace_all(replacements, edge.get_destination()).split(',')
+        if len(destination) > 1:
+            destination = tuple(destination)
+        else:
+            destination = destination[0]
         # if (edge.get_source(), edge.get_label().replace('"', '')) in transitions:
         #   TODO raise exception for wrong formatted dfa: dfa accepts only one transition from a state given a letter
-        transitions[edge.get_source(), edge.get_label().replace('"', '')] = edge.get_destination()
+        transitions[source, label] = destination
 
     # if len(initial_state) == 0:
     #   TODO raise exception for wrong formatted dfa: there must be an initial state
