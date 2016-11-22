@@ -97,9 +97,12 @@ def word_acceptance(dfa: dict, word: list) -> bool:
 
 # Side effect on input dfa
 def dfa_completion(dfa: dict) -> dict:
-    """ It completes the dfa assigning to each state a transition for each letter in the alphabet.
+    """ [Side effect on input] It completes the dfa assigning to each state a transition for each letter in the alphabet (if not already defined).
 
-    TODO short-detailed explanation of DFAs completion
+    We say that a DFA is complete if its transition function ρ:S×Σ→S is a total function,
+    that is, for all s ∈ S and all a ∈ Σ we have that exists a ρ(s,a)=s_x for some s_x ∈ S.
+    Given an arbitrary DFA A, its completed version A_T is obtained as follows:
+    A_T = (Σ, S ∪ {sink}, s_0 , ρ_T , F ) with ρ_T(s,a)=sink when ρ(s,a) is not defined in A and ρ_T=ρ in the other cases.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the completed dfa
