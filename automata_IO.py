@@ -193,7 +193,7 @@ def pydot_dfa_render(dfa, name):
     fake = pydot.Node('fake', style='invisible')
     g.add_node(fake)
     for state in dfa['states']:
-        node = pydot.Node(state)
+        node = pydot.Node(str(state))
         if state == dfa['initial_state']:
             node.set_root(True)
             g.add_edge(pydot.Edge(fake, node, style='bold'))
@@ -203,7 +203,7 @@ def pydot_dfa_render(dfa, name):
         g.add_node(node)
 
     for transition in dfa['transitions']:
-        g.add_edge(pydot.Edge(transition[0], dfa['transitions'][transition], label=transition[1]))
+        g.add_edge(pydot.Edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1]))
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
@@ -211,17 +211,25 @@ def pydot_dfa_render(dfa, name):
 
 # Print in output a DOT file and an image of the given DFA
 # graphviz library
-def dfa_render(dfa, name):
+def graphviz_dfa_render(dfa, name):
     g = graphviz.Digraph(format='svg')
+    g.node('fake', style='invisible')
     for state in dfa['states']:
-        g.node(state)
-        # TODO case initial node
-        # TODO case accepting node
+        if state == dfa['initial_state']:
+            if state in dfa['accepting_states']:
+                g.node(str(state), root='true', shape='doublecircle')
+            else:
+                g.node(str(state), root='true')
+        elif state in dfa['accepting_states']:
+            g.node(str(state), shape='doublecircle')
+        else:
+            g.node(str(state))
 
+    g.edge('fake', str(dfa['initial_state']), style='bold')
     for transition in dfa['transitions']:
-        g.edge(transition[0], dfa['transitions'][transition], label=transition[1])
+        g.edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1])
 
-    g.render(filename='img/' + name)
+    g.render(filename='img/' + name + '.dot')
 
 
 def nfa_render(nfa, name):
