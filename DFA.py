@@ -77,7 +77,7 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
 def word_acceptance(dfa: dict, word: list) -> bool:
     """ Checks if a given 'word' is accepted by a 'dfa', returning True/false.
 
-    TODO short-detailed explanation of word acceptance
+    The word w is accepted by a DFA if DFA has an accepting run on w. Since A is deterministic, w ∈ L(A) if and only if ρ(s 0 , w) ∈ F .
 
     :param dfa: dict() representing a dfa
     :param word: list() of actions ∈ dfa['alphabet']
