@@ -59,9 +59,24 @@ class TestWordAcceptance(TestCase):
         """ Tests a non correct word, with letters not form the dfa alphabet """
         self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_01, ['5c', '10c', 'wrong']))
 
-    def test_word_acceptance_empty(self):
+    def test_word_acceptance_empty_word(self):
         """ Tests an empty word"""
         self.assertFalse(DFA.word_acceptance(self.dfa_word_acceptance_test_02, []))
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.word_acceptance(1, ['5c', '10c', 'gum', '5c', '10c'])
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_2(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.word_acceptance(self.dfa_word_acceptance_test_01, 1)
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.word_acceptance({'goofy': 'donald'}, ['5c', '10c', 'gum', '5c', '10c'])
 
 
 class TestDfaCompletion(TestCase):
@@ -81,12 +96,6 @@ class TestDfaCompletion(TestCase):
         """ Tests a correct completion """
         self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_01), self.dfa_completion_test_01_completed)
 
-    # @unittest.expectedFailure means that the code doesn't handle this situation/exception consciously
-    @unittest.expectedFailure
-    def test_dfa_completion_empty_input(self):
-        """ Tests an empty dfa completion [EXPECTED FAILURE]"""
-        self.assertDictEqual(DFA.dfa_completion({}), self.dfa_completion_test_01_completed)
-
     def test_dfa_completion_empty_states(self):
         """ Tests a completion of a dfa without states"""
         self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_02), self.dfa_completion_test_02_completed)
@@ -94,6 +103,17 @@ class TestDfaCompletion(TestCase):
     def test_dfa_completion_empty_transitions(self):
         """ Tests a completion of a dfa without transitions"""
         self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_03), self.dfa_completion_test_03_completed)
+
+    # @unittest.expectedFailure means that the code doesn't handle this situation/exception consciously
+    @unittest.expectedFailure
+    def test_dfa_completion_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_completion(1)
+
+    @unittest.expectedFailure
+    def test_dfa_completion_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_completion({'goofy': 'donald'})
 
 
 class TestDfaComplementation(TestCase):
@@ -127,12 +147,12 @@ class TestDfaComplementation(TestCase):
                              self.dfa_complementation_test_03_complemented)
 
     @unittest.expectedFailure
-    def test_dfa_completion_wrong_input(self):
+    def test_dfa_complementation_wrong_input(self):
         """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
         DFA.dfa_complementation(1)
 
     @unittest.expectedFailure
-    def test_dfa_completion_wrong_dict(self):
+    def test_dfa_complementation_wrong_dict(self):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.dfa_complementation({'goofy': 'donald'})
 
