@@ -1,0 +1,12 @@
+digraph{
+    fake [style=invisible]
+    s0 [root=true]
+
+    fake -> s0 [style=bold]
+
+    s1 [shape=doublecircle]
+    s2 [shape=doublecircle]
+    s3 [shape=doublecircle]
+    sink [shape=doublecircle]
+
+}

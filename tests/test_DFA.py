@@ -66,6 +66,7 @@ class TestWordAcceptance(TestCase):
 
 class TestDfaCompletion(TestCase):
     def setUp(self):
+        self.maxDiff = None
         self.dfa_completion_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_01.dot')
         self.dfa_completion_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_02.dot')
         self.dfa_completion_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_03.dot')
@@ -78,36 +79,62 @@ class TestDfaCompletion(TestCase):
 
     def test_dfa_completion(self):
         """ Tests a correct completion """
-        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_01),
-                             self.dfa_completion_test_01_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_01), self.dfa_completion_test_01_completed)
 
-    # @unittest.expectedFailure means that the code doesn't handle this situation/exception on purpose
+    # @unittest.expectedFailure means that the code doesn't handle this situation/exception consciously
     @unittest.expectedFailure
     def test_dfa_completion_empty_input(self):
         """ Tests an empty dfa completion [EXPECTED FAILURE]"""
-        self.assertDictEqual(DFA.dfa_completion({}),
-                             self.dfa_completion_test_01_completed)
+        self.assertDictEqual(DFA.dfa_completion({}), self.dfa_completion_test_01_completed)
 
     def test_dfa_completion_empty_states(self):
         """ Tests a completion of a dfa without states"""
-        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_02),
-                             self.dfa_completion_test_02_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_02), self.dfa_completion_test_02_completed)
 
     def test_dfa_completion_empty_transitions(self):
         """ Tests a completion of a dfa without transitions"""
-        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_03),
-                             self.dfa_completion_test_03_completed)
+        self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_03), self.dfa_completion_test_03_completed)
 
 
 class TestDfaComplementation(TestCase):
     def setUp(self):
+        self.maxDiff = None
         self.dfa_complementation_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_01.dot')
         self.dfa_complementation_test_01_complemented = automata_IO.dfa_dot_importer(
             './dot/dfa_complementation_test_01_complemented.dot')
+        self.dfa_complementation_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_02.dot')
+        self.dfa_complementation_test_02_complemented = automata_IO.dfa_dot_importer(
+            './dot/dfa_complementation_test_02_complemented.dot')
+        self.dfa_complementation_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_03.dot')
+        self.dfa_complementation_test_03_complemented = automata_IO.dfa_dot_importer(
+            './dot/dfa_complementation_test_03_complemented.dot')
 
-    @unittest.skip("TestDfaComplementation TODO")
     def test_dfa_complementation(self):
-        self.fail()
+        """ Tests a correct complementation. """
+        self.assertDictEqual(DFA.dfa_complementation(self.dfa_complementation_test_01),
+                             self.dfa_complementation_test_01_complemented)
+
+    def test_dfa_complementation_empty_states(self):
+        """ Tests a complementation on a DFA without states. """
+        # TODO ask about this behaviour: shouldn't it returns a dfa that reads Σ* ?
+        self.assertDictEqual(DFA.dfa_complementation(self.dfa_complementation_test_02),
+                             self.dfa_complementation_test_02_complemented)
+
+    def test_dfa_complementation_empty_transitions(self):
+        """ Tests a complementation on a DFA without transitions. """
+        # TODO ask about this behaviour: shouldn't it returns a dfa that reads Σ* ?
+        self.assertDictEqual(DFA.dfa_complementation(self.dfa_complementation_test_03),
+                             self.dfa_complementation_test_03_complemented)
+
+    @unittest.expectedFailure
+    def test_dfa_completion_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_complementation(1)
+
+    @unittest.expectedFailure
+    def test_dfa_completion_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_complementation({'goofy': 'donald'})
 
 
 class TestDfaIntersection(TestCase):
