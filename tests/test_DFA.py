@@ -41,10 +41,6 @@ class TestRunAcceptance(TestCase):
         self.assertFalse(
             DFA.run_acceptance(self.dfa_run_acceptance_test_02, ['s0', 's1', 's3'], ['5c']))
 
-    @unittest.expectedFailure
-    def test_run_acceptance_test_expected_failure(self):
-        self.assertTrue(DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3'], ['5c', '10c']))
-
 
 class TestWordAcceptance(TestCase):
     def setUp(self):
@@ -85,9 +81,10 @@ class TestDfaCompletion(TestCase):
         self.assertDictEqual(DFA.dfa_completion(self.dfa_completion_test_01),
                              self.dfa_completion_test_01_completed)
 
+    # @unittest.expectedFailure means that the code doesn't handle this situation/exception on purpose
     @unittest.expectedFailure
     def test_dfa_completion_empty_input(self):
-        """ Tests an empty dfa completion """
+        """ Tests an empty dfa completion [EXPECTED FAILURE]"""
         self.assertDictEqual(DFA.dfa_completion({}),
                              self.dfa_completion_test_01_completed)
 

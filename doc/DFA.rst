@@ -1,5 +1,10 @@
+.. _DFA:
+
+**********
 DFA module
-==========
+**********
+
+.. _DFA_API:
 
 .. automodule:: DFA
     :members:

@@ -1,21 +1,20 @@
 """
-Formally a DFA, Deterministic Finite Automaton, is a tuple (Σ, S, s_0 , ρ, F ), where
+Formally a DFA, Deterministic Finite Automaton, is a tuple A=(Σ,S,s_0,ρ,F), where
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
  • s_0 ∈ S is the initial state;
  • F ⊆ S is the set of accepting states;
- • ρ : S × Σ → S is a transition function, which can be a partial function. Intuitively,
-       s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the
-       symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
+ • ρ: S × Σ → S is a transition function, which can be a partial function.
+    Intuitively, s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
 
 In this module a DFA is defined as follows
 
  DFA = dict() with the following keys-values:
-    alphabet         => set()
-    states           => set()
-    initial_state    => 'state_0'
-    accepting_states => set()
-    transitions      => dict()  # key (state in states, action in alphabet) value [arriving state in states]
+  • alphabet         => set() ;
+  • states           => set() ;
+  • initial_state    => 'state_0' ;
+  • accepting_states => set() ;
+  • transitions      => dict()  #key (state in states, action in alphabet) #value (arriving state in states) ;
 """
 
 from itertools import product as cartesian_product
@@ -40,7 +39,9 @@ from copy import deepcopy
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     """ Checks if the given 'run' of states in 'dfa' accepts the given 'word', returning True/False.
 
-    TODO short-detailed explanation of run acceptance
+    A run r of DFA on a finite word w = a_0 · · · a_n−1 ∈ Σ∗ is a sequence s_0 · · · s_n of n+1 states in S
+    such that s_0 = s_0 , and s_i+1 = ρ(s_i , a_i ) for 0 ≤ i ≤ n. Note that a deterministic automaton
+    can have at most one run on a given input word. The run r is accepting if s_n ∈ F .
 
     :param dfa: dict() representing a dfa
     :param run: list() of states ∈ dfa['states']
