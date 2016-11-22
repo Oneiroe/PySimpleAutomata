@@ -14,8 +14,8 @@ class TestRunAcceptance(TestCase):
 
     def test_run_acceptance(self):
         """ Tests a correct run """
-        self.assertEqual(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum']), True)
+        self.assertTrue(
+            DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum']))
 
     def test_run_acceptance_false(self):
         """ Tests a non correct run, good alphabet"""
@@ -31,7 +31,7 @@ class TestRunAcceptance(TestCase):
         self.assertFalse(
             DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 'fake', 's0'], ['5c', '10c', 'gum']))
 
-    def test_run_acceptance_empty(self):
+    def test_run_acceptance_empty_run(self):
         """ Tests an empty run """
         self.assertFalse(
             DFA.run_acceptance(self.dfa_run_acceptance_test_02, [], []))
@@ -40,6 +40,26 @@ class TestRunAcceptance(TestCase):
         """ Tests run and word with wrong sizes """
         self.assertFalse(
             DFA.run_acceptance(self.dfa_run_acceptance_test_02, ['s0', 's1', 's3'], ['5c']))
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.run_acceptance(1, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_2(self):
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        DFA.run_acceptance(self.dfa_run_acceptance_test_01, 1, ['5c', '10c', 'gum'])
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_3(self):
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], 1)
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.run_acceptance({'goofy': 'donald'}, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
 
 
 class TestWordAcceptance(TestCase):
@@ -70,7 +90,7 @@ class TestWordAcceptance(TestCase):
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_2(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
         DFA.word_acceptance(self.dfa_word_acceptance_test_01, 1)
 
     @unittest.expectedFailure
