@@ -1,0 +1,19 @@
+digraph{
+    fake [style=invisible]
+    s0 [root=true]
+
+    fake -> s0 [style=bold]
+
+    c1
+    c2
+    c3
+    c4 [shape=doublecircle]
+    s1 [shape=doublecircle]
+
+    s0 -> c1 [label="5c"]
+    s0 -> s1 [label="gum"]
+    c1 -> c2 [label="10c"]
+    c2 -> c3 [label="5c"]
+    c2 -> c4 [label="gum"]
+    c3 -> c1 [label="gum"]
+}
