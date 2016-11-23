@@ -286,7 +286,7 @@ def dfa_minimization(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_reachable(dfa: dict) -> dict:
-    """ Removes unreachable states of a dfa and returns the pruned dfa.
+    """ [Side effects on input] Removes unreachable states of a dfa and returns the pruned dfa.
 
     It is possible to remove from a DFA A all unreachable states from the initial state without altering the language.
     The reachable DFA A_R corresponding to A is defined as:
