@@ -850,6 +850,7 @@ class TestDfaReachable(TestCase):
         self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_02_reachable.dot')
         self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_03.dot')
         self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_04.dot')
+        self.dfa_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_05.dot')
         self.dfa_reachable_test_intersected = automata_IO.dfa_dot_importer(
             './img/graphviz_dfa_intersection_intersecting.dot')
 
@@ -902,3 +903,7 @@ class TestDfaReachable(TestCase):
         input_before = copy.deepcopy(self.dfa_reachable_test_intersected)
         DFA.dfa_reachable(copy.deepcopy(self.dfa_reachable_test_intersected))
         self.assertEquals(input_before, self.dfa_reachable_test_intersected)
+
+    def test_dfa_reachable_no_accepting_state_reachable(self):
+        """ Tests making reachable a DFA where no accepting state is reached by the initial state"""
+        self.assertEqual(DFA.dfa_reachable(self.dfa_reachable_test_05)['accepting_states'], set())
