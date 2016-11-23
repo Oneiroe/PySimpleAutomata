@@ -383,11 +383,18 @@ class TestDfaIntersection(TestCase):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.dfa_intersection(self.dfa_intersection_1_test_01, {'goofy': 'donald'})
 
-    def test_dfa_intersection_side_effects(self):
-        """ Tests that the intersection function doesn't makes side effects on input DFAs"""
+    def test_dfa_intersection_side_effects_alphabet(self):
+        """ Tests that the intersection function doesn't makes side effects on input DFAs alphabet"""
         intersection = DFA.dfa_intersection(self.dfa_test_side_effect_1, self.dfa_test_side_effect_2)
         self.dfa_test_side_effect_1['alphabet'].pop()
         self.assertNotEquals(self.dfa_test_side_effect_1['alphabet'], intersection['alphabet'])
+
+    def test_dfa_intersection_side_effects_initial_state(self):
+        """ Tests that the intersection function doesn't makes side effects on input DFAs initial state"""
+        intersection = DFA.dfa_intersection(self.dfa_test_side_effect_1, self.dfa_test_side_effect_2)
+        self.dfa_test_side_effect_1['initial_state'] = 'pippo'
+        result = self.dfa_test_side_effect_1['initial_state'] in intersection['initial_state']
+        self.assertFalse(result)
 
 
 class TestDfaUnion(TestCase):
