@@ -288,7 +288,14 @@ def dfa_minimization(dfa: dict) -> dict:
 def dfa_reachable(dfa: dict) -> dict:
     """ Removes unreachable states of a dfa and returns the pruned dfa.
 
-    TODO short-detailed explanation of reachable DFAs
+    It is possible to remove from a DFA A all unreachable states from the initial state without altering the language.
+    The reachable DFA A_R corresponding to A is defined as:
+
+    A_R = (Σ, S_R , s_0 , ρ|S_R , F ∩ S_R )
+
+    where
+
+    ρ|S_R is the restriction on S_R × Σ of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
