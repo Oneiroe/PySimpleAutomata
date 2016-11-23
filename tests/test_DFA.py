@@ -774,13 +774,72 @@ class TestDfaUnion(TestCase):
 
 class TestDfaMinimization(TestCase):
     def setUp(self):
-        self.dfa = automata_IO.dfa_dot_importer('./dot/dfa_test.json')
-        self.dfa_2 = automata_IO.dfa_dot_importer('./dot/dfa_f03_ai.json')
-        self.dfa_3 = automata_IO.dfa_dot_importer('./dot/dfa_f03_ai.json')
+        self.maxDiff = None
+        self.dfa_minimization_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_01_minimized = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_02.dot')
+        self.dfa_minimization_test_02_minimized_s2 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_02_minimized_s4 = automata_IO.dfa_dot_importer(
+            './dot/dfa_minimization_test_01_s4.dot')
+        self.dfa_minimization_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_03.dot')
+        self.dfa_minimization_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_04.dot')
 
-    @unittest.skip("TestDfaMinimization TODO")
+    def test_dfa_minimization_already_minimized(self):
+        """ Tests the minimization of a DFA already minimal"""
+        self.assertDictEqual(DFA.dfa_minimization(self.dfa_minimization_test_01),
+                             DFA.dfa_completion(self.dfa_minimization_test_01_minimized))
+
     def test_dfa_minimization(self):
-        self.fail()
+        """ Tests correct DFA minimization """
+        minimal = DFA.dfa_minimization(self.dfa_minimization_test_02)
+        # the two solution are semantically equivalent as 's2' and 's4' are equivalent
+        if 's4' in minimal['states']:
+            self.assertDictEqual(minimal, DFA.dfa_completion(self.dfa_minimization_test_02_minimized_s4))
+        else:
+            self.assertDictEqual(minimal, DFA.dfa_completion(self.dfa_minimization_test_02_minimized_s2))
+
+    def test_dfa_minimization_empty_states(self):
+        """ Tests a minimization with a dfa without states"""
+        minimal = DFA.dfa_minimization(copy.deepcopy(self.dfa_minimization_test_03))
+        self.dfa_minimization_test_03['states'].add('sink')
+        self.assertDictEqual(minimal, self.dfa_minimization_test_03)
+
+    def test_dfa_minimization_empty_transitions(self):
+        """ Tests a minimization with a dfa without transitions"""
+        test = {
+            'alphabet': set(),
+            'states': {'s0'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': dict()
+        }
+        minimal = DFA.dfa_minimization(copy.deepcopy(self.dfa_minimization_test_04))
+
+        if 's1' in minimal['states']:
+            test['states'].add('s1')
+            self.assertEqual(minimal, test)
+        elif 's2' in minimal['states']:
+            test['states'].add('s2')
+            self.assertEqual(minimal, test)
+        elif 's3' in minimal['states']:
+            test['states'].add('s3')
+            self.assertEqual(minimal, test)
+
+    @unittest.expectedFailure
+    def test_dfa_minimization_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_minimization(1)
+
+    @unittest.expectedFailure
+    def test_dfa_minimization_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_minimization({'goofy': 'donald'})
+
+    def test_dfa_minimization_side_effects(self):
+        """ Tests the function doesn't make side effects on input """
+        input_before = copy.deepcopy(self.dfa_minimization_test_02)
+        DFA.dfa_minimization(self.dfa_minimization_test_02)
+        self.assertDictEqual(input_before, self.dfa_minimization_test_02)
 
 
 class TestDfaReachable(TestCase):

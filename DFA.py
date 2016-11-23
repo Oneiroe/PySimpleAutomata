@@ -202,7 +202,6 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
     return union
 
 
-# Side effects on input dfa
 def dfa_minimization(dfa: dict) -> dict:
     """ Returns the minimization of the dfa in input through a greatest fix-point method.
 
@@ -211,14 +210,14 @@ def dfa_minimization(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the minimized dfa
     """
-    dfa = dfa_completion(dfa)
+    dfa = dfa_completion(deepcopy(dfa))
 
     ##  Greatest-fixpoint
 
     # cartesian product of DFA states
     z_current = set(cartesian_product(dfa['states'], dfa['states']))
 
-    z_next = z_current.copy();
+    z_next = z_current.copy()
 
     # First bisimulation condition check (can be done just once)
     # s ∈ F iff t ∈ F
@@ -230,7 +229,7 @@ def dfa_minimization(dfa: dict) -> dict:
 
     # Second and third condition of bisimularity check, while succeed or fail
     while z_current:
-        z_next = z_current.copy();
+        z_next = z_current.copy()
         for element in z_current:
             # for all s0,a s.t. ρ(s, a) = s_0 , there exists t 0 s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
             for a in dfa['alphabet']:
