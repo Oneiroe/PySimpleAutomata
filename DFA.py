@@ -26,14 +26,13 @@ from copy import copy
 # MEMO
 # handle side-effects through input instead of manual handling in function:
 #    pass as value of function a copy, not the data link
+# copy() copy just the first level (a set in a dict remains a reference) so can lead to side effects,
+#   use deepcopy for dict() objects [look dfa_projection() and try to substitute deepcopy with copy]
 
 
 # ###
 # TO-DO
 # TODO handle side effects
-# TODO check correctness of imported automata from json & DOT
-# TODO check copy and deepCopy side-effects on structures like set of set or set in maps, ....
-#         DECISAMENTE copy makes side effect, look dfa_projection() and try to substitute deepcopy with copy
 # TODO lambda functions
 
 

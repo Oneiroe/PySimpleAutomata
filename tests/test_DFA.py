@@ -2,6 +2,7 @@ from unittest import TestCase
 import unittest
 import DFA
 import automata_IO
+import copy
 
 
 class TestRunAcceptance(TestCase):
@@ -131,6 +132,17 @@ class TestDfaCompletion(TestCase):
     def test_dfa_completion_wrong_dict(self):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.dfa_completion({'goofy': 'donald'})
+
+    def test_dfa_completion_side_effects(self):
+        """ Tests the function correctly makes side effects on input """
+        completed = DFA.dfa_completion(self.dfa_completion_test_01)
+        completed['states'].pop()
+        self.assertDictEqual(completed, self.dfa_completion_test_01)
+
+    def test_dfa_completion_side_effects_copy(self):
+        """ Tests the function doesn't makes side effects if a copy is passed as input """
+        completed = DFA.dfa_completion(copy.deepcopy(self.dfa_completion_test_01))
+        self.assertNotEquals(completed, self.dfa_completion_test_01)
 
 
 class TestDfaComplementation(TestCase):

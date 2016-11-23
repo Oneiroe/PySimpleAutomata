@@ -7,7 +7,8 @@ import re
 
 # ###
 # TO-DO
-# TODO correctness check of json imported automata
+# TODO correctness check of json & DOT imported automata
+
 
 # Export a dfa "object" to a json file
 # TODO dfa_to_json
