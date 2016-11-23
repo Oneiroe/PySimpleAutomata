@@ -304,6 +304,25 @@ class TestDfaIntersection(TestCase):
         self.assertDictEqual(DFA.dfa_intersection(self.dfa_intersection_1_test_01, self.dfa_intersection_1_test_01),
                              self.dfa_test_equals)
 
+    @unittest.expectedFailure
+    def test_dfa_intersection_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        DFA.dfa_intersection(1, self.dfa_intersection_2_test_01)
+
+    @unittest.expectedFailure
+    def test_dfa_intersection_wrong_input_2(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_intersection(self.dfa_intersection_1_test_01, 1)
+
+    @unittest.expectedFailure
+    def test_dfa_intersection_wrong_dict_1(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_intersection({'goofy': 'donald'}, self.dfa_intersection_2_test_01)
+
+    @unittest.expectedFailure
+    def test_dfa_intersection_wrong_dict_2(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_intersection(self.dfa_intersection_1_test_01, {'goofy': 'donald'})
 
 class TestDfaUnion(TestCase):
     def setUp(self):
