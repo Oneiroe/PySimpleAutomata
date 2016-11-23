@@ -205,7 +205,15 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
 def dfa_minimization(dfa: dict) -> dict:
     """ Returns the minimization of the dfa in input through a greatest fix-point method.
 
-    TODO short-detailed explanation of DFAs minimization
+    Given a completed DFA A (Σ, S, s_0 , ρ, F ) there exists a single minimal DFA A_m which is equivalent to A,
+    i.e. reads the same language L(A) = L(A_m) and with a minimal number of states.
+    To construct such a DFA we exploit bisimulation as a suitable equivalence relation between states.
+
+    A bisimulation relation E ∈ S × S is a relation between states that satisfies the following condition:
+    if (s, t) ∈ E then:
+     • s ∈ F iff t ∈ F;
+     • For all s_X,a such that ρ(s, a) = s_X , there exists t_X such that ρ(t, a) = t_X and (s_X , t_X ) ∈ E;
+     • For all t_X,a such that ρ(t, a) = t_X , there exists s_X such that ρ(s, a) = s_X and (s_X , t_X ) ∈ E.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the minimized dfa
