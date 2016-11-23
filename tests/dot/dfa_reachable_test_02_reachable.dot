@@ -1,0 +1,13 @@
+digraph {
+	fake [style=invisible]
+	"('c3', 'c3')"
+	"('c2', 'c2')"
+	"('c4', 'c4')" [shape=doublecircle]
+	"('s0', 't0')" [root=true]
+	"('c1', 'c1')"
+    "('c3', 'c3')" -> "('c1', 'c1')" [label=gum]
+    "('c2', 'c2')" -> "('c4', 'c4')" [label=gum]
+    "('s0', 't0')" -> "('c1', 'c1')" [label="5c"]
+    "('c2', 'c2')" -> "('c3', 'c3')" [label="5c"]
+    "('c1', 'c1')" -> "('c2', 'c2')" [label="10c"]
+}

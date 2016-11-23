@@ -844,10 +844,61 @@ class TestDfaMinimization(TestCase):
 
 class TestDfaReachable(TestCase):
     def setUp(self):
-        self.dfa = automata_IO.dfa_dot_importer('./dot/dfa_test.json')
-        self.dfa_2 = automata_IO.dfa_dot_importer('./dot/dfa_f03_ai.json')
-        self.dfa_3 = automata_IO.dfa_dot_importer('./dot/dfa_f03_ai.json')
+        self.maxDiff = None
+        self.dfa_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_01.dot')
+        self.dfa_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_02.dot')
+        self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_02_reachable.dot')
+        self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_03.dot')
+        self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_04.dot')
+        self.dfa_reachable_test_intersected = automata_IO.dfa_dot_importer(
+            './img/graphviz_dfa_intersection_intersecting.dot')
 
-    @unittest.skip("TestDfaIntersection TODO")
+    def test_dfa_reachable_already_reachable(self):
+        """ Tests making reachable a DFA even if its already completely reachable """
+        test = copy.deepcopy(self.dfa_reachable_test_01)
+        self.assertEqual(DFA.dfa_reachable(self.dfa_reachable_test_01), test)
+
     def test_dfa_reachable(self):
-        self.fail()
+        """ Tests making correctly reachable a DFA """
+        self.assertEqual(DFA.dfa_reachable(self.dfa_reachable_test_intersected),
+                         self.dfa_reachable_test_02_reachable)
+
+    def test_dfa_reachable_empty_states(self):
+        """ Tests making reachable a DFA without states"""
+        test = copy.deepcopy(self.dfa_reachable_test_03)
+        test['states'].add(None)
+        reach = DFA.dfa_reachable(self.dfa_reachable_test_03)
+        self.assertEqual(reach, test)
+
+    def test_dfa_reachable_empty_transitions(self):
+        """ Tests making reachable a DFA without transitions"""
+        test = {
+            'alphabet': set(),
+            'states': {'s0'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': dict()
+        }
+        self.assertEqual(DFA.dfa_reachable(self.dfa_reachable_test_04), test)
+
+    @unittest.expectedFailure
+    def test_dfa_reachable_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_reachable(1)
+
+    @unittest.expectedFailure
+    def test_dfa_reachable_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_reachable({'goofy': 'donald'})
+
+    def test_dfa_reachable_side_effects(self):
+        """ Tests the function makes side effects on input """
+        input_before = copy.deepcopy(self.dfa_reachable_test_intersected)
+        DFA.dfa_reachable(self.dfa_reachable_test_intersected)
+        self.assertNotEquals(input_before, self.dfa_reachable_test_intersected)
+
+    def test_dfa_reachable_side_effects_copy(self):
+        """ Tests the function doesn't make side effects if a copy is passed as input """
+        input_before = copy.deepcopy(self.dfa_reachable_test_intersected)
+        DFA.dfa_reachable(copy.deepcopy(self.dfa_reachable_test_intersected))
+        self.assertEquals(input_before, self.dfa_reachable_test_intersected)

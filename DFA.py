@@ -308,15 +308,18 @@ def dfa_reachable(dfa: dict) -> dict:
     dfa['states'] = s_r
     dfa['accepting_states'] = dfa['accepting_states'].intersection(dfa['states'])
 
-    for p in dfa['transitions']:
+    transitions = dfa['transitions'].copy()
+    for p in transitions:
         if p[0] not in dfa['states']:
-            dfa['transitions'].remove(p)
+            dfa['transitions'].pop(p)
+            continue
         if dfa['transitions'][p] not in dfa['states']:
-            dfa['transitions'].remove(p)
+            dfa['transitions'].pop(p)
 
     return dfa
 
 
+# Side effects on input variable
 def dfa_co_reachable(dfa: dict) -> dict:
     """ Removes states that do not reach a final state from 'dfa' and returns the pruned dfa.
 
