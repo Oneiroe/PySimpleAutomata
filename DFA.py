@@ -19,6 +19,7 @@ In this module a DFA is defined as follows
 
 from itertools import product as cartesian_product
 from copy import deepcopy
+from copy import copy
 
 
 # ###
@@ -131,14 +132,22 @@ def dfa_complementation(dfa: dict) -> dict:
 def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the intersection of the dfas in input.
 
-    TODO short-detailed explanation of DFAs intersection
+    Let A_1 = (Σ, S_1 , s_01 , ρ_1 , F_1 ) and A_2 = (Σ, S_2 , s_02 , ρ_2 , F_2 ) be two DFAs.
+    Then there is a DFA A_∧ that runs simultaneously both A_1 and A_2 on the input word and accepts when both accept.
+    It is defined as:
+
+    A_∧ = (Σ, S_1 × S_2 , (s_01 , s_02 ), ρ, F_1 × F_2 )
+
+    where
+
+    ρ((s_1 , s_2 ), a) = (s_X1 , s_X2 ) iff s_X1 = ρ_1 (s_1 , a) and s_X2 = ρ_2 (s_2 , a)
 
     :param dfa_1: dict() representing a dfa
     :param dfa_2: dict() representing a dfa
     :return: dict() representing the intersected dfa
     """
     intersection = {
-        'alphabet': dfa_1['alphabet'],
+        'alphabet': copy(dfa_1['alphabet']),
         'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
         'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states': set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states'])),

@@ -9,9 +9,6 @@ class TestRunAcceptance(TestCase):
         self.dfa_run_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_01.dot')
         self.dfa_run_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_02.dot')
 
-    # def tearDown(self):
-    #     self.dfa = automata_IO.dfa_json_importer('./dot/dfa_run_acceptance_test_01.dot')
-
     def test_run_acceptance(self):
         """ Tests a correct run """
         self.assertTrue(
@@ -286,6 +283,68 @@ class TestDfaIntersection(TestCase):
             }
         }
 
+        self.dfa_test_side_effect_1 = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {'s0', 's1', 's2', 's3'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': {('s0', '5c'): 's1',
+                            ('s0', '10c'): 's2',
+                            ('s1', '5c'): 's2',
+                            ('s1', '10c'): 's3',
+                            ('s2', '5c'): 's3',
+                            ('s2', '10c'): 's3',
+                            ('s3', 'gum'): 's0'}
+        }
+        self.dfa_test_side_effect_2 = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s3', 't2'),
+                ('s3', 't3'),
+                ('s0', 't3'),
+                ('s2', 't3'),
+                ('s2', 't0'),
+                ('s1', 't2'),
+                ('s0', 't0'),
+                ('s1', 't4'),
+                ('s0', 't1'),
+                ('s0', 't5'),
+                ('s2', 't1'),
+                ('s2', 't5'),
+                ('s3', 't4'),
+                ('s3', 't0'),
+                ('s0', 't2'),
+                ('s2', 't2'),
+                ('s1', 't0'),
+                ('s1', 't3'),
+                ('s1', 't5'),
+                ('s3', 't1'),
+                ('s0', 't4'),
+                ('s2', 't4'),
+                ('s3', 't5'),
+                ('s1', 't1')
+            },
+            'initial_state': ('s0', 't0'),
+            'accepting_states': {('s0', 't5'), ('s0', 't4')},
+            'transitions': {
+                (('s3', 't3'), 'gum'): ('s0', 't1'),
+                (('s0', 't1'), '10c'): ('s2', 't2'),
+                (('s3', 't2'), 'gum'): ('s0', 't4'),
+                (('s0', 't1'), '5c'): ('s1', 't5'),
+                (('s2', 't1'), '10c'): ('s3', 't2'),
+                (('s1', 't0'), '5c'): ('s2', 't1'),
+                (('s1', 't1'), '10c'): ('s3', 't2'),
+                (('s2', 't0'), '5c'): ('s3', 't1'),
+                (('s0', 't2'), '5c'): ('s1', 't3'),
+                (('s1', 't1'), '5c'): ('s2', 't5'),
+                (('s3', 't5'), 'gum'): ('s0', 't0'),
+                (('s1', 't2'), '5c'): ('s2', 't3'),
+                (('s2', 't2'), '5c'): ('s3', 't3'),
+                (('s2', 't1'), '5c'): ('s3', 't5'),
+                (('s0', 't0'), '5c'): ('s1', 't1')
+            }
+        }
+
     def test_dfa_intersection_disjoint(self):
         """ Tests a correct intersection between disjointed DFAs """
         # TODO ask: FORMALLY, should it returns a minimal dfa or this one with states not reached by initial state?
@@ -323,6 +382,13 @@ class TestDfaIntersection(TestCase):
     def test_dfa_intersection_wrong_dict_2(self):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.dfa_intersection(self.dfa_intersection_1_test_01, {'goofy': 'donald'})
+
+    def test_dfa_intersection_side_effects(self):
+        """ Tests that the intersection function doesn't makes side effects on input DFAs"""
+        intersection = DFA.dfa_intersection(self.dfa_test_side_effect_1, self.dfa_test_side_effect_2)
+        self.dfa_test_side_effect_1['alphabet'].pop()
+        self.assertNotEquals(self.dfa_test_side_effect_1['alphabet'], intersection['alphabet'])
+
 
 class TestDfaUnion(TestCase):
     def setUp(self):
