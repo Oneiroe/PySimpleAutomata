@@ -78,7 +78,7 @@ def dfa_dot_importer(input_file: str) -> dict:
     g = pydot.graph_from_dot_file(input_file)[0]
 
     states = set()
-    initial_state = 0
+    initial_state = None
     accepting_states = set()
 
     replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
