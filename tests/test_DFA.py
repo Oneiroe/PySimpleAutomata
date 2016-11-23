@@ -179,13 +179,130 @@ class TestDfaComplementation(TestCase):
 
 class TestDfaIntersection(TestCase):
     def setUp(self):
-        self.dfa = automata_IO.dfa_json_importer('../json/dfa_test.json')
-        self.dfa_2 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
-        self.dfa_3 = automata_IO.dfa_json_importer('../json/dfa_f03_ai.json')
+        self.maxDiff = None
+        self.dfa_intersection_1_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_01.dot')
+        self.dfa_intersection_2_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_01.dot')
+        self.dfa_intersection_test_01_intersection = automata_IO.dfa_dot_importer(
+            './dot/dfa_intersection_test_01_intersection.dot')
+        self.dfa_intersection_1_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_02.dot')
+        self.dfa_intersection_2_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_02.dot')
+        self.dfa_intersection_test_02_intersection = automata_IO.dfa_dot_importer(
+            './dot/dfa_intersection_test_02_intersection.dot')
 
-    @unittest.skip("TestDfaIntersection TODO")
-    def test_dfa_intersection(self):
-        self.fail()
+        self.dfa_test_disjoint = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s3', 't2'),
+                ('s3', 't3'),
+                ('s0', 't3'),
+                ('s2', 't3'),
+                ('s2', 't0'),
+                ('s1', 't2'),
+                ('s0', 't0'),
+                ('s1', 't4'),
+                ('s0', 't1'),
+                ('s0', 't5'),
+                ('s2', 't1'),
+                ('s2', 't5'),
+                ('s3', 't4'),
+                ('s3', 't0'),
+                ('s0', 't2'),
+                ('s2', 't2'),
+                ('s1', 't0'),
+                ('s1', 't3'),
+                ('s1', 't5'),
+                ('s3', 't1'),
+                ('s0', 't4'),
+                ('s2', 't4'),
+                ('s3', 't5'),
+                ('s1', 't1')
+            },
+            'initial_state': ('s0', 't0'),
+            'accepting_states': {('s0', 't5'), ('s0', 't4')},
+            'transitions': {
+                (('s3', 't3'), 'gum'): ('s0', 't1'),
+                (('s0', 't1'), '10c'): ('s2', 't2'),
+                (('s3', 't2'), 'gum'): ('s0', 't4'),
+                (('s0', 't1'), '5c'): ('s1', 't5'),
+                (('s2', 't1'), '10c'): ('s3', 't2'),
+                (('s1', 't0'), '5c'): ('s2', 't1'),
+                (('s1', 't1'), '10c'): ('s3', 't2'),
+                (('s2', 't0'), '5c'): ('s3', 't1'),
+                (('s0', 't2'), '5c'): ('s1', 't3'),
+                (('s1', 't1'), '5c'): ('s2', 't5'),
+                (('s3', 't5'), 'gum'): ('s0', 't0'),
+                (('s1', 't2'), '5c'): ('s2', 't3'),
+                (('s2', 't2'), '5c'): ('s3', 't3'),
+                (('s2', 't1'), '5c'): ('s3', 't5'),
+                (('s0', 't0'), '5c'): ('s1', 't1')
+            }
+        }
+        self.dfa_test_intersecting = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s1', 'c2'), ('c3', 't2'), ('c2', 'c3'), ('c1', 'c1'), ('s1', 't2'), ('c1', 't2'), ('c3', 'c2'),
+                ('s1', 't0'), ('c1', 'c2'), ('c2', 't1'), ('s0', 'c2'), ('c3', 't0'), ('s0', 't2'), ('s0', 'c4'),
+                ('c4', 't2'), ('c3', 't1'), ('c4', 'c2'), ('s1', 't1'), ('c1', 'c3'), ('c2', 'c1'), ('s0', 't3'),
+                ('c2', 'c4'), ('c4', 't0'), ('s0', 'c1'), ('s0', 't0'), ('c1', 't3'), ('c4', 't3'), ('c3', 'c1'),
+                ('c4', 'c3'), ('c4', 't1'), ('c3', 'c4'), ('s1', 'c1'), ('s1', 'c4'), ('c1', 'c4'), ('c1', 't0'),
+                ('s0', 't1'), ('s1', 't3'), ('s1', 'c3'), ('c1', 't1'), ('c3', 't3'), ('c2', 'c2'), ('c4', 'c1'),
+                ('c3', 'c3'), ('c2', 't2'), ('c4', 'c4'), ('c2', 't0'), ('s0', 'c3'), ('c2', 't3')
+            },
+            'initial_state': ('s0', 't0'),
+            'accepting_states': {('s1', 'c4'), ('s1', 't3'), ('c4', 't3'), ('c4', 'c4')},
+            'transitions': {
+                (('c2', 't2'), 'gum'): ('c4', 't0'), (('s0', 't0'), '5c'): ('c1', 'c1'),
+                (('s0', 'c3'), 'gum'): ('s1', 'c1'), (('s0', 'c2'), '5c'): ('c1', 'c3'),
+                (('s0', 't1'), '5c'): ('c1', 't2'), (('c1', 'c1'), '10c'): ('c2', 'c2'),
+                (('c2', 't1'), '5c'): ('c3', 't2'), (('c1', 't0'), '10c'): ('c2', 't1'),
+                (('c3', 't2'), 'gum'): ('c1', 't0'), (('s0', 't1'), 'gum'): ('s1', 't3'),
+                (('c2', 'c2'), 'gum'): ('c4', 'c4'), (('s0', 't2'), 'gum'): ('s1', 't0'),
+                (('c3', 'c3'), 'gum'): ('c1', 'c1'), (('c2', 'c3'), 'gum'): ('c4', 'c1'),
+                (('c2', 'c2'), '5c'): ('c3', 'c3'), (('s0', 'c2'), 'gum'): ('s1', 'c4'),
+                (('c3', 't1'), 'gum'): ('c1', 't3'), (('c2', 't1'), 'gum'): ('c4', 't3'),
+                (('c3', 'c2'), 'gum'): ('c1', 'c4'), (('c2', 't0'), '5c'): ('c3', 'c1')
+            }
+        }
+        self.dfa_test_equals = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s1', 's0'), ('s0', 's1'), ('s3', 's3'), ('s2', 's2'), ('s0', 's0'), ('s1', 's1'), ('s1', 's3'),
+                ('s0', 's3'), ('s1', 's2'), ('s2', 's3'), ('s0', 's2'), ('s2', 's0'), ('s2', 's1'), ('s3', 's0'),
+                ('s3', 's1'), ('s3', 's2')
+            },
+            'initial_state': ('s0', 's0'),
+            'accepting_states': {('s0', 's0')},
+            'transitions': {
+                (('s1', 's0'), '10c'): ('s3', 's2'), (('s0', 's1'), '10c'): ('s2', 's3'),
+                (('s1', 's1'), '10c'): ('s3', 's3'), (('s0', 's2'), '5c'): ('s1', 's3'),
+                (('s2', 's2'), '5c'): ('s3', 's3'), (('s2', 's2'), '10c'): ('s3', 's3'),
+                (('s0', 's0'), '10c'): ('s2', 's2'), (('s1', 's2'), '5c'): ('s2', 's3'),
+                (('s2', 's1'), '10c'): ('s3', 's3'), (('s0', 's2'), '10c'): ('s2', 's3'),
+                (('s2', 's0'), '5c'): ('s3', 's1'), (('s2', 's0'), '10c'): ('s3', 's2'),
+                (('s2', 's1'), '5c'): ('s3', 's2'), (('s1', 's0'), '5c'): ('s2', 's1'),
+                (('s0', 's1'), '5c'): ('s1', 's2'), (('s3', 's3'), 'gum'): ('s0', 's0'),
+                (('s1', 's1'), '5c'): ('s2', 's2'), (('s1', 's2'), '10c'): ('s3', 's3'),
+                (('s0', 's0'), '5c'): ('s1', 's1')
+            }
+        }
+
+    def test_dfa_intersection_disjoint(self):
+        """ Tests a correct intersection between disjointed DFAs """
+        # TODO ask: FORMALLY, should it returns a minimal dfa or this one with states not reached by initial state?
+        self.assertDictEqual(DFA.dfa_intersection(self.dfa_intersection_1_test_01, self.dfa_intersection_2_test_01),
+                             self.dfa_test_disjoint)
+
+    def test_dfa_intersection_intersecting(self):
+        """ Tests a correct intersection between DFAs partially intersected"""
+        # TODO ask: FORMALLY, should it returns a minimal dfa or this one with states not reached by initial state?
+        self.assertDictEqual(DFA.dfa_intersection(self.dfa_intersection_1_test_02, self.dfa_intersection_2_test_02),
+                             self.dfa_test_intersecting)
+
+    def test_dfa_intersection_equals(self):
+        """ Tests a correct intersection between the same DFA """
+        # TODO ask: FORMALLY, should it returns a minimal dfa or this one with states not reached by initial state?
+        self.assertDictEqual(DFA.dfa_intersection(self.dfa_intersection_1_test_01, self.dfa_intersection_1_test_01),
+                             self.dfa_test_equals)
 
 
 class TestDfaUnion(TestCase):
