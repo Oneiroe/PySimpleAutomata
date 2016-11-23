@@ -140,7 +140,7 @@ class TestDfaCompletion(TestCase):
         self.assertDictEqual(completed, self.dfa_completion_test_01)
 
     def test_dfa_completion_side_effects_copy(self):
-        """ Tests the function doesn't makes side effects if a copy is passed as input """
+        """ Tests the function doesn't make side effects if a copy is passed as input """
         completed = DFA.dfa_completion(copy.deepcopy(self.dfa_completion_test_01))
         self.assertNotEquals(completed, self.dfa_completion_test_01)
 
@@ -184,6 +184,12 @@ class TestDfaComplementation(TestCase):
     def test_dfa_complementation_wrong_dict(self):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.dfa_complementation({'goofy': 'donald'})
+
+    def test_dfa_complementation_side_effects(self):
+        """ Tests the function doesn't make side effects on input """
+        complemented = DFA.dfa_complementation(self.dfa_complementation_test_01)
+        complemented['states'].pop()
+        self.assertNotEquals(complemented, self.dfa_complementation_test_01)
 
 
 class TestDfaIntersection(TestCase):
@@ -396,13 +402,13 @@ class TestDfaIntersection(TestCase):
         DFA.dfa_intersection(self.dfa_intersection_1_test_01, {'goofy': 'donald'})
 
     def test_dfa_intersection_side_effects_alphabet(self):
-        """ Tests that the intersection function doesn't makes side effects on input DFAs alphabet"""
+        """ Tests that the intersection function doesn't make side effects on input DFAs alphabet"""
         intersection = DFA.dfa_intersection(self.dfa_test_side_effect_1, self.dfa_test_side_effect_2)
         self.dfa_test_side_effect_1['alphabet'].pop()
         self.assertNotEquals(self.dfa_test_side_effect_1['alphabet'], intersection['alphabet'])
 
     def test_dfa_intersection_side_effects_initial_state(self):
-        """ Tests that the intersection function doesn't makes side effects on input DFAs initial state"""
+        """ Tests that the intersection function doesn't make side effects on input DFAs initial state"""
         intersection = DFA.dfa_intersection(self.dfa_test_side_effect_1, self.dfa_test_side_effect_2)
         self.dfa_test_side_effect_1['initial_state'] = 'pippo'
         result = self.dfa_test_side_effect_1['initial_state'] in intersection['initial_state']

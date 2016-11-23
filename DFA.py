@@ -123,7 +123,7 @@ def dfa_complementation(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the complement of the input dfa
     """
-    dfa_complemented = dfa_completion(dfa)
+    dfa_complemented = deepcopy(dfa_completion(dfa))
     dfa_complemented['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
     return dfa_complemented
 
