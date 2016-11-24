@@ -211,9 +211,9 @@ def dfa_minimization(dfa: dict) -> dict:
 
     A bisimulation relation E ∈ S × S is a relation between states that satisfies the following condition:
     if (s, t) ∈ E then:
-     • s ∈ F iff t ∈ F;
-     • For all s_X,a such that ρ(s, a) = s_X , there exists t_X such that ρ(t, a) = t_X and (s_X , t_X ) ∈ E;
-     • For all t_X,a such that ρ(t, a) = t_X , there exists s_X such that ρ(s, a) = s_X and (s_X , t_X ) ∈ E.
+    • s ∈ F iff t ∈ F;
+    • For all s_X,a such that ρ(s, a) = s_X , there exists t_X such that ρ(t, a) = t_X and (s_X , t_X ) ∈ E;
+    • For all t_X,a such that ρ(t, a) = t_X , there exists s_X such that ρ(s, a) = s_X and (s_X , t_X ) ∈ E.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the minimized dfa
@@ -295,7 +295,8 @@ def dfa_reachable(dfa: dict) -> dict:
 
     where
 
-    ρ|S_R is the restriction on S_R × Σ of ρ.
+    • S_R set of reachable state from the initial one
+    • ρ|S_R is the restriction on S_R × Σ of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
@@ -329,7 +330,15 @@ def dfa_reachable(dfa: dict) -> dict:
 def dfa_co_reachable(dfa: dict) -> dict:
     """ Removes states that do not reach a final state from 'dfa' and returns the pruned dfa.
 
-    TODO short-detailed explanation of co-reachable DFAs
+    It is possible to remove from a DFA A all states that do not reach a final state without altering the language.
+    The co-reachable dfa A_F corresponding to A is defined as:
+
+    A_F = (Σ, S_F , s_0 , ρ|S_F , F )
+
+    where
+
+    • S_F is the set of states that reach a final state
+    • ρ|S_F is the restriction on S_F × Σ of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
