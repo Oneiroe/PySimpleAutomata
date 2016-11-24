@@ -907,3 +907,76 @@ class TestDfaReachable(TestCase):
     def test_dfa_reachable_no_accepting_state_reachable(self):
         """ Tests making reachable a DFA where no accepting state is reached by the initial state"""
         self.assertEqual(DFA.dfa_reachable(self.dfa_reachable_test_05)['accepting_states'], set())
+
+
+class TestDfaCoReachable(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_co_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_01.dot')
+        self.dfa_co_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_02.dot')
+        self.dfa_co_reachable_test_02_co_reachable = automata_IO.dfa_dot_importer(
+            './dot/dfa_co_reachable_test_02_co_reachable.dot')
+        self.dfa_co_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_03.dot')
+        self.dfa_co_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_04.dot')
+        self.dfa_co_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_05.dot')
+        self.dfa_co_reachable_test_06 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_06.dot')
+
+    def test_dfa_co_reachable_already_co_reachable(self):
+        """ Tests making co_reachable a DFA even if its already completely co_reachable """
+        test = copy.deepcopy(self.dfa_co_reachable_test_01)
+        self.assertEqual(DFA.dfa_co_reachable(self.dfa_co_reachable_test_01), test)
+
+    def test_dfa_co_reachable(self):
+        """ Tests making correctly co_reachable a DFA """
+        self.assertEqual(DFA.dfa_co_reachable(self.dfa_co_reachable_test_02),
+                         self.dfa_co_reachable_test_02_co_reachable)
+
+    def test_dfa_co_reachable_empty_states(self):
+        """ Tests making co_reachable a DFA without states"""
+        test = copy.deepcopy(self.dfa_co_reachable_test_03)
+        co_reach = DFA.dfa_co_reachable(self.dfa_co_reachable_test_03)
+        self.assertEqual(co_reach, test)
+
+    def test_dfa_co_reachable_empty_transitions(self):
+        """ Tests making co_reachable a DFA without transitions"""
+        test = {
+            'alphabet': set(),
+            'states': {'s0'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': dict()
+        }
+        self.assertEqual(DFA.dfa_co_reachable(self.dfa_co_reachable_test_04), test)
+
+    @unittest.expectedFailure
+    def test_dfa_co_reachable_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        DFA.dfa_co_reachable(1)
+
+    @unittest.expectedFailure
+    def test_dfa_co_reachable_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.dfa_co_reachable({'goofy': 'donald'})
+
+    def test_dfa_co_reachable_side_effects(self):
+        """ Tests the function makes side effects on input """
+        input_before = copy.deepcopy(self.dfa_co_reachable_test_06)
+        DFA.dfa_co_reachable(self.dfa_co_reachable_test_06)
+        self.assertNotEquals(input_before, self.dfa_co_reachable_test_06)
+
+    def test_dfa_co_reachable_side_effects_copy(self):
+        """ Tests the function doesn't make side effects if a copy is passed as input """
+        input_before = copy.deepcopy(self.dfa_co_reachable_test_06)
+        DFA.dfa_co_reachable(copy.deepcopy(self.dfa_co_reachable_test_06))
+        self.assertEquals(input_before, self.dfa_co_reachable_test_06)
+
+    def test_dfa_co_reachable_no_accepting_state_co_reachable(self):
+        """ Tests making co_reachable a DFA where the initial state doesn't reach any accepting state """
+        test = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': dict()
+        }
+        self.assertEqual(DFA.dfa_co_reachable(self.dfa_co_reachable_test_05), test)
