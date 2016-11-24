@@ -300,19 +300,19 @@ def dfa_reachable(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
     """
-    s_r = set()  # set of reachable states from initial states
-    s_r.add(dfa['initial_state'])
-    s_r_stack = s_r.copy()
-    while s_r_stack:
-        s = s_r_stack.pop()
+    reachable_states = set()  # set of reachable states from initial states
+    reachable_states.add(dfa['initial_state'])
+    reachable_state_stack = reachable_states.copy()
+    while reachable_state_stack:
+        s = reachable_state_stack.pop()
         for a in dfa['alphabet']:
             if (s, a) in dfa['transitions']:
-                if dfa['transitions'][s, a] not in s_r:
-                    s_r_stack.add(dfa['transitions'][s, a])
-                    s_r.add(dfa['transitions'][s, a])
+                if dfa['transitions'][s, a] not in reachable_states:
+                    reachable_state_stack.add(dfa['transitions'][s, a])
+                    reachable_states.add(dfa['transitions'][s, a])
             else:
                 pass
-    dfa['states'] = s_r
+    dfa['states'] = reachable_states
     dfa['accepting_states'] = dfa['accepting_states'].intersection(dfa['states'])
 
     transitions = dfa['transitions'].copy()
@@ -335,31 +335,32 @@ def dfa_co_reachable(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
     """
-    s_r = dfa['accepting_states'].copy()  # set of states reaching final states
-    s_r_stack = s_r.copy()
+    co_reachable_states = dfa['accepting_states'].copy()  # set of states reaching final states
+    co_reachable_states_stack = co_reachable_states.copy()
 
     # inverse transition function
-    inv_transitions = {}
+    inverse_transitions = {}
     for k, v in dfa['transitions'].items():
-        inv_transitions.setdefault(v, set()).add(k)
+        inverse_transitions.setdefault(v, set()).add(k)
 
-    while s_r_stack:
-        s = s_r_stack.pop()
-        for s_app in inv_transitions[s]:
-            if s_app[0] not in s_r:
-                s_r_stack.add(s_app[0])
-                s_r.add(s_app[0])
+    while co_reachable_states_stack:
+        s = co_reachable_states_stack.pop()
+        for s_app in inverse_transitions[s]:
+            if s_app[0] not in co_reachable_states:
+                co_reachable_states_stack.add(s_app[0])
+                co_reachable_states.add(s_app[0])
 
-    dfa['states'] = s_r
+    dfa['states'] = co_reachable_states
     # TODO check non reachabilility
     # if dfa['initial_state'] not in dfa['states']:
     #     return False
 
-    for p in dfa['transitions']:
+    transitions = dfa['transitions'].copy()
+    for p in transitions:
         if p[0] not in dfa['states']:
-            dfa['transitions'].remove(p)
+            dfa['transitions'].pop(p)
         if dfa['transitions'][p] not in dfa['states']:
-            dfa['transitions'].remove(p)
+            dfa['transitions'].pop(p)
 
     return dfa
 
