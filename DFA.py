@@ -344,15 +344,23 @@ def dfa_co_reachable(dfa: dict) -> dict:
 
     while co_reachable_states_stack:
         s = co_reachable_states_stack.pop()
-        for s_app in inverse_transitions[s]:
-            if s_app[0] not in co_reachable_states:
-                co_reachable_states_stack.add(s_app[0])
-                co_reachable_states.add(s_app[0])
+        if s in inverse_transitions:
+            for s_app in inverse_transitions[s]:
+                if s_app[0] not in co_reachable_states:
+                    co_reachable_states_stack.add(s_app[0])
+                    co_reachable_states.add(s_app[0])
 
     dfa['states'] = co_reachable_states
-    # TODO check non reachabilility
-    # if dfa['initial_state'] not in dfa['states']:
-    #     return False
+
+    # If not s_0 ∈ S_F the resulting dfa is empty
+    if dfa['initial_state'] not in dfa['states']:
+        return {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': dict()
+        }
 
     transitions = dfa['transitions'].copy()
     for p in transitions:
