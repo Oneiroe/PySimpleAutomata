@@ -27,7 +27,7 @@ from copy import copy
 # handle side-effects through input instead of manual handling in function:
 #    pass as value of function a copy, not the data link
 # copy() copy just the first level (a set in a dict remains a reference) so can lead to side effects,
-#   use deepcopy for dict() objects [look dfa_projection() and try to substitute deepcopy with copy]
+#   use deepcopy for dict() objects [es. look dfa_projection() and try to substitute deepcopy with copy]
 
 
 # ###
@@ -411,8 +411,8 @@ def dfa_trimming(dfa: dict) -> dict:
 def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in X are projected out.
 
-    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in X )
-    Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an nfa A π X that recognizes the language π X (L(A)).
+    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in X.
+    Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an NFA A_πX that recognizes the language πX(L(A)).
 
     :param dfa: dict() representing a dfa
     :param symbols_to_project: set() containing symbols ∈ dfa['alphabet'] to be projected out from dfa
@@ -421,7 +421,7 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     nfa = dfa.copy()
     nfa['alphabet'] = dfa['alphabet'].difference(symbols_to_project)
     nfa['transitions'] = {}
-    # ε_X ⊆ S×S formed by the pairs of states (s, s_0) such that s_0 is reachable from s through transition symbols ∈ X
+    # ε_X ⊆ S×S formed by the pairs of states (s, s_Y) such that s_Y is reachable from s through transition symbols ∈ X
     e_x = {}
 
     # mark each transition using symbol a ∈ symbols_to_project
@@ -446,8 +446,10 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
     # NFA initial states
     nfa.pop('initial_state')
-    nfa['initial_states'] = e_x[dfa['initial_state']]
+    nfa['initial_states'] = set()
     nfa['initial_states'].add(dfa['initial_state'])
+    if dfa['initial_state'] in e_x:
+        nfa['initial_states'].add(e_x[dfa['initial_state']])
 
     # inverse transition function
     inv_e_x = {}
