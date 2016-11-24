@@ -319,7 +319,6 @@ def dfa_reachable(dfa: dict) -> dict:
     for p in transitions:
         if p[0] not in dfa['states']:
             dfa['transitions'].pop(p)
-            continue
         elif dfa['transitions'][p] not in dfa['states']:
             dfa['transitions'].pop(p)
 
