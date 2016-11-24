@@ -383,9 +383,19 @@ def dfa_co_reachable(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_trimming(dfa: dict) -> dict:
-    """ [Side effects on input] Returns the dfa in input trimmed.
+    """ [Side effects on input] Returns the dfa in input trimmed, so both reachable and co-reachable.
 
-    TODO short-detailed explanation of DFAs trimming
+    Given a DFA A, the corresponding trimmed DFA contains only those states that are reachable from the initial state
+    and that lead to a final state.
+    The trimmed dfa A_RF corresponding to A is defined as
+
+    A_RF = (Σ, S_R ∩ S_F , s_0 , ρ|S_R∩S_F , F ∩ S_R )
+
+    where
+
+    • S_R set of reachable states from the initial state
+    • S_F set of states that reaches a final state
+    • ρ|S_R∩S_F is the restriction on (S_R ∩ S_F ) × Σ of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the trimmed input dfa
