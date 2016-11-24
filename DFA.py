@@ -320,7 +320,7 @@ def dfa_reachable(dfa: dict) -> dict:
         if p[0] not in dfa['states']:
             dfa['transitions'].pop(p)
             continue
-        if dfa['transitions'][p] not in dfa['states']:
+        elif dfa['transitions'][p] not in dfa['states']:
             dfa['transitions'].pop(p)
 
     return dfa
@@ -359,7 +359,7 @@ def dfa_co_reachable(dfa: dict) -> dict:
     for p in transitions:
         if p[0] not in dfa['states']:
             dfa['transitions'].pop(p)
-        if dfa['transitions'][p] not in dfa['states']:
+        elif dfa['transitions'][p] not in dfa['states']:
             dfa['transitions'].pop(p)
 
     return dfa
