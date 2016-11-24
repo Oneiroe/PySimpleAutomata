@@ -328,7 +328,7 @@ def dfa_reachable(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_co_reachable(dfa: dict) -> dict:
-    """ Removes states that do not reach a final state from 'dfa' and returns the pruned dfa.
+    """ [Side effects on input] Removes states that do not reach a final state and returns the pruned dfa.
 
     It is possible to remove from a DFA A all states that do not reach a final state without altering the language.
     The co-reachable dfa A_F corresponding to A is defined as:
@@ -383,7 +383,7 @@ def dfa_co_reachable(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_trimming(dfa: dict) -> dict:
-    """ Returns the dfa in input trimmed.
+    """ [Side effects on input] Returns the dfa in input trimmed.
 
     TODO short-detailed explanation of DFAs trimming
 

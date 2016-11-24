@@ -980,3 +980,25 @@ class TestDfaCoReachable(TestCase):
             'transitions': dict()
         }
         self.assertEqual(DFA.dfa_co_reachable(self.dfa_co_reachable_test_05), test)
+
+
+class TestDfaTrimming(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_trimming_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_01.dot')
+
+    def test_dfa_trimming(self):
+        """ Tetsts a correct trimming of a dfa"""
+        automata_IO.graphviz_dfa_render(DFA.dfa_trimming(self.dfa_trimming_test_01), 'graphviz_dfa_trimming')
+
+    def test_trimming_side_effects(self):
+        """ Tests the function makes side effects on input """
+        input_before = copy.deepcopy(self.dfa_trimming_test_01)
+        DFA.dfa_trimming(self.dfa_trimming_test_01)
+        self.assertNotEquals(input_before, self.dfa_trimming_test_01)
+
+    def test_trimming_side_effects_copy(self):
+        """ Tests the function doesn't make side effects if a copy is passed as input """
+        input_before = copy.deepcopy(self.dfa_trimming_test_01)
+        DFA.dfa_trimming(copy.deepcopy(self.dfa_trimming_test_01))
+        self.assertEquals(input_before, self.dfa_trimming_test_01)
