@@ -986,19 +986,50 @@ class TestDfaTrimming(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.dfa_trimming_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_01.dot')
+        self.dfa_trimming_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_02.dot')
+        self.dfa_trimming_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_03.dot')
+        self.dfa_trimming_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_04.dot')
 
     def test_dfa_trimming(self):
-        """ Tetsts a correct trimming of a dfa"""
+        """ Tests a correct trimming of a dfa"""
         automata_IO.graphviz_dfa_render(DFA.dfa_trimming(self.dfa_trimming_test_01), 'graphviz_dfa_trimming')
 
-    def test_trimming_side_effects(self):
+    def test_dfa_trimming_side_effects(self):
         """ Tests the function makes side effects on input """
         input_before = copy.deepcopy(self.dfa_trimming_test_01)
         DFA.dfa_trimming(self.dfa_trimming_test_01)
         self.assertNotEquals(input_before, self.dfa_trimming_test_01)
 
-    def test_trimming_side_effects_copy(self):
+    def test_dfa_trimming_side_effects_copy(self):
         """ Tests the function doesn't make side effects if a copy is passed as input """
         input_before = copy.deepcopy(self.dfa_trimming_test_01)
         DFA.dfa_trimming(copy.deepcopy(self.dfa_trimming_test_01))
         self.assertEquals(input_before, self.dfa_trimming_test_01)
+
+    def test_dfa_trimming_empty_states(self):
+        """ Tests trimming a DFA without states"""
+        test = copy.deepcopy(self.dfa_trimming_test_02)
+        trimmed = DFA.dfa_trimming(self.dfa_trimming_test_02)
+        self.assertEqual(trimmed, test)
+
+    def test_dfa_trimming_empty_transitions(self):
+        """ Tests trimming a DFA without transitions"""
+        test = {
+            'alphabet': set(),
+            'states': {'s0'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': dict()
+        }
+        self.assertEqual(DFA.dfa_trimming(self.dfa_trimming_test_03), test)
+
+    def test_dfa_trimming_non_reachable_non_co_reachable(self):
+        """ Tests trimming a DFA without transitions"""
+        test = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': dict()
+        }
+        self.assertEqual(DFA.dfa_trimming(self.dfa_trimming_test_04), test)
