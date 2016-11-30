@@ -1038,7 +1038,7 @@ class TestDfaTrimming(TestCase):
 class TestDfaProjection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_projection_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_projection_1_test_01.dot')
+        self.dfa_projection_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_projection_test_01.dot')
         self.dfa_projection_test_01_solution = {
             'alphabet': {'10c', 'gum'},
             'states': {'s0', 's1', 's2', 's3'},
@@ -1054,7 +1054,6 @@ class TestDfaProjection(TestCase):
                 ('s3', 'gum'): {'s0', 's1', 's2', 's3'}
             }
         }
-        self.dfa_projection_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_projection_1_test_02.dot')
         self.dfa_projection_test_02_solution = {
             'alphabet': set(),
             'states': {'s0', 's1', 's2', 's3'},
@@ -1070,5 +1069,58 @@ class TestDfaProjection(TestCase):
 
     def test_dfa_projection_full_alphabet_projection(self):
         """ Tests a dfa projection where all the symbols of the alphabets got projected out """
-        projection = DFA.dfa_projection(self.dfa_projection_test_02, {'5c', '10c', 'gum'})
+        projection = DFA.dfa_projection(self.dfa_projection_test_01, {'5c', '10c', 'gum'})
         self.assertDictEqual(projection, self.dfa_projection_test_02_solution)
+
+    def test_dfa_projection_words_not_in_alphabet(self):
+        """ Tests a dfa projection with word not present in the dfa alphabet """
+        projection = DFA.dfa_projection(self.dfa_projection_test_01, {"pippo"})
+        solution = self.dfa_projection_test_01
+
+        solution['initial_states'] = set()
+        solution['initial_states'].add(solution['initial_state'])
+        solution.pop('initial_state')
+
+        for transition in solution['transitions']:
+            app = solution['transitions'][transition]
+            solution['transitions'][transition] = set()
+            solution['transitions'][transition].add(app)
+
+        self.assertDictEqual(projection, solution)
+
+    def test_dfa_projection_empty_words(self):
+        """ Tests a dfa projection without word o project out """
+        projection = DFA.dfa_projection(self.dfa_projection_test_01, set())
+        solution = self.dfa_projection_test_01
+
+        solution['initial_states'] = set()
+        solution['initial_states'].add(solution['initial_state'])
+        solution.pop('initial_state')
+
+        for transition in solution['transitions']:
+            app = solution['transitions'][transition]
+            solution['transitions'][transition] = set()
+            solution['transitions'][transition].add(app)
+
+        self.assertDictEqual(projection, solution)
+
+    @unittest.expectedFailure
+    def test_dfa_projection_wrong_input_1(self):
+        """ Tests a dfa projection where the first input is different from a dict representing a dfa """
+        DFA.dfa_projection(0, {'5c'})
+
+    @unittest.expectedFailure
+    def test_dfa_projection_wrong_dict(self):
+        """ Tests a dfa projection where the first input is different from a well formatted dict representing a dfa """
+        DFA.dfa_projection({}, {'5c'})
+
+    @unittest.expectedFailure
+    def test_dfa_projection_wrong_input_2(self):
+        """ Tests a dfa projection where the second input is different from a set of word """
+        DFA.dfa_projection(self.dfa_projection_test_01, 0)
+
+    def test_dfa_projection_side_effects(self):
+        """ Tests the function doesn't make side effects on input """
+        before = copy.deepcopy(self.dfa_projection_test_01)
+        DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
+        self.assertDictEqual(before, self.dfa_projection_test_01)
