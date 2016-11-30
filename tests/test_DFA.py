@@ -1033,3 +1033,42 @@ class TestDfaTrimming(TestCase):
             'transitions': dict()
         }
         self.assertEqual(DFA.dfa_trimming(self.dfa_trimming_test_04), test)
+
+
+class TestDfaProjection(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_projection_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_projection_1_test_01.dot')
+        self.dfa_projection_test_01_solution = {
+            'alphabet': {'10c', 'gum'},
+            'states': {'s0', 's1', 's2', 's3'},
+            'initial_states': {'s0', 's1', 's2', 's3'},
+            'accepting_states': {'s0'},
+            'transitions': {
+                ('s0', '10c'): {'s2', 's3'},
+                ('s0', 'gum'): {'s0', 's1', 's2', 's3'},
+                ('s1', '10c'): {'s3'},
+                ('s1', 'gum'): {'s0', 's1', 's2', 's3'},
+                ('s2', '10c'): {'s3'},
+                ('s2', 'gum'): {'s0', 's1', 's2', 's3'},
+                ('s3', 'gum'): {'s0', 's1', 's2', 's3'}
+            }
+        }
+        self.dfa_projection_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_projection_1_test_02.dot')
+        self.dfa_projection_test_02_solution = {
+            'alphabet': set(),
+            'states': {'s0', 's1', 's2', 's3'},
+            'initial_states': {'s0', 's1', 's2', 's3'},
+            'accepting_states': {'s0'},
+            'transitions': dict()
+        }
+
+    def test_dfa_projection(self):
+        """ Tests a correct dfa projection"""
+        projection = DFA.dfa_projection(self.dfa_projection_test_01, {"5c"})
+        self.assertDictEqual(projection, self.dfa_projection_test_01_solution)
+
+    def test_dfa_projection_full_alphabet_projection(self):
+        """ Tests a dfa projection where all the symbols of the alphabets got projected out """
+        projection = DFA.dfa_projection(self.dfa_projection_test_02, {'5c', '10c', 'gum'})
+        self.assertDictEqual(projection, self.dfa_projection_test_02_solution)
