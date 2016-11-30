@@ -449,7 +449,8 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     nfa['initial_states'] = set()
     nfa['initial_states'].add(dfa['initial_state'])
     if dfa['initial_state'] in e_x:
-        nfa['initial_states'].add(state_0 for state_0 in e_x[dfa['initial_state']])
+        for state_0 in e_x[dfa['initial_state']]:
+            nfa['initial_states'].add(state_0)
 
     # inverse transition function
     inv_e_x = {}
