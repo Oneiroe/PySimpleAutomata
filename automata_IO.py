@@ -14,11 +14,20 @@ import re
 
 
 def __replace_all(repls, str):
+    """ Replaces from a string str all the occurrences some symbols according to mapping repls
+    :param repls: dict() where #key is the old character and #value is the one to substitute with
+    :param str: original string where to apply the replacements
+    :return: the string with the desired characters replaced
+    """
     return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
 
-# Import a dfa from a json file
 def dfa_json_importer(input_file):
+    """ Import a dfa from a json file
+
+    :param input_file: path to json file
+    :return: dict() representing a dfa
+    """
     file = open(input_file)
     json_file = json.load(file)
     # TODO exception handling while JSON deconding/IO error
@@ -34,16 +43,16 @@ def dfa_json_importer(input_file):
     # return [alphabet, states, initial_state, accepting_states, transitions]
 
     # return map
-    dfa = {}
-    dfa['alphabet'] = alphabet
-    dfa['states'] = states
-    dfa['initial_state'] = initial_state
-    dfa['accepting_states'] = accepting_states
-    dfa['transitions'] = transitions
+    dfa = {
+        'alphabet': alphabet,
+        'states': states,
+        'initial_state': initial_state,
+        'accepting_states': accepting_states,
+        'transitions': transitions
+    }
     return dfa
 
 
-# Import a dfa from a DOT file
 def dfa_dot_importer(input_file: str) -> dict:
     """ Import a dfa from a .dot file
 
@@ -77,7 +86,6 @@ def dfa_dot_importer(input_file: str) -> dict:
     for node in g.get_nodes():
         if node.get_name() == 'fake' or node.get_name() == 'graph' or node.get_name() == 'node':
             continue
-        # states.add(node.get_name())
 
         node_reference = __replace_all(replacements, node.get_name()).split(',')
         if len(node_reference) > 1:
@@ -130,8 +138,6 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-# Print in output a DOT file and an image of the given DFA
-# pydot library
 def dfa_pydot_render(dfa, name):
     """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using pydot library
 
@@ -160,8 +166,6 @@ def dfa_pydot_render(dfa, name):
     g.write_dot('img/' + name + '.dot')
 
 
-# Print in output a DOT file and an image of the given DFA
-# graphviz library
 def dfa_graphviz_render(dfa, name):
     """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using graphviz library
     :param dfa: dict() representing a dfa
@@ -209,8 +213,12 @@ def dfa_to_dot(dfa):
     return
 
 
-# Import a nfa from a json file
 def nfa_json_importer(input_file):
+    """ Import a nfa from a json file
+
+    :param input_file: path to json file
+    :return: dict() representing a nfa
+    """
     file = open(input_file)
     json_file = json.load(file)
     # TODO exception handling while JSON deconding/IO error
@@ -235,7 +243,6 @@ def nfa_json_importer(input_file):
     return nfa
 
 
-# Import a nfa from a dot file
 def nfa_dot_importer(input_file):
     """ Returns a nfa dict() object from a .dot file representing a dfa
 
