@@ -1124,3 +1124,62 @@ class TestDfaProjection(TestCase):
         before = copy.deepcopy(self.dfa_projection_test_01)
         DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
         self.assertDictEqual(before, self.dfa_projection_test_01)
+
+
+class TestDfaNonemptinessCheck(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_nonemptiness_check_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_nonemptiness_check_test_01.dot')
+        self.dfa_nonemptiness_check_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_nonemptiness_check_test_02.dot')
+        self.dfa_nonemptiness_check_test_03 = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+        self.dfa_nonemptiness_check_test_04 = {
+            'alphabet': {'5c', 'gum'},
+            'states': {'s0', 's1', 's2', 's3', 's4'},
+            'initial_state': 's0',
+            'accepting_states': {'s0'},
+            'transitions': {
+                ('s0', '10c'): 's2',
+                ('s0', '5c'): 's1',
+                ('s1', '10c'): 's3',
+                ('s2', '10c'): 's3',
+                ('s3', 'gum'): 's0'
+            }
+        }
+
+    def test_dfa_nonemptiness_check(self):
+        """ Tests correctly the nonemptiness of the input """
+        self.assertTrue(DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_01))
+
+    def test_dfa_nonemptiness_check_false(self):
+        """ Tests correctly the emptiness of the input """
+        self.assertFalse(DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_02))
+
+    def test_dfa_nonemptiness_check_empty(self):
+        """ Tests the nonemptines of an empty dfa"""
+        self.assertFalse(DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_03))
+
+    @unittest.expectedFailure
+    def test_dfa_nonemptiness_check_wrong_dict(self):
+        """ Tests the nonemptines of an input dict different from a dict representing a dfa """
+        self.assertFalse(DFA.dfa_nonemptiness_check({}))
+
+    def test_dfa_nonemptiness_check_wromg_dict_format(self):
+        """ Tests the nonemptines of a dfa dict object with inconsistent data (transitions not present in alphabet) """
+        self.assertFalse(DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_04))
+
+    @unittest.expectedFailure
+    def test_dfa_nonemptiness_check_wrong_input(self):
+        """ Tests the nonemptines of an input different from a dict object """
+        self.assertFalse(DFA.dfa_nonemptiness_check(0))
+
+    def test_dfa_nonemptiness_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.dfa_nonemptiness_check_test_01)
+        DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_01)
+        self.assertDictEqual(before, self.dfa_nonemptiness_check_test_01)

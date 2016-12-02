@@ -498,7 +498,7 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
     visited = set()
     visited.add(dfa['initial_state'])
     while queue:
-        state = queue.pop()  # TODO tweak popping order (now the last element is chosen)
+        state = queue.pop()
         for a in dfa['alphabet']:
             if (state, a) in dfa['transitions']:
                 if dfa['transitions'][state, a] in dfa['accepting_states']:
