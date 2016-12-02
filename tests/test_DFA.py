@@ -852,7 +852,7 @@ class TestDfaReachable(TestCase):
         self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_04.dot')
         self.dfa_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_05.dot')
         self.dfa_reachable_test_intersected = automata_IO.dfa_dot_importer(
-            './img/graphviz_dfa_intersection_intersecting.dot')
+            './dot/automata_io_dfa_imported_intersection.dot')
 
     def test_dfa_reachable_already_reachable(self):
         """ Tests making reachable a DFA even if its already completely reachable """

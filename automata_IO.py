@@ -8,6 +8,9 @@ import re
 # ###
 # TO-DO
 # TODO correctness check of json & DOT imported automata
+# TODO automata conformance check (eg. all transition uses word in alphabet,all transition involved states in States,..)
+# TODO ignore node "None" if present
+# TODO for NFAs use multiple "fake" node for each initial state
 
 
 # Export a dfa "object" to a json file
@@ -138,84 +141,6 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-# Export a nfa "object" to a json file
-# TODO nfa_to_json
-def nfa_to_json(nfa):
-    return
-
-
-# Export a dfa "object" to a DOT file
-# TODO dfa_to_dot
-def nfa_to_dot(dfa):
-    return
-
-
-# Import a nfa from a json file
-def nfa_json_importer(input_file):
-    file = open(input_file)
-    json_file = json.load(file)
-    # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_states = set(json_file['initial_states'])
-    accepting_states = set(json_file['accepting_states'])
-    transitions = {}  # key [state in states, action in alphabet] value [et of arriving states in states]
-    for p in json_file['transitions']:
-        transitions.setdefault((p[0], p[1]), set()).add(p[2])
-
-    # return list
-    # return [alphabet, states, initial_states, accepting_states, transitions]
-
-    # return map
-    nfa = {}
-    nfa['alphabet'] = alphabet
-    nfa['states'] = states
-    nfa['initial_states'] = initial_states
-    nfa['accepting_states'] = accepting_states
-    nfa['transitions'] = transitions
-    return nfa
-
-
-# Import a nfa from a dot file
-# TODO
-def nfa_dot_importer(input_file):
-    nfa = {}
-    return nfa
-
-
-# Export a afw "object" to a json file
-# TODO afw_to_json
-def afw_to_json(afw):
-    return
-
-
-# Import a afw from a json file
-def afw_json_importer(input_file):
-    file = open(input_file)
-    json_file = json.load(file)
-    # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_state = json_file['initial_state']
-    accepting_states = set(json_file['accepting_states'])
-
-    transitions = {}  # key [state in states, action in alphabet] value [string representing boolean expression]
-    for p in json_file['transitions']:
-        transitions[p[0], p[1]] = p[2]
-
-    # return list
-    # return [alphabet, states, initial_state, accepting_states, transitions]
-
-    # return map
-    afw = {}
-    afw['alphabet'] = alphabet
-    afw['states'] = states
-    afw['initial_state'] = initial_state
-    afw['accepting_states'] = accepting_states
-    afw['transitions'] = transitions
-    return afw
-
-
 # Print in output a DOT file and an image of the given DFA
 # pydot library
 def pydot_dfa_render(dfa, name):
@@ -264,6 +189,61 @@ def graphviz_dfa_render(dfa, name):
     g.render(filename='img/' + name + '.dot')
 
 
+# Checks if the dfa is well formatted
+# TODO dfa_conformance_check
+def dfa_conformance_check(dfa):
+    # check if there are just the right keys
+    # checks all transition words are in alphabet and viceversa
+    # checks all transition states are in states and viceversa
+    # checks for forbidden symbols, words, names, etc
+    return
+
+
+# Export a nfa "object" to a json file
+# TODO nfa_to_json
+def nfa_to_json(nfa):
+    return
+
+
+# Export a dfa "object" to a DOT file
+# TODO dfa_to_dot
+def nfa_to_dot(dfa):
+    return
+
+
+# Import a nfa from a json file
+def nfa_json_importer(input_file):
+    file = open(input_file)
+    json_file = json.load(file)
+    # TODO exception handling while JSON deconding/IO error
+    alphabet = set(json_file['alphabet'])
+    states = set(json_file['states'])
+    initial_states = set(json_file['initial_states'])
+    accepting_states = set(json_file['accepting_states'])
+    transitions = {}  # key [state in states, action in alphabet] value [et of arriving states in states]
+    for p in json_file['transitions']:
+        transitions.setdefault((p[0], p[1]), set()).add(p[2])
+
+    # return list
+    # return [alphabet, states, initial_states, accepting_states, transitions]
+
+    # return map
+    nfa = {}
+    nfa['alphabet'] = alphabet
+    nfa['states'] = states
+    nfa['initial_states'] = initial_states
+    nfa['accepting_states'] = accepting_states
+    nfa['transitions'] = transitions
+    return nfa
+
+
+# Import a nfa from a dot file
+# TODO
+def nfa_dot_importer(input_file):
+    nfa = {}
+    return nfa
+
+
 def nfa_render(nfa, name):
     g = pydot.Dot(graph_type='digraph')
 
@@ -286,3 +266,36 @@ def nfa_render(nfa, name):
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
     return
+
+
+# Export a afw "object" to a json file
+# TODO afw_to_json
+def afw_to_json(afw):
+    return
+
+
+# Import a afw from a json file
+def afw_json_importer(input_file):
+    file = open(input_file)
+    json_file = json.load(file)
+    # TODO exception handling while JSON deconding/IO error
+    alphabet = set(json_file['alphabet'])
+    states = set(json_file['states'])
+    initial_state = json_file['initial_state']
+    accepting_states = set(json_file['accepting_states'])
+
+    transitions = {}  # key [state in states, action in alphabet] value [string representing boolean expression]
+    for p in json_file['transitions']:
+        transitions[p[0], p[1]] = p[2]
+
+    # return list
+    # return [alphabet, states, initial_state, accepting_states, transitions]
+
+    # return map
+    afw = {}
+    afw['alphabet'] = alphabet
+    afw['states'] = states
+    afw['initial_state'] = initial_state
+    afw['accepting_states'] = accepting_states
+    afw['transitions'] = transitions
+    return afw
