@@ -486,12 +486,15 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
 
 def dfa_nonemptiness_check(dfa: dict) -> bool:
-    """ Checks if the input dfa is nonempty, so if it recognize at least a language except the empty one
+    """ Checks if the input dfa is nonempty, so if it recognize a language except the empty one
 
-    MOAR
+    An automaton A is nonempty if L(A) != ∅. L(A) is nonempty iff there are states s_0 and t ∈ F such that
+    t is connected to s_0. Thus, automata nonemptiness is equivalent to graph reachability, where a breadth-first-search
+    algorithm can construct in linear time the set of all states connected to initial state s_0.
+    A is nonempty iff this set intersects F nontrivially.
 
     :param dfa: dict() representing a dfa
-    :return: bool, True if the dfa is nonempty, False in the other case
+    :return: bool, True if the dfa is nonempty, False otherwise
     """
     # BFS
     queue = [dfa['initial_state']]
