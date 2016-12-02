@@ -132,7 +132,7 @@ def dfa_dot_importer(input_file: str) -> dict:
 
 # Print in output a DOT file and an image of the given DFA
 # pydot library
-def pydot_dfa_render(dfa, name):
+def dfa_pydot_render(dfa, name):
     # TODO special view for sink node?
     g = pydot.Dot(graph_type='digraph')
 
@@ -157,7 +157,7 @@ def pydot_dfa_render(dfa, name):
 
 # Print in output a DOT file and an image of the given DFA
 # graphviz library
-def graphviz_dfa_render(dfa, name):
+def dfa_graphviz_render(dfa, name):
     g = graphviz.Digraph(format='svg')
     g.node('fake', style='invisible')
     for state in dfa['states']:
@@ -309,7 +309,7 @@ def nfa_dot_importer(input_file):
     return nfa
 
 
-def nfa_render(nfa, name):
+def nfa_pydot_render(nfa, name):
     g = pydot.Dot(graph_type='digraph')
 
     fake = pydot.Node('fake', style='invisible')

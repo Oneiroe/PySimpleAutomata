@@ -992,7 +992,7 @@ class TestDfaTrimming(TestCase):
 
     def test_dfa_trimming(self):
         """ Tests a correct trimming of a dfa"""
-        automata_IO.graphviz_dfa_render(DFA.dfa_trimming(self.dfa_trimming_test_01), 'graphviz_dfa_trimming')
+        automata_IO.dfa_graphviz_render(DFA.dfa_trimming(self.dfa_trimming_test_01), 'graphviz_dfa_trimming')
 
     def test_dfa_trimming_side_effects(self):
         """ Tests the function makes side effects on input """

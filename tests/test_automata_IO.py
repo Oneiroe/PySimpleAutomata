@@ -92,10 +92,10 @@ class TestPydotDfaRender(TestCase):
 
     def test_pydot_dfa_render(self):
         """ Tests a simple dfa rendering thorough pydot library"""
-        automata_IO.pydot_dfa_render(self.dfa_01, 'pydot_dfa_render_test')
+        automata_IO.dfa_pydot_render(self.dfa_01, 'pydot_dfa_render_test')
 
     def test_pydot_dfa_intersection_render(self):
-        automata_IO.pydot_dfa_render(self.dfa_intersected, 'pydot_dfa_intersection_render_test')
+        automata_IO.dfa_pydot_render(self.dfa_intersected, 'pydot_dfa_intersection_render_test')
 
 
 class TestGraphvizDfaRender(TestCase):
@@ -108,11 +108,11 @@ class TestGraphvizDfaRender(TestCase):
 
     def test_graphviz_dfa_render(self):
         """ Tests a simple dfa render thorough graphiz library"""
-        automata_IO.graphviz_dfa_render(self.dfa_01, 'graphviz_dfa_render_test')
+        automata_IO.dfa_graphviz_render(self.dfa_01, 'graphviz_dfa_render_test')
 
     def test_graphviz_dfa_intersection_render(self):
         """ Tests a rendering of a dfa resulting from an intersection, so consisting in more complex nodes"""
-        automata_IO.graphviz_dfa_render(self.dfa_intersected, 'graphviz_dfa_intersection_render_test')
+        automata_IO.dfa_graphviz_render(self.dfa_intersected, 'graphviz_dfa_intersection_render_test')
 
 
 class TestNfaDotImporter(TestCase):
@@ -220,3 +220,4 @@ class TestNfaDotImporter(TestCase):
         """ Tests importing a nfa from a dot file derived from an intersection """
         nfa_02 = automata_IO.nfa_dot_importer('./dot/automata_io_nfa_imported_intersection.dot')
         self.assertDictEqual(nfa_02, self.dfa_test_02)
+
