@@ -133,6 +133,11 @@ def dfa_dot_importer(input_file: str) -> dict:
 # Print in output a DOT file and an image of the given DFA
 # pydot library
 def dfa_pydot_render(dfa, name):
+    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using pydot library
+
+    :param dfa: dict() representing a dfa
+    :param name: str() string with the name of the output file
+    """
     # TODO special view for sink node?
     g = pydot.Dot(graph_type='digraph')
 
@@ -158,6 +163,10 @@ def dfa_pydot_render(dfa, name):
 # Print in output a DOT file and an image of the given DFA
 # graphviz library
 def dfa_graphviz_render(dfa, name):
+    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using graphviz library
+    :param dfa: dict() representing a dfa
+    :param name: str() string with the name of the output file
+    """
     g = graphviz.Digraph(format='svg')
     g.node('fake', style='invisible')
     for state in dfa['states']:
@@ -310,27 +319,59 @@ def nfa_dot_importer(input_file):
 
 
 def nfa_pydot_render(nfa, name):
+    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using pydot library
+
+    :param nfa: dict() representing a nfa
+    :param name: str() string with the name of the output file
+    """
     g = pydot.Dot(graph_type='digraph')
 
-    fake = pydot.Node('fake', style='invisible')
-    g.add_node(fake)
+    fakes=[]
+    for i in range(len(nfa['initial_states'])):
+        fakes.append(pydot.Node('fake'+str(i), style='invisible'))
+        g.add_node(fakes[i])
     for state in nfa['states']:
         node = pydot.Node(state)
         if state in nfa['initial_states']:
             node.set_root(True)
-            g.add_edge(pydot.Edge(fake, node, style='bold'))
+            g.add_edge(pydot.Edge(fakes.pop(), node, style='bold'))
 
         if state in nfa['accepting_states']:
             node.set_shape('doublecircle')
         g.add_node(node)
 
     for transition in nfa['transitions']:
-        for dest in nfa['transitions'][transition]:
-            g.add_edge(pydot.Edge(transition[0], dest, label=transition[1]))
+        for destination in nfa['transitions'][transition]:
+            g.add_edge(pydot.Edge(transition[0], destination, label=transition[1]))
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
-    return
+
+
+def nfa_graphviz_render(nfa, name):
+    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using graphviz library
+
+    :param nfa: dict() representing a nfa
+    :param name: str() string with the name of the output file
+    """
+    g = graphviz.Digraph(format='svg')
+    g.node('fake', style='invisible')
+    for state in dfa['states']:
+        if state == dfa['initial_state']:
+            if state in dfa['accepting_states']:
+                g.node(str(state), root='true', shape='doublecircle')
+            else:
+                g.node(str(state), root='true')
+        elif state in dfa['accepting_states']:
+            g.node(str(state), shape='doublecircle')
+        else:
+            g.node(str(state))
+
+    g.edge('fake', str(dfa['initial_state']), style='bold')
+    for transition in dfa['transitions']:
+        g.edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1])
+
+    g.render(filename='img/' + name + '.dot')
 
 
 # Export a nfa "object" to a json file
