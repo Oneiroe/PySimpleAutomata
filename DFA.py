@@ -494,15 +494,15 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
     :return: bool, True if the dfa is nonempty, False in the other case
     """
     # BFS
-    stack = [dfa['initial_state']]
+    queue = [dfa['initial_state']]
     visited = set()
     visited.add(dfa['initial_state'])
-    while stack:
-        state = stack.pop()  # TODO tweak popping order (now the last element is chosen)
+    while queue:
+        state = queue.pop()  # TODO tweak popping order (now the last element is chosen)
         for a in dfa['alphabet']:
             if (state, a) in dfa['transitions']:
                 if dfa['transitions'][state, a] in dfa['accepting_states']:
                     return True
                 if dfa['transitions'][state, a] not in visited:
-                    stack.append(dfa['transitions'][state, a])
+                    queue.insert(0, dfa['transitions'][state, a])
     return False
