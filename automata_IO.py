@@ -13,16 +13,8 @@ import re
 # TODO for NFAs use multiple "fake" node for each initial state
 
 
-# Export a dfa "object" to a json file
-# TODO dfa_to_json
-def dfa_to_json(dfa):
-    return
-
-
-# Export a dfa "object" to a DOT file
-# TODO dfa_to_dot
-def dfa_to_dot(dfa):
-    return
+def __replace_all(repls, str):
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
 
 # Import a dfa from a json file
@@ -51,25 +43,22 @@ def dfa_json_importer(input_file):
     return dfa
 
 
-def __replace_all(repls, str):
-    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
-
-
 # Import a dfa from a DOT file
 def dfa_dot_importer(input_file: str) -> dict:
     """ Import a dfa from a .dot file
 
     Of .dot files are recognized the following attributes
 
-        nodeX   shape=doublecircle -> accepting node
-        nodeX   root=true -> initial node
-        edgeX   label="a" -> action in alphabet
-        fake [style=invisible] -> skip this node, fake invisible one to initial state arrow
-        fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+      • nodeX   shape=doublecircle -> accepting node
+      • nodeX   root=true -> initial node
+      • edgeX   label="a" -> action in alphabet
+      • fake    [style=invisible] -> skip this node, fake invisible one to initial state arrow
+      • fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
 
     Forbidden names:
-        'fake'  used for graphical purpose to drawn the arrow of the initial state
-        'sink'  used as additional state when completing a DFA
+      • 'fake'  used for graphical purpose to drawn the arrow of the initial state
+      • 'sink'  used as additional state when completing a DFA
+      • 'None'  used when no initial state is present
     Forbidden characters:
         '"' "'" '(' ')' ' '
 
@@ -77,7 +66,7 @@ def dfa_dot_importer(input_file: str) -> dict:
     :return: dict representing a dfa
     """
 
-    # #pyDot Object
+    # pyDot Object
     g = pydot.graph_from_dot_file(input_file)[0]
 
     states = set()
@@ -132,12 +121,12 @@ def dfa_dot_importer(input_file: str) -> dict:
     #     TODO raise exception for wrong formatted dfa: there must be at least an accepting state
 
     # return map
-    dfa = {}
-    dfa['alphabet'] = alphabet
-    dfa['states'] = states
-    dfa['initial_state'] = initial_state
-    dfa['accepting_states'] = accepting_states
-    dfa['transitions'] = transitions
+    dfa = {
+        'alphabet': alphabet,
+        'states': states,
+        'initial_state': initial_state,
+        'accepting_states': accepting_states,
+        'transitions': transitions}
     return dfa
 
 
@@ -199,15 +188,15 @@ def dfa_conformance_check(dfa):
     return
 
 
-# Export a nfa "object" to a json file
-# TODO nfa_to_json
-def nfa_to_json(nfa):
+# Export a dfa "object" to a json file
+# TODO dfa_to_json
+def dfa_to_json(dfa):
     return
 
 
 # Export a dfa "object" to a DOT file
 # TODO dfa_to_dot
-def nfa_to_dot(dfa):
+def dfa_to_dot(dfa):
     return
 
 
@@ -238,9 +227,85 @@ def nfa_json_importer(input_file):
 
 
 # Import a nfa from a dot file
-# TODO
 def nfa_dot_importer(input_file):
-    nfa = {}
+    """ Returns a nfa dict() object from a .dot file representing a dfa
+
+    Of .dot files are recognized the following attributes
+      • nodeX   shape=doublecircle -> accepting node
+      • nodeX   root=true -> initial node
+      • edgeX   label="a" -> action in alphabet
+      • fakeX   style=invisible -> skip this node, fake invisible one to initial state arrow
+      • fakeX -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+
+    All invisible nodes are skipped.
+
+    Forbidden names:
+      • 'fake'  used for graphical purpose to drawn the arrow of the initial state
+      • 'sink'  used as additional state when completing a DFA
+    Forbidden characters:
+        '"' "'" '(' ')' ' '
+
+    :param input_file: Path to input .dot file
+    :return: dict() representing a NFA
+    """
+
+    # pyDot Object
+    g = pydot.graph_from_dot_file(input_file)[0]
+
+    states = set()
+    initial_states = set()
+    accepting_states = set()
+
+    replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
+
+    for node in g.get_nodes():
+        if node.get_name() == 'fake' or node.get_name() == 'graph' or node.get_name() == 'node':
+            continue
+        if 'style' in node.get_attributes() and node.get_attributes()['style'] == 'invisible':
+            continue
+
+        node_reference = __replace_all(replacements, node.get_name()).split(',')
+        if len(node_reference) > 1:
+            node_reference = tuple(node_reference)
+        else:
+            node_reference = node_reference[0]
+        states.add(node_reference)
+        for attribute in node.get_attributes():
+            if attribute == 'root':
+                initial_states.add(node_reference)
+            if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
+                accepting_states.add(node_reference)
+
+    alphabet = set()
+    transitions = {}
+    for edge in g.get_edges():
+        source = __replace_all(replacements, edge.get_source()).split(',')
+        if len(source) > 1:
+            source = tuple(source)
+        else:
+            source = source[0]
+        destination = __replace_all(replacements, edge.get_destination()).split(',')
+        if len(destination) > 1:
+            destination = tuple(destination)
+        else:
+            destination = destination[0]
+
+        if source not in states or destination not in states:
+            continue
+
+        label = __replace_all(replacements, edge.get_label())
+        alphabet.add(label)
+
+        transitions.setdefault((source, label), set()).add(destination)
+
+    nfa = {
+        'alphabet': alphabet,
+        'states': states,
+        'initial_states': initial_states,
+        'accepting_states': accepting_states,
+        'transitions': transitions
+    }
+
     return nfa
 
 
@@ -265,6 +330,18 @@ def nfa_render(nfa, name):
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
+    return
+
+
+# Export a nfa "object" to a json file
+# TODO nfa_to_json
+def nfa_to_json(nfa):
+    return
+
+
+# Export a dfa "object" to a DOT file
+# TODO dfa_to_dot
+def nfa_to_dot(dfa):
     return
 
 
