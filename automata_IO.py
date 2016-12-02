@@ -326,12 +326,12 @@ def nfa_pydot_render(nfa, name):
     """
     g = pydot.Dot(graph_type='digraph')
 
-    fakes=[]
+    fakes = []
     for i in range(len(nfa['initial_states'])):
-        fakes.append(pydot.Node('fake'+str(i), style='invisible'))
+        fakes.append(pydot.Node('fake' + str(i), style='invisible'))
         g.add_node(fakes[i])
     for state in nfa['states']:
-        node = pydot.Node(state)
+        node = pydot.Node(str(state))
         if state in nfa['initial_states']:
             node.set_root(True)
             g.add_edge(pydot.Edge(fakes.pop(), node, style='bold'))
@@ -342,12 +342,13 @@ def nfa_pydot_render(nfa, name):
 
     for transition in nfa['transitions']:
         for destination in nfa['transitions'][transition]:
-            g.add_edge(pydot.Edge(transition[0], destination, label=transition[1]))
+            g.add_edge(pydot.Edge(str(transition[0]), str(destination), label=transition[1]))
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
 
 
+# TODO
 def nfa_graphviz_render(nfa, name):
     """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using graphviz library
 
@@ -356,20 +357,20 @@ def nfa_graphviz_render(nfa, name):
     """
     g = graphviz.Digraph(format='svg')
     g.node('fake', style='invisible')
-    for state in dfa['states']:
-        if state == dfa['initial_state']:
-            if state in dfa['accepting_states']:
+    for state in nfa['states']:
+        if state == nfa['initial_state']:
+            if state in nfa['accepting_states']:
                 g.node(str(state), root='true', shape='doublecircle')
             else:
                 g.node(str(state), root='true')
-        elif state in dfa['accepting_states']:
+        elif state in nfa['accepting_states']:
             g.node(str(state), shape='doublecircle')
         else:
             g.node(str(state))
 
-    g.edge('fake', str(dfa['initial_state']), style='bold')
-    for transition in dfa['transitions']:
-        g.edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1])
+    g.edge('fake', str(nfa['initial_state']), style='bold')
+    for transition in nfa['transitions']:
+        g.edge(str(transition[0]), str(nfa['transitions'][transition]), label=transition[1])
 
     g.render(filename='img/' + name + '.dot')
 
@@ -380,7 +381,7 @@ def nfa_to_json(nfa):
     return
 
 
-# Export a dfa "object" to a DOT file
+# Export a nfa "object" to a DOT file
 # TODO dfa_to_dot
 def nfa_to_dot(dfa):
     return
