@@ -330,3 +330,108 @@ class TestNfaPydotRender(TestCase):
     def test_nfa_pydot_intersection_render(self):
         """ Tests rendering through pydot library a nfa derived from an intersection """
         automata_IO.nfa_pydot_render(self.nfa_test_02, 'pydot_nfa_intersection')
+
+
+class TestNfaGraphvizRender(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_test_01 = {
+            'alphabet': {'10c', '5c', 'gum'},
+            'states': {'s0', 's1', 's2', 's3'},
+            'initial_states': {'s0', 's3'},
+            'accepting_states': {'s0'},
+            'transitions': {
+                ('s0', '10c'): {'s2'},
+                ('s0', '5c'): {'s1', 's2'},
+                ('s1', '10c'): {'s3'},
+                ('s1', '5c'): {'s2', 's3'},
+                ('s2', '10c'): {'s3'},
+                ('s2', '5c'): {'s3'},
+                ('s3', 'gum'): {'s0'}
+            }
+        }
+        self.nfa_test_02 = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('c3', 't1'),
+                ('s0', 't0'),
+                ('c3', 'c1'),
+                ('c1', 'c1'),
+                ('c2', 'c2'),
+                ('c4', 't3'),
+                ('c4', 'c3'),
+                ('c2', 't1'),
+                ('c4', 't2'),
+                ('s0', 't3'),
+                ('c1', 'c4'),
+                ('c2', 'c3'),
+                ('c4', 'c4'),
+                ('c2', 'c4'),
+                ('c1', 't1'),
+                ('s1', 'c2'),
+                ('c1', 'c2'),
+                ('s1', 't1'),
+                ('s1', 't2'),
+                ('c3', 't3'),
+                ('c4', 'c2'),
+                ('c3', 't2'),
+                ('c2', 't2'),
+                ('c4', 't1'),
+                ('s0', 't1'),
+                ('s0', 'c3'),
+                ('s0', 't2'),
+                ('s1', 'c4'),
+                ('c2', 't3'),
+                ('c2', 't0'),
+                ('c4', 't0'),
+                ('s0', 'c2'),
+                ('c3', 'c4'),
+                ('c1', 't0'),
+                ('s0', 'c4'),
+                ('c1', 't3'),
+                ('s0', 'c1'),
+                ('c1', 'c3'),
+                ('c3', 't0'),
+                ('s1', 't0'),
+                ('c3', 'c2'),
+                ('c4', 'c1'),
+                ('c2', 'c1'),
+                ('c1', 't2'),
+                ('s1', 'c3'),
+                ('s1', 't3'),
+                ('s1', 'c1'),
+                ('c3', 'c3')
+            },
+            'initial_states': {('s0', 't0'), ('c1', 't3')},
+            'accepting_states': {('s1', 'c4'), ('c4', 'c4'), ('c4', 't3'), ('s1', 't3')},
+            'transitions': {
+                (('c2', 'c2'), 'gum'): {('c4', 'c4')},
+                (('c2', 't0'), '5c'): {('c3', 'c1')},
+                (('s0', 't1'), 'gum'): {('s1', 't3')},
+                (('c2', 'c2'), '5c'): {('c3', 'c3')},
+                (('c3', 't2'), 'gum'): {('c1', 't0')},
+                (('s0', 't1'), '5c'): {('c1', 't2')},
+                (('c2', 't1'), 'gum'): {('c4', 't3')},
+                (('c3', 't1'), 'gum'): {('c1', 't3')},
+                (('s0', 'c2'), 'gum'): {('s1', 'c4')},
+                (('c2', 't1'), '5c'): {('c3', 't2')},
+                (('c1', 'c1'), '10c'): {('c2', 'c2')},
+                (('s0', 't0'), '5c'): {('c1', 'c1')},
+                (('c1', 't0'), '10c'): {('c2', 't1')},
+                (('s0', 'c2'), '5c'): {('c1', 'c3')},
+                (('s0', 't2'), 'gum'): {('s1', 't0')},
+                (('c3', 'c3'), 'gum'): {('c1', 'c1')},
+                (('c2', 'c3'), 'gum'): {('c4', 'c1')},
+                (('c2', 't2'), 'gum'): {('c4', 't0')},
+                (('c3', 'c2'), 'gum'): {('c1', 'c4')},
+                (('s0', 'c3'), 'gum'): {('s1', 'c1')}
+            }
+        }
+
+    def test_nfa_graphviz_render(self):
+        """ Tests a simple nfa rendering thorough graphviz library"""
+        automata_IO.nfa_graphviz_render(self.nfa_test_01, 'graphviz_nfa_simple')
+
+    def test_nfa_graphviz_intersection_render(self):
+        """ Tests rendering through graphviz library a nfa derived from an intersection """
+        automata_IO.nfa_graphviz_render(self.nfa_test_02, 'graphviz_nfa_intersection')

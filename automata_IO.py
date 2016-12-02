@@ -330,6 +330,7 @@ def nfa_pydot_render(nfa, name):
     for i in range(len(nfa['initial_states'])):
         fakes.append(pydot.Node('fake' + str(i), style='invisible'))
         g.add_node(fakes[i])
+
     for state in nfa['states']:
         node = pydot.Node(str(state))
         if state in nfa['initial_states']:
@@ -348,7 +349,6 @@ def nfa_pydot_render(nfa, name):
     g.write_dot('img/' + name + '.dot')
 
 
-# TODO
 def nfa_graphviz_render(nfa, name):
     """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using graphviz library
 
@@ -356,9 +356,14 @@ def nfa_graphviz_render(nfa, name):
     :param name: str() string with the name of the output file
     """
     g = graphviz.Digraph(format='svg')
-    g.node('fake', style='invisible')
+
+    fakes = []
+    for i in range(len(nfa['initial_states'])):
+        fakes.append('fake' + str(i))
+        g.node('fake' + str(i), style='invisible')
+
     for state in nfa['states']:
-        if state == nfa['initial_state']:
+        if state in nfa['initial_states']:
             if state in nfa['accepting_states']:
                 g.node(str(state), root='true', shape='doublecircle')
             else:
@@ -368,9 +373,11 @@ def nfa_graphviz_render(nfa, name):
         else:
             g.node(str(state))
 
-    g.edge('fake', str(nfa['initial_state']), style='bold')
+    for initial_state in nfa['initial_states']:
+        g.edge(fakes.pop(), str(initial_state), style='bold')
     for transition in nfa['transitions']:
-        g.edge(str(transition[0]), str(nfa['transitions'][transition]), label=transition[1])
+        for destination in nfa['transitions'][transition]:
+            g.edge(str(transition[0]), str(destination), label=transition[1])
 
     g.render(filename='img/' + name + '.dot')
 
