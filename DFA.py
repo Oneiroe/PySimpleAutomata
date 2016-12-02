@@ -409,10 +409,18 @@ def dfa_trimming(dfa: dict) -> dict:
 
 
 def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
-    """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in X are projected out.
+    """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in symbols_to_project
+    are projected out of the alphabet.
 
-    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in X.
-    Given a dfa A = (Σ, S, s 0 , ρ, F ), we can define an NFA A_πX that recognizes the language πX(L(A)).
+    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in a set X.
+    Given a dfa A = (Σ, S, s_0 , ρ, F ), we can define an NFA A_πX that recognizes the language πX(L(A)) as
+
+    A_πX= ( Σ−X, S, S_0 , ρ_X , F )
+
+    where
+
+    • S_0 = {s | (s_0 , s) ∈ ε_X }
+    • (s,a,s_y ) ∈ ρ_X iff there exist t, t_y s.t. (s,t) ∈ ε_X , t_y = ρ(t,a) and (t_y , s_y ) ∈ ε_X
 
     :param dfa: dict() representing a dfa
     :param symbols_to_project: set() containing symbols ∈ dfa['alphabet'] to be projected out from dfa
@@ -479,6 +487,8 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
 def dfa_nonemptiness_check(dfa: dict) -> bool:
     """ Checks if the input dfa is nonempty, so if it recognize at least a language except the empty one
+
+    MOAR
 
     :param dfa: dict() representing a dfa
     :return: bool, True if the dfa is nonempty, False in the other case
