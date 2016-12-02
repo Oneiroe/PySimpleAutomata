@@ -11,16 +11,17 @@ Formally a NFA, Nondeterministic Finite Automaton, is a tuple (Σ, S, S^0 , ρ, 
 In this module a NFA is defined as follows
 
  NFA = dict() with the following keys-values:
-    alphabet         => set()
-    states           => set()
-    initial_states   => set()
-    accepting_states => set()
-    transitions      => dict()  # key (state in states, action in alphabet) value {set of arriving states in states}
+  • alphabet         => set()
+  • states           => set()
+  • initial_states   => set()
+  • accepting_states => set()
+  • transitions      => dict()  # key (state in states, action in alphabet) value {set of arriving states in states}
 """
 
-from copy import deepcopy
 from itertools import product as cartesian_product
 import DFA
+from copy import deepcopy
+from copy import copy
 
 
 # ###
@@ -36,13 +37,14 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     :param nfa_2: dict() representing a nfa
     :return: dict() representing the intersected nfa
     """
-    intersection = {}
-    intersection['alphabet'] = nfa_1['alphabet']
-    intersection['states'] = set(cartesian_product(nfa_1['states'], nfa_2['states']))
-    intersection['initial_states'] = set(cartesian_product(nfa_1['initial_states'], nfa_2['initial_states']))
-    intersection['accepting_states'] = set(cartesian_product(nfa_1['accepting_states'], nfa_2['accepting_states']))
+    intersection = {
+        'alphabet': nfa_1['alphabet'],
+        'states': set(cartesian_product(nfa_1['states'], nfa_2['states'])),
+        'initial_states': set(cartesian_product(nfa_1['initial_states'], nfa_2['initial_states'])),
+        'accepting_states': set(cartesian_product(nfa_1['accepting_states'], nfa_2['accepting_states'])),
+        'transitions': {}
+    }
 
-    intersection['transitions'] = {}
     for s in intersection['states']:
         for a in intersection['alphabet']:
             if (s[0], a) not in nfa_1['transitions'] or (s[1], a) not in nfa_2['transitions']:
