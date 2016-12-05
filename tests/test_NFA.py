@@ -1,9 +1,14 @@
 from unittest import TestCase
 import unittest
 import NFA
+import automata_IO
+import copy
 
 
 class TestNfaIntersection(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+
     @unittest.skip("TestNfaIntersection TODO")
     def test_nfa_intersection(self):
         self.fail()

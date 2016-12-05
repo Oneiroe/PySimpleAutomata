@@ -73,7 +73,7 @@ class TestDfaDotImporter(TestCase):
 
     def test_dfa_dot_importer(self):
         """ Tests importing a dfa from a simple dot file"""
-        dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_01.dot')
+        dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
         self.assertDictEqual(dfa_01, self.dfa_test)
 
     def test_dfa_dot_importer_from_intersection(self):
@@ -85,9 +85,9 @@ class TestDfaDotImporter(TestCase):
 class TestDfaPydotRender(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_01.dot')
-        self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_01.dot')
-        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io_dfa_imported_intersection.dot')
+        self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
+        self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_01.dot')
+        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io/automata_io_dfa_imported_intersection.dot')
         self.dfa_intersected = DFA.dfa_intersection(self.dfa_01, self.dfa_02)
 
     def test_dfa_pydot_render(self):
@@ -101,9 +101,9 @@ class TestDfaPydotRender(TestCase):
 class TestDfaGraphvizRender(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_01.dot')
-        self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_01.dot')
-        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io_dfa_imported_intersection.dot')
+        self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
+        self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_01.dot')
+        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io/automata_io_dfa_imported_intersection.dot')
         self.dfa_intersected = DFA.dfa_intersection(self.dfa_01, self.dfa_02)
 
     def test_dfa_graphviz_render(self):
@@ -213,12 +213,12 @@ class TestNfaDotImporter(TestCase):
 
     def test_nfa_dot_importer(self):
         """ Tests importing a nfa from a simple .dot file """
-        nfa_01 = automata_IO.nfa_dot_importer('./dot/automata_io_nfa_dot_importer_test_01.dot')
+        nfa_01 = automata_IO.nfa_dot_importer('./dot/automata_io/automata_io_nfa_dot_importer_test_01.dot')
         self.assertDictEqual(nfa_01, self.nfa_test_01)
 
     def test_nfa_dot_importer_intersection(self):
         """ Tests importing a nfa from a dot file derived from an intersection """
-        nfa_02 = automata_IO.nfa_dot_importer('./dot/automata_io_nfa_imported_intersection.dot')
+        nfa_02 = automata_IO.nfa_dot_importer('./dot/automata_io/automata_io_nfa_imported_intersection.dot')
         self.assertDictEqual(nfa_02, self.nfa_test_02)
 
     def test_nfa_dot_importer_from_simple_pydot_render(self):

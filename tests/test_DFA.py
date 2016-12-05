@@ -7,8 +7,8 @@ import copy
 
 class TestRunAcceptance(TestCase):
     def setUp(self):
-        self.dfa_run_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_01.dot')
-        self.dfa_run_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_run_acceptance_test_02.dot')
+        self.dfa_run_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_run_acceptance_test_01.dot')
+        self.dfa_run_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_run_acceptance_test_02.dot')
 
     def test_run_acceptance(self):
         """ Tests a correct run """
@@ -62,8 +62,8 @@ class TestRunAcceptance(TestCase):
 
 class TestWordAcceptance(TestCase):
     def setUp(self):
-        self.dfa_word_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_word_acceptance_test_01.dot')
-        self.dfa_word_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_word_acceptance_test_02.dot')
+        self.dfa_word_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_word_acceptance_test_01.dot')
+        self.dfa_word_acceptance_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_word_acceptance_test_02.dot')
 
     def test_word_acceptance(self):
         """ Tests a correct word """
@@ -100,15 +100,15 @@ class TestWordAcceptance(TestCase):
 class TestDfaCompletion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_completion_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_01.dot')
-        self.dfa_completion_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_02.dot')
-        self.dfa_completion_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_completion_test_03.dot')
+        self.dfa_completion_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_completion_test_01.dot')
+        self.dfa_completion_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_completion_test_02.dot')
+        self.dfa_completion_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_completion_test_03.dot')
         self.dfa_completion_test_01_completed = automata_IO.dfa_dot_importer(
-            './dot/dfa_completion_test_01_completed.dot')
+            './dot/dfa/dfa_completion_test_01_completed.dot')
         self.dfa_completion_test_02_completed = automata_IO.dfa_dot_importer(
-            './dot/dfa_completion_test_02_completed.dot')
+            './dot/dfa/dfa_completion_test_02_completed.dot')
         self.dfa_completion_test_03_completed = automata_IO.dfa_dot_importer(
-            './dot/dfa_completion_test_03_completed.dot')
+            './dot/dfa/dfa_completion_test_03_completed.dot')
 
     def test_dfa_completion(self):
         """ Tests a correct completion """
@@ -148,15 +148,15 @@ class TestDfaCompletion(TestCase):
 class TestDfaComplementation(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_complementation_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_01.dot')
+        self.dfa_complementation_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_complementation_test_01.dot')
         self.dfa_complementation_test_01_complemented = automata_IO.dfa_dot_importer(
-            './dot/dfa_complementation_test_01_complemented.dot')
-        self.dfa_complementation_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_02.dot')
+            './dot/dfa/dfa_complementation_test_01_complemented.dot')
+        self.dfa_complementation_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_complementation_test_02.dot')
         self.dfa_complementation_test_02_complemented = automata_IO.dfa_dot_importer(
-            './dot/dfa_complementation_test_02_complemented.dot')
-        self.dfa_complementation_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_complementation_test_03.dot')
+            './dot/dfa/dfa_complementation_test_02_complemented.dot')
+        self.dfa_complementation_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_complementation_test_03.dot')
         self.dfa_complementation_test_03_complemented = automata_IO.dfa_dot_importer(
-            './dot/dfa_complementation_test_03_complemented.dot')
+            './dot/dfa/dfa_complementation_test_03_complemented.dot')
 
     def test_dfa_complementation(self):
         """ Tests a correct complementation. """
@@ -195,10 +195,10 @@ class TestDfaComplementation(TestCase):
 class TestDfaIntersection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_intersection_1_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_01.dot')
-        self.dfa_intersection_2_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_01.dot')
-        self.dfa_intersection_1_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_1_test_02.dot')
-        self.dfa_intersection_2_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_intersection_2_test_02.dot')
+        self.dfa_intersection_1_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
+        self.dfa_intersection_2_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_01.dot')
+        self.dfa_intersection_1_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_02.dot')
+        self.dfa_intersection_2_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_02.dot')
 
         self.dfa_test_disjoint = {
             'alphabet': {'5c', '10c', 'gum'},
@@ -414,10 +414,10 @@ class TestDfaIntersection(TestCase):
 class TestDfaUnion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_union_1_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_union_1_test_01.dot')
-        self.dfa_union_2_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_union_2_test_01.dot')
-        self.dfa_union_1_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_union_1_test_02.dot')
-        self.dfa_union_2_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_union_2_test_02.dot')
+        self.dfa_union_1_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_union_1_test_01.dot')
+        self.dfa_union_2_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_union_2_test_01.dot')
+        self.dfa_union_1_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_union_1_test_02.dot')
+        self.dfa_union_2_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_union_2_test_02.dot')
 
         self.dfa_test_disjoint = {
             'alphabet': {'5c', '10c', 'gum'},
@@ -775,14 +775,14 @@ class TestDfaUnion(TestCase):
 class TestDfaMinimization(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_minimization_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
-        self.dfa_minimization_test_01_minimized = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
-        self.dfa_minimization_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_02.dot')
-        self.dfa_minimization_test_02_minimized_s2 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_01_minimized = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_02.dot')
+        self.dfa_minimization_test_02_minimized_s2 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_02_minimized_s4 = automata_IO.dfa_dot_importer(
-            './dot/dfa_minimization_test_01_s4.dot')
-        self.dfa_minimization_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_03.dot')
-        self.dfa_minimization_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_minimization_test_04.dot')
+            './dot/dfa/dfa_minimization_test_01_s4.dot')
+        self.dfa_minimization_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_03.dot')
+        self.dfa_minimization_test_04 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_04.dot')
 
     def test_dfa_minimization_already_minimized(self):
         """ Tests the minimization of a DFA already minimal"""
@@ -845,14 +845,14 @@ class TestDfaMinimization(TestCase):
 class TestDfaReachable(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_01.dot')
-        self.dfa_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_02.dot')
-        self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_02_reachable.dot')
-        self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_03.dot')
-        self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_04.dot')
-        self.dfa_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa_reachable_test_05.dot')
+        self.dfa_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_01.dot')
+        self.dfa_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_02.dot')
+        self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_02_reachable.dot')
+        self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_03.dot')
+        self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_04.dot')
+        self.dfa_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_05.dot')
         self.dfa_reachable_test_intersected = automata_IO.dfa_dot_importer(
-            './dot/automata_io_dfa_imported_intersection.dot')
+            './dot/automata_io/automata_io_dfa_imported_intersection.dot')
 
     def test_dfa_reachable_already_reachable(self):
         """ Tests making reachable a DFA even if its already completely reachable """
@@ -912,14 +912,14 @@ class TestDfaReachable(TestCase):
 class TestDfaCoReachable(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_co_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_01.dot')
-        self.dfa_co_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_02.dot')
+        self.dfa_co_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_01.dot')
+        self.dfa_co_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_02.dot')
         self.dfa_co_reachable_test_02_co_reachable = automata_IO.dfa_dot_importer(
-            './dot/dfa_co_reachable_test_02_co_reachable.dot')
-        self.dfa_co_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_03.dot')
-        self.dfa_co_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_04.dot')
-        self.dfa_co_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_05.dot')
-        self.dfa_co_reachable_test_06 = automata_IO.dfa_dot_importer('./dot/dfa_co_reachable_test_06.dot')
+            './dot/dfa/dfa_co_reachable_test_02_co_reachable.dot')
+        self.dfa_co_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_03.dot')
+        self.dfa_co_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_04.dot')
+        self.dfa_co_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_05.dot')
+        self.dfa_co_reachable_test_06 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_co_reachable_test_06.dot')
 
     def test_dfa_co_reachable_already_co_reachable(self):
         """ Tests making co_reachable a DFA even if its already completely co_reachable """
@@ -985,10 +985,10 @@ class TestDfaCoReachable(TestCase):
 class TestDfaTrimming(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_trimming_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_01.dot')
-        self.dfa_trimming_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_02.dot')
-        self.dfa_trimming_test_03 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_03.dot')
-        self.dfa_trimming_test_04 = automata_IO.dfa_dot_importer('./dot/dfa_trimming_test_04.dot')
+        self.dfa_trimming_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_trimming_test_01.dot')
+        self.dfa_trimming_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_trimming_test_02.dot')
+        self.dfa_trimming_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_trimming_test_03.dot')
+        self.dfa_trimming_test_04 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_trimming_test_04.dot')
 
     def test_dfa_trimming(self):
         """ Tests a correct trimming of a dfa"""
@@ -1038,7 +1038,7 @@ class TestDfaTrimming(TestCase):
 class TestDfaProjection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_projection_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_projection_test_01.dot')
+        self.dfa_projection_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_projection_test_01.dot')
         self.dfa_projection_test_01_solution = {
             'alphabet': {'10c', 'gum'},
             'states': {'s0', 's1', 's2', 's3'},
@@ -1129,8 +1129,8 @@ class TestDfaProjection(TestCase):
 class TestDfaNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_nonemptiness_check_test_01 = automata_IO.dfa_dot_importer('./dot/dfa_nonemptiness_check_test_01.dot')
-        self.dfa_nonemptiness_check_test_02 = automata_IO.dfa_dot_importer('./dot/dfa_nonemptiness_check_test_02.dot')
+        self.dfa_nonemptiness_check_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_nonemptiness_check_test_01.dot')
+        self.dfa_nonemptiness_check_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_nonemptiness_check_test_02.dot')
         self.dfa_nonemptiness_check_test_03 = {
             'alphabet': set(),
             'states': set(),
