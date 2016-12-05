@@ -69,8 +69,35 @@ class TestNfaIntersection(TestCase):
     def test_nfa_intersection(self):
         """ Tests a correct NFAs intersection """
         intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
-        automata_IO.nfa_graphviz_render(intersection, 'nfa_graphviz_intersection')
         self.assertDictEqual(intersection, self.nfa_intersection_test_01_solution)
+
+    @unittest.expectedFailure
+    def test_nfa_intersection_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        NFA.nfa_intersection(0, self.nfa_intersection_2_test_01)
+
+    @unittest.expectedFailure
+    def test_nfa_intersection_wrong_input_2(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        NFA.nfa_intersection(self.nfa_intersection_1_test_01, 0)
+
+    @unittest.expectedFailure
+    def test_nfa_intersection_wrong_dict_1(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.nfa_intersection({'goofy': 'donald'}, self.nfa_intersection_2_test_01)
+
+    @unittest.expectedFailure
+    def test_nfa_intersection_wrong_dict_2(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.nfa_intersection(self.nfa_intersection_1_test_01, {'goofy': 'donald'})
+
+    def test_nfa_intersection_side_effects(self):
+        """ Tests that the intersection function doesn't make side effects on input DFAs"""
+        before_1 = copy.deepcopy(self.nfa_intersection_1_test_01)
+        before_2 = copy.deepcopy(self.nfa_intersection_2_test_01)
+        NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
+        self.assertDictEqual(before_1, self.nfa_intersection_1_test_01)
+        self.assertDictEqual(before_2, self.nfa_intersection_2_test_01)
 
 
 class TestNfaUnion(TestCase):
