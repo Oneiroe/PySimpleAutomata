@@ -120,7 +120,7 @@ def dfa_complementation(dfa: dict) -> dict:
 
 
 def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
-    """ Returns a dfa accepting the intersection of the dfas in input.
+    """ Returns a dfa accepting the intersection of the DFAs in input.
 
     Let A_1 = (Σ, S_1 , s_01 , ρ_1 , F_1 ) and A_2 = (Σ, S_2 , s_02 , ρ_2 , F_2 ) be two DFAs.
     Then there is a DFA A_∧ that runs simultaneously both A_1 and A_2 on the input word and accepts when both accept.
@@ -147,11 +147,9 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     for (state_dfa_1, state_dfa_2) in intersection['states']:
         for a in intersection['alphabet']:
             if (state_dfa_1, a) in dfa_1['transitions'] and (state_dfa_2, a) in dfa_2['transitions']:
-                s1 = dfa_1['transitions'][state_dfa_1, a]
-                s2 = dfa_2['transitions'][state_dfa_2, a]
-                intersection['transitions'][(state_dfa_1, state_dfa_2), a] = (s1, s2)
-            else:
-                continue
+                destination_1 = dfa_1['transitions'][state_dfa_1, a]
+                destination_2 = dfa_2['transitions'][state_dfa_2, a]
+                intersection['transitions'][(state_dfa_1, state_dfa_2), a] = (destination_1, destination_2)
     return intersection
 
 

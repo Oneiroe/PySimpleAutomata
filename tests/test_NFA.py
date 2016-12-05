@@ -65,11 +65,24 @@ class TestNfaIntersection(TestCase):
                 (('s4', 't4'), 'b'): {('s0', 't0')}
             }
         }
+        self.nfa_intersection_test_02_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
 
     def test_nfa_intersection(self):
         """ Tests a correct NFAs intersection """
         intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
+        automata_IO.nfa_graphviz_render(intersection, 'nfa_intersection')
         self.assertDictEqual(intersection, self.nfa_intersection_test_01_solution)
+
+    def test_nfa_intersection_empty(self):
+        """ Tests a NFAs intersection where one of them is empty """
+        intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_test_02_empty)
+        self.assertDictEqual(intersection, self.nfa_intersection_test_02_empty)
 
     @unittest.expectedFailure
     def test_nfa_intersection_wrong_input_1(self):

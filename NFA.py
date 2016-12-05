@@ -4,9 +4,7 @@ Formally a NFA, Nondeterministic Finite Automaton, is a tuple (Σ, S, S^0 , ρ, 
  • S is a finite nonempty set of states;
  • S^0 is the nonempty set of initial states;
  • F is the set of accepting states;
- • ρ : S × Σ × S is a transition relation. Intuitively, (s, a, s' ) ∈ ρ states that A can
-       move from s into s' when it reads the symbol a. It is allowed that (s, a, s' ) ∈ ρ and
-       (s, a, s'' ) ∈ ρ with S' != S'' .
+ • ρ: S × Σ × S is a transition relation. Intuitively, (s, a, s' ) ∈ ρ states that A can move from s into s' when it reads the symbol a. It is allowed that (s, a, s' ) ∈ ρ and (s, a, s'' ) ∈ ρ with S' != S'' .
 
 In this module a NFA is defined as follows
 
@@ -16,6 +14,7 @@ In this module a NFA is defined as follows
   • initial_states   => set()
   • accepting_states => set()
   • transitions      => dict()  # key (state in states, action in alphabet) value {set of arriving states in states}
+
 """
 
 from itertools import product as cartesian_product
@@ -26,35 +25,47 @@ from copy import copy
 
 # ###
 # TO-DO
-#
+# TODO Handle Side effects
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
-    """ Returns a nfa that reads the intersection of the languages read by nfa_1 and nfa_2.
+    """ Returns a nfa that reads the intersection of the of the NFAs in input.
 
-    TODO short-detailed explanation of NFAs intersection
+    Let A 1 = (Σ,S_1,S_1^0,ρ_1,F_1) and A 2 =(Σ,S_2,S_2^0,ρ_2,F_2) be two NFAs.
+    There is a NFA A_∧ that runs simultaneously both A_1 and A_2 on the input word, so L(A_∧) = L(A_1)∩L(A_2).
+    It is defined as:
+
+    A_∧ = ( Σ , S , S_0 , ρ , F )
+
+    where
+
+    • S = S_1 × S_2
+    • S_0 = S_1^0 × S_2^0
+    • F = F_1 × F_2
+    • ((s,t), a, (s_X , t_X)) ∈ ρ iff (s, a, s_X ) ∈ ρ_1 and (t, a, t_X ) ∈ ρ_2
 
     :param nfa_1: dict() representing a nfa
     :param nfa_2: dict() representing a nfa
     :return: dict() representing the intersected nfa
     """
     intersection = {
-        'alphabet': nfa_1['alphabet'],
+        'alphabet': nfa_1['alphabet'].intersection(nfa_2['alphabet']),
         'states': set(cartesian_product(nfa_1['states'], nfa_2['states'])),
         'initial_states': set(cartesian_product(nfa_1['initial_states'], nfa_2['initial_states'])),
         'accepting_states': set(cartesian_product(nfa_1['accepting_states'], nfa_2['accepting_states'])),
-        'transitions': {}
+        'transitions': dict()
     }
 
-    for s in intersection['states']:
+    for (state_nfa_1, state_nfa_2) in intersection['states']:
         for a in intersection['alphabet']:
-            if (s[0], a) not in nfa_1['transitions'] or (s[1], a) not in nfa_2['transitions']:
+            if (state_nfa_1, a) not in nfa_1['transitions'] or (state_nfa_2, a) not in nfa_2['transitions']:
                 continue
-            s1 = nfa_1['transitions'][s[0], a]
-            s2 = nfa_2['transitions'][s[1], a]
+            s1 = nfa_1['transitions'][state_nfa_1, a]
+            s2 = nfa_2['transitions'][state_nfa_2, a]
 
-            for next_1 in s1:
-                for next_2 in s2:
-                    intersection['transitions'].setdefault((s, a), set()).add((next_1, next_2))
+            for destination_1 in s1:
+                for destination_2 in s2:
+                    intersection['transitions'].setdefault(((state_nfa_1, state_nfa_2), a), set()).add(
+                        (destination_1, destination_2))
 
     return intersection
 
