@@ -144,12 +144,12 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
         'transitions': dict()
     }
 
-    for s in intersection['states']:
+    for (state_dfa_1, state_dfa_2) in intersection['states']:
         for a in intersection['alphabet']:
-            if (s[0], a) in dfa_1['transitions'] and (s[1], a) in dfa_2['transitions']:
-                s1 = dfa_1['transitions'][s[0], a]
-                s2 = dfa_2['transitions'][s[1], a]
-                intersection['transitions'][s, a] = (s1, s2)
+            if (state_dfa_1, a) in dfa_1['transitions'] and (state_dfa_2, a) in dfa_2['transitions']:
+                s1 = dfa_1['transitions'][state_dfa_1, a]
+                s2 = dfa_2['transitions'][state_dfa_2, a]
+                intersection['transitions'][(state_dfa_1, state_dfa_2), a] = (s1, s2)
             else:
                 continue
     return intersection
