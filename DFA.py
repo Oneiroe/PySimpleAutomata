@@ -180,7 +180,7 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
         'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states': set(cartesian_product(dfa_1['accepting_states'], dfa_2['states'])).union(
             set(cartesian_product(dfa_1['states'], dfa_2['accepting_states']))),
-        'transitions': {}
+        'transitions': dict()
     }
 
     for (state_dfa_1, state_dfa_2) in union['states']:
