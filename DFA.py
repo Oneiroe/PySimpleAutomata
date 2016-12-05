@@ -183,11 +183,11 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
         'transitions': {}
     }
 
-    for s in union['states']:
+    for (state_dfa_1, state_dfa_2) in union['states']:
         for a in union['alphabet']:
-            s1 = dfa_1['transitions'][s[0], a]
-            s2 = dfa_2['transitions'][s[1], a]
-            union['transitions'][s, a] = (s1, s2)
+            destination_1 = dfa_1['transitions'][state_dfa_1, a]
+            destination_2 = dfa_2['transitions'][state_dfa_2, a]
+            union['transitions'][(state_dfa_1, state_dfa_2), a] = (destination_1, destination_2)
     return union
 
 
