@@ -28,7 +28,7 @@ from copy import copy
 # TODO Handle Side effects
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
-    """ Returns a nfa that reads the intersection of the of the NFAs in input.
+    """ Returns a NFA that reads the intersection of the of the NFAs in input.
 
     Let A 1 = (Σ,S_1,S_1^0,ρ_1,F_1) and A 2 =(Σ,S_2,S_2^0,ρ_2,F_2) be two NFAs.
     There is a NFA A_∧ that runs simultaneously both A_1 and A_2 on the input word, so L(A_∧) = L(A_1)∩L(A_2).
@@ -71,9 +71,20 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
 
 
 def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
-    """ Returns a nfa that reads the union of the NFAs in input.
+    """ Returns a NFA that reads the union of the NFAs in input.
 
-    TODO short-detailed explanation of NFAs union
+    Let A 1 = (Σ,S_1,S_1^0,ρ_1,F_1) and A 2 =(Σ,S_2,S_2^0,ρ_2,F_2) be two NFAs.
+    There is a NFA A_∨ that nondeterministically chooses A_1 or A_2 and runs it on the input word.
+    It is defined as:
+
+    A_∨ = (Σ, S, S_0 , ρ, F )
+
+    where:
+
+    • S = S_1 ∪ S_2
+    • S_0 = S_1^0 ∪ S_2^0
+    • F = F_1 ∪ F_2
+    • ρ = ρ_1 ∪ ρ_2 , that is (s, a, s' ) ∈ ρ if [ s ∈ S_1 and (s, a, s' ) ∈ ρ_1 ] OR [ s ∈ S_2 and (s, a, s' ) ∈ ρ_2 ]
 
     :param nfa_1: dict() representing a nfa
     :param nfa_2: dict() representing a nfa
