@@ -10,6 +10,7 @@ import re
 # TODO correctness check of json & DOT imported automata
 # TODO automata conformance check (eg. all transition uses word in alphabet,all transition involved states in States,..)
 # TODO ignore node "None" if present
+# TODO check correctness importing a .dot where no explicit state, but just transitions are present
 
 
 def __replace_all(repls, str):

@@ -1,0 +1,31 @@
+digraph{
+    fake [style=invisible]
+    c0 [root=true]
+
+    fake -> c0 [style=bold]
+
+
+    t1
+    t2
+    t3
+    c4 [shape=doublecircle]
+    c1
+    c2
+    c3
+
+    c0 -> t2 [label="a"]
+    c0 -> t1 [label="a"]
+    c0 -> c1 [label="b"]
+    t1 -> t2 [label="c"]
+    t1 -> t3 [label="c"]
+    t2 -> t2 [label="a"]
+    t2 -> t1 [label="b"]
+    t2 -> c2 [label="b"]
+    t3 -> t3 [label="b"]
+    t3 -> t1 [label="a"]
+    t3 -> c4 [label="c"]
+    c2 -> c3 [label="c"]
+    c1 -> c3 [label="c"]
+    c3 -> c4 [label="b"]
+    c3 -> c4 [label="a"]
+}

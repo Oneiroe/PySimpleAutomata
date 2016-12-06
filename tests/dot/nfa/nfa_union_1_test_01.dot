@@ -1,0 +1,22 @@
+digraph{
+    fake [style=invisible]
+    s0 [root=true]
+
+    fake -> s0 [style=bold]
+
+    s1
+    s2 [shape=doublecircle]
+    s3
+    s4
+
+    s0 -> s1 [label="a"]
+    s0 -> s3 [label="b"]
+    s1 -> s2 [label="b"]
+    s1 -> s4 [label="a"]
+    s2 -> s2 [label="b"]
+    s2 -> s0 [label="b"]
+    s3 -> s2 [label="a"]
+    s3 -> s4 [label="b"]
+    s4 -> s4 [label="a"]
+    s4 -> s0 [label="b"]
+}

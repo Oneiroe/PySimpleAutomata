@@ -71,7 +71,7 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
 
 
 def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
-    """ Returns a nfa that reads union of the languages read by nfa_1 and nfa_2.
+    """ Returns a nfa that reads the union of the NFAs in input.
 
     TODO short-detailed explanation of NFAs union
 
@@ -79,13 +79,13 @@ def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
     :param nfa_2: dict() representing a nfa
     :return: dict() representing a united nfa
     """
-    union = {}
-    union['alphabet'] = nfa_1['alphabet']
-    union['states'] = nfa_1['states'].union(nfa_2['states'])
-    union['initial_states'] = nfa_1['initial_states'].union(nfa_2['initial_states'])
-    union['accepting_states'] = nfa_1['accepting_states'].union(nfa_2['accepting_states'])
+    union = {
+        'alphabet': nfa_1['alphabet'].union(nfa_2['alphabet']),
+        'states': nfa_1['states'].union(nfa_2['states']),
+        'initial_states': nfa_1['initial_states'].union(nfa_2['initial_states']),
+        'accepting_states': nfa_1['accepting_states'].union(nfa_2['accepting_states']),
+        'transitions': nfa_1['transitions'].copy()}
 
-    union['transitions'] = nfa_1['transitions'].copy()
     for transition in nfa_2['transitions']:
         for elem in nfa_2['transitions'][transition]:
             union['transitions'].setdefault(transition, set()).add(elem)
