@@ -126,13 +126,15 @@ def nfa_determinization(nfa: dict) -> dict:
     """
     dfa = {
         'alphabet': nfa['alphabet'],
-        'initial_state': str(nfa['initial_states']),
+        'initial_state': None,
         'states': set(),
         'accepting_states': set(),
         'transitions': dict()
     }
 
-    dfa['states'].add(str(nfa['initial_states']))
+    if len(nfa['initial_states']) > 0:
+        dfa['initial_state'] = str(nfa['initial_states'])
+        dfa['states'].add(str(nfa['initial_states']))
 
     states = list()
     stack = list()

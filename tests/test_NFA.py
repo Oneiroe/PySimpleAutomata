@@ -226,11 +226,18 @@ class TestNfaDeterminization(TestCase):
         self.maxDiff = None
         self.nfa_determinization_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_01.dot')
         self.nfa_determinization_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_02.dot')
+        self.nfa_determinization_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
 
     def test_nfa_determinization(self):
         """ Tests a correct nfa determinization """
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
-        automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined')
+        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined')
         self.assertEqual(len(dfa_determined['alphabet']), 2)
         self.assertEqual(len(dfa_determined['states']), 10)
         self.assertEqual(len(dfa_determined['accepting_states']), 6)
@@ -241,13 +248,54 @@ class TestNfaDeterminization(TestCase):
     def test_nfa_determinization_bis(self):
         """ Tests an other correct nfa determinization """
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_02)
-        automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_2')
+        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_2')
         self.assertEqual(len(dfa_determined['alphabet']), 3)
         self.assertEqual(len(dfa_determined['states']), 14)
         self.assertEqual(len(dfa_determined['accepting_states']), 11)
         self.assertEqual(len(dfa_determined['transitions']), 39)
         # due to set to string serialization undecidability of items order, it is not possible to match the result
         # of the operation to a predetermined result without enlist all the possible combination of S^2
+
+    def test_nfa_determinization_empty_states(self):
+        """ Tests a NFA determinization with an empty NFA """
+        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_empty)
+        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_empty_States')
+        self.assertDictEqual(dfa_determined, {'alphabet': set(),
+                                              'states': set(),
+                                              'initial_state': None,
+                                              'accepting_states': set(),
+                                              'transitions': {}
+                                              }
+                             )
+
+    def test_nfa_determinization_empty_transitions(self):
+        """ Tests a NFA determinization with a NFA without transitions """
+        self.nfa_determinization_test_01['transitions'] = {}
+        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
+        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_empty_transition')
+        self.assertDictEqual(dfa_determined, {'alphabet': self.nfa_determinization_test_01['alphabet'],
+                                              'states': {str(self.nfa_determinization_test_01['initial_states'])},
+                                              'initial_state': str(self.nfa_determinization_test_01['initial_states']),
+                                              'accepting_states': set(),
+                                              'transitions': {}
+                                              }
+                             )
+
+    @unittest.expectedFailure
+    def test_nfa_determinization_wrong_input(self):
+        """ Tests the function using an input different from a dict object """
+        NFA.nfa_determinization(0)
+
+    @unittest.expectedFailure
+    def test_nfa_determinization_wrong_dict(self):
+        """ Tests the function using an input different from a well formatted dict representing a nfa """
+        NFA.nfa_determinization({'goofy': 'donald'})
+
+    def test_nfa_determinization_side_effects(self):
+        """ Tests the function doesn't make any side effect on the input """
+        before = copy.deepcopy(self.nfa_determinization_test_01)
+        NFA.nfa_determinization(self.nfa_determinization_test_01)
+        self.assertDictEqual(before, self.nfa_determinization_test_01)
 
 
 class TestNfaComplementation(TestCase):
