@@ -222,9 +222,32 @@ class TestNfaUnion(TestCase):
 
 
 class TestNfaDeterminization(TestCase):
-    @unittest.skip("TestNfaDeterminization TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_determinization_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_01.dot')
+        self.nfa_determinization_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_02.dot')
+
     def test_nfa_determinization(self):
-        self.fail()
+        """ Tests a correct nfa determinization """
+        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
+        automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined')
+        self.assertEqual(len(dfa_determined['alphabet']), 2)
+        self.assertEqual(len(dfa_determined['states']), 10)
+        self.assertEqual(len(dfa_determined['accepting_states']), 6)
+        self.assertEqual(len(dfa_determined['transitions']), 19)
+        # due to set to string serialization undecidability of items order, it is not possible to match the result
+        # of the operation to a predetermined result without enlist all the possible combination of S^2
+
+    def test_nfa_determinization_bis(self):
+        """ Tests an other correct nfa determinization """
+        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_02)
+        automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_2')
+        self.assertEqual(len(dfa_determined['alphabet']), 3)
+        self.assertEqual(len(dfa_determined['states']), 14)
+        self.assertEqual(len(dfa_determined['accepting_states']), 11)
+        self.assertEqual(len(dfa_determined['transitions']), 39)
+        # due to set to string serialization undecidability of items order, it is not possible to match the result
+        # of the operation to a predetermined result without enlist all the possible combination of S^2
 
 
 class TestNfaComplementation(TestCase):

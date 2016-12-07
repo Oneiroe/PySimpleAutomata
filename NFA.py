@@ -105,7 +105,6 @@ def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
 
 
 # NFA to DFA
-# 	TODO check correctness more deeply
 def nfa_determinization(nfa: dict) -> dict:
     """ Returns a dfa that reads the same language of the input nfa.
 
@@ -114,13 +113,15 @@ def nfa_determinization(nfa: dict) -> dict:
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
     """
-    dfa = {}
-    dfa['alphabet'] = nfa['alphabet']
-    dfa['initial_state'] = str(nfa['initial_states'])
-    dfa['states'] = set()
+    dfa = {
+        'alphabet': nfa['alphabet'],
+        'initial_state': str(nfa['initial_states']),
+        'states': set(),
+        'accepting_states': set(),
+        'transitions': dict()
+    }
+
     dfa['states'].add(str(nfa['initial_states']))
-    dfa['accepting_states'] = set()
-    dfa['transitions'] = {}
 
     states = list()
     stack = list()

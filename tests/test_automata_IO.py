@@ -226,6 +226,10 @@ class TestNfaDotImporter(TestCase):
         nfa_01 = automata_IO.nfa_dot_importer('./img/pydot_nfa_simple.dot')
         self.assertDictEqual(nfa_01, self.nfa_test_01)
 
+    def test_nfa_dot_importer_from_determinization(self):
+        # TODO
+        pass
+
 
 class TestNfaPydotRender(TestCase):
     def setUp(self):
