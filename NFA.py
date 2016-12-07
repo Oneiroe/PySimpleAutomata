@@ -108,7 +108,18 @@ def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
 def nfa_determinization(nfa: dict) -> dict:
     """ Returns a dfa that reads the same language of the input nfa.
 
-    TODO short-detailed explanation of NFAs determinization
+    Let A be an NFA, then there exists a DFA A_d such that L(A_d) = L(A). Intuitively, A d collapses all possible runs
+    of A on a given input word into one run over a larger state set.
+    A_d is defined as:
+
+    A_d = (Σ, 2^S , s_0 , ρ_d , F_d )
+
+    where:
+
+    • 2^S , i.e., the state set of A_d , consists of all sets of states S in A;
+    • s_0 = S^0 , i.e., the single initial state of A_d is the set S_0 of initial states of A;
+    • F_d = {Q | Q ∩ F != ∅}, i.e., the collection of sets of states that intersect F nontrivially;
+    • ρ_d(Q, a) = {s' | (s, a, s' ) ∈ ρ for some s ∈ Q}.
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
