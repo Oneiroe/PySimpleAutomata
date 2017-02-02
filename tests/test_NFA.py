@@ -368,9 +368,27 @@ class TestNfaComplementation(TestCase):
 
 
 class TestNfaNonemptinessCheck(TestCase):
-    @unittest.skip("TestNfaNonemptinessCheck TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_nonemptiness_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonemptiness_test_01.dot')
+        self.nfa_nonemptiness_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonemptiness_test_02.dot')
+        self.nfa_nonemptiness_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_nfa_nonemptiness_check(self):
-        self.fail()
+        """ Tests a correct nfa nonemptiness check"""
+        self.assertTrue(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_01))
+
+    def test_nfa_nonemptiness_check_false(self):
+        """ Tests a correct nfa nonemptiness check, where the nfa is empty"""
+        self.assertFalse(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_02))
+
+
 
 
 class TestNfaNonuniversalityCheck(TestCase):

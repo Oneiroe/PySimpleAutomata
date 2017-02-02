@@ -182,7 +182,12 @@ def nfa_complementation(nfa: dict) -> dict:
 def nfa_nonemptiness_check(nfa: dict) -> dict:
     """ Checks if the input nfa reads any language other than the empty one, returning True/False.
 
-    TODO short-detailed explanation of NFAs nonemptiness
+    The language L(A) recognized by the automaton A is nonempty iff
+    there are states s ∈ S_0 and t ∈ F such that t is connected to s.
+    Thus, automata nonemptiness is equivalent to graph reachability.
+
+    A breadth-first-search algorithm can construct in linear time
+    the set of all states connected to a state in S_0. A is nonempty iff this set intersects F nontrivially.
 
     :param nfa: dict() representing a nfa
     :return: bool, True if the input nfa is nonempty, False otherwise
@@ -195,6 +200,7 @@ def nfa_nonemptiness_check(nfa: dict) -> dict:
         stack.append(state)
     while stack:
         state = stack.pop()  # TODO tweak popping order (now the last element is chosen)
+        visited.add(state)
         for a in nfa['alphabet']:
             if (state, a) in nfa['transitions']:
                 for next_state in nfa['transitions'][state, a]:
