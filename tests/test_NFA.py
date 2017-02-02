@@ -242,7 +242,7 @@ class TestNfaDeterminization(TestCase):
         self.assertEqual(len(dfa_determined['states']), 10)
         self.assertEqual(len(dfa_determined['accepting_states']), 6)
         self.assertEqual(len(dfa_determined['transitions']), 19)
-        # due to set to string serialization undecidability of items order, it is not possible to match the result
+        # due to set-to-string serialization undecidability of items order, it is not possible to match the result
         # of the operation to a predetermined result without enlist all the possible combination of S^2
 
     def test_nfa_determinization_bis(self):
@@ -299,9 +299,72 @@ class TestNfaDeterminization(TestCase):
 
 
 class TestNfaComplementation(TestCase):
-    @unittest.skip("TestNfaComplementation TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_complementation_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_complementation_test_01.dot')
+        self.nfa_complementation_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_nfa_complementation(self):
-        self.fail()
+        """ Tests a correct nfa complementation """
+        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
+        self.assertEqual(len(dfa_complemented['alphabet']), 2)
+        self.assertEqual(len(dfa_complemented['states']), 10 + 1)
+        self.assertEqual(len(dfa_complemented['accepting_states']), 4 + 1)
+        self.assertEqual(len(dfa_complemented['transitions']), 22)
+        # due to set-to-string serialization undecidability of items order, it is not possible to match the result
+        # of the operation to a predetermined result without enlist all the possible combination of S^2
+
+    def test_nfa_complementation_empty_states(self):
+        """ Tests a NFA complementation with an empty NFA """
+        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_empty)
+        automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_States')
+        self.assertDictEqual(dfa_complemented, {'alphabet': set(),
+                                                'states': {'sink'},
+                                                'initial_state': None,
+                                                'accepting_states': {'sink'},
+                                                'transitions': {}
+                                                }
+                             )
+
+    def test_nfa_complementation_empty_transitions(self):
+        """ Tests a NFA complementation with a NFA without transitions """
+        self.nfa_complementation_test_01['transitions'] = {}
+        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
+        automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_transition')
+        self.assertDictEqual(dfa_complemented, {'alphabet': self.nfa_complementation_test_01['alphabet'],
+                                                'states': {str(self.nfa_complementation_test_01['initial_states']), "sink"},
+                                                'initial_state': str(self.nfa_complementation_test_01['initial_states']),
+                                                'accepting_states': {str(self.nfa_complementation_test_01['initial_states']),"sink"},
+                                                'transitions': {
+                                                    ('sink','a'):'sink',
+                                                    ('sink','b'):'sink',
+                                                    (str(self.nfa_complementation_test_01['initial_states']),'b'):'sink',
+                                                    (str(self.nfa_complementation_test_01['initial_states']),'a'):'sink'
+                                                }
+                                                }
+                             )
+
+    @unittest.expectedFailure
+    def test_nfa_complementation_wrong_input(self):
+        """ Tests the function using an input different from a dict object """
+        NFA.nfa_complementation(0)
+
+    @unittest.expectedFailure
+    def test_nfa_complementation_wrong_dict(self):
+        """ Tests the function using an input different from a well formatted dict representing a nfa """
+        NFA.nfa_complementation({'goofy': 'donald'})
+
+    def test_nfa_complementation_side_effects(self):
+        """ Tests the function doesn't make any side effect on the input """
+        before = copy.deepcopy(self.nfa_complementation_test_01)
+        NFA.nfa_complementation(self.nfa_complementation_test_01)
+        self.assertDictEqual(before, self.nfa_complementation_test_01)
 
 
 class TestNfaNonemptinessCheck(TestCase):
