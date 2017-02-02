@@ -167,7 +167,10 @@ def nfa_determinization(nfa: dict) -> dict:
 def nfa_complementation(nfa: dict) -> dict:
     """ Returns a dfa reading the complemented language read by input nfa.
 
-    TODO short-detailed explanation of NFAs complementation
+    Complement a nondeterministic automaton is possible complementing the determinization of it.
+    The construction is effective, but it involves an exponential blow-up,
+    since determinization involves an unavoidable exponential blow-up
+    (i.e., if NFA has n states, then the DFA has 2^n states).
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
