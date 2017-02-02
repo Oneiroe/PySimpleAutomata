@@ -197,7 +197,8 @@ def nfa_nonemptiness_check(nfa: dict) -> dict:
     visited = set()
     for state in nfa['initial_states']:
         visited.add(state)
-        stack.append(state)
+        # stack.append(state)
+        stack.insert(0, state)
     while stack:
         state = stack.pop()  # TODO tweak popping order (now the last element is chosen)
         visited.add(state)
@@ -207,7 +208,8 @@ def nfa_nonemptiness_check(nfa: dict) -> dict:
                     if next_state in nfa['accepting_states']:
                         return True
                     if next_state not in visited:
-                        stack.append(next_state)
+                        # stack.append(next_state)
+                        stack.insert(0, next_state)
     return False
 
 

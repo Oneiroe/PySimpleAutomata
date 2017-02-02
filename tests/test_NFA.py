@@ -338,14 +338,19 @@ class TestNfaComplementation(TestCase):
         dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
         automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_transition')
         self.assertDictEqual(dfa_complemented, {'alphabet': self.nfa_complementation_test_01['alphabet'],
-                                                'states': {str(self.nfa_complementation_test_01['initial_states']), "sink"},
-                                                'initial_state': str(self.nfa_complementation_test_01['initial_states']),
-                                                'accepting_states': {str(self.nfa_complementation_test_01['initial_states']),"sink"},
+                                                'states': {str(self.nfa_complementation_test_01['initial_states']),
+                                                           "sink"},
+                                                'initial_state': str(
+                                                    self.nfa_complementation_test_01['initial_states']),
+                                                'accepting_states': {
+                                                    str(self.nfa_complementation_test_01['initial_states']), "sink"},
                                                 'transitions': {
-                                                    ('sink','a'):'sink',
-                                                    ('sink','b'):'sink',
-                                                    (str(self.nfa_complementation_test_01['initial_states']),'b'):'sink',
-                                                    (str(self.nfa_complementation_test_01['initial_states']),'a'):'sink'
+                                                    ('sink', 'a'): 'sink',
+                                                    ('sink', 'b'): 'sink',
+                                                    (str(self.nfa_complementation_test_01['initial_states']),
+                                                     'b'): 'sink',
+                                                    (str(self.nfa_complementation_test_01['initial_states']),
+                                                     'a'): 'sink'
                                                 }
                                                 }
                              )
@@ -388,7 +393,25 @@ class TestNfaNonemptinessCheck(TestCase):
         """ Tests a correct nfa nonemptiness check, where the nfa is empty"""
         self.assertFalse(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_02))
 
+    def test_nfa_nonemptiness_check_empty(self):
+        """ Tests the nonemptiness of an empty nfa"""
+        self.assertFalse(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_empty))
 
+    @unittest.expectedFailure
+    def test_nfa_nonemptiness_check_wrong_dict(self):
+        """ Tests the nonemptiness of an input dict different from a dict representing a nfa """
+        self.assertFalse(NFA.nfa_nonemptiness_check({}))
+
+    @unittest.expectedFailure
+    def test_nfa_nonemptiness_check_wrong_input(self):
+        """ Tests the nonemptines of an input different from a dict object """
+        self.assertFalse(NFA.nfa_nonemptiness_check(0))
+
+    def test_nfa_nonemptiness_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.nfa_nonemptiness_test_01)
+        NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_01)
+        self.assertDictEqual(before, self.nfa_nonemptiness_test_01)
 
 
 class TestNfaNonuniversalityCheck(TestCase):
