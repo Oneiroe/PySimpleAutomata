@@ -26,6 +26,7 @@ from copy import copy
 # ###
 # TO-DO
 # TODO Handle Side effects
+# TODO . [EXPECTED FAILURE] in doc when needed
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """ Returns a NFA that reads the intersection of the of the NFAs in input.
@@ -251,12 +252,19 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     :param word: list() of symbols ∈ nfa['alphabet']
     :return: bool, True if the run is accepted, False otherwise
     """
-    # If 'run' fist state is not an initial state return False
-    if run[0] not in nfa['initial_states']:
-        return False
-    # If last 'run' state is not an accepting state return False
-    if run[-1] not in nfa['accepting_states']:
-        return False
+    if len(run) > 0:
+        # If 'run' fist state is not an initial state return False
+        if run[0] not in nfa['initial_states']:
+            return False
+        # If last 'run' state is not an accepting state return False
+        if run[-1] not in nfa['accepting_states']:
+            return False
+    else:
+        # If empty input check if the initial state is also accepting
+        if len(nfa['initial_states'].intersection(nfa['accepting_states']))>0:
+            return True
+        else:
+            return False
     current_level = set()
     current_level.add(run[0])
     for i in range(len(word) - 1):

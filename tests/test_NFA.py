@@ -499,9 +499,73 @@ class TestNfaInterestingnessCheck(TestCase):
 
 
 class TestRunAcceptance(TestCase):
-    @unittest.skip("TestRunAcceptance TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_run_acceptance_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_run_acceptance_test_01.dot')
+        self.nfa_run_acceptance_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_run_acceptance(self):
-        self.fail()
+        """ Tests a correct run """
+        self.assertTrue(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's4', 's0', 's3', 's2'],
+                               ['a', 'a', 'b', 'b', 'a']))
+
+    def test_run_acceptance_false(self):
+        """ Tests a non correct run, good alphabet"""
+        self.assertFalse(NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's2'], ['b', 'a']))
+
+    def test_run_acceptance_wrong_alphabet(self):
+        """ Tests a non correct run with letters not present in the alphabet"""
+        self.assertFalse(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'wrong']))
+
+    def test_run_acceptance_wrong_states(self):
+        """ Tests a non correct run with states not present in the nfa"""
+        self.assertFalse(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 'fake', 's0'], ['5c', '10c', 'gum']))
+
+    def test_run_acceptance_empty_run(self):
+        """ Tests an empty run """
+        self.assertFalse(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, [], []))
+
+    def test_run_acceptance_wrong_sizes(self):
+        """ Tests run and word with wrong sizes """
+        self.assertFalse(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's3'], ['a']))
+
+    @unittest.expectedFailure
+    def test_run_acceptance_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        NFA.run_acceptance(1, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
+
+    @unittest.expectedFailure
+    def test_run_acceptance_wrong_input_2(self):
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01, 1, ['5c', '10c', 'gum'])
+
+    @unittest.expectedFailure
+    def test_run_acceptance_wrong_input_3(self):
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's2'], 1)
+
+    @unittest.expectedFailure
+    def test_run_acceptance_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.run_acceptance({'goofy': 'donald'}, ['s0', 's1', 's2'], ['a', 'b'])
+
+    def test_run_acceptance_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.nfa_run_acceptance_test_01)
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's4', 's0', 's3', 's2'],
+                           ['a', 'a', 'b', 'b', 'a'])
+        self.assertDictEqual(before, self.nfa_run_acceptance_test_01)
 
 
 class TestWordAcceptance(TestCase):
