@@ -59,6 +59,11 @@ class TestRunAcceptance(TestCase):
         """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
         DFA.run_acceptance({'goofy': 'donald'}, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
 
+    def test_run_acceptance_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.dfa_run_acceptance_test_01)
+        DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
+        self.assertDictEqual(before, self.dfa_run_acceptance_test_01)
 
 class TestWordAcceptance(TestCase):
     def setUp(self):
