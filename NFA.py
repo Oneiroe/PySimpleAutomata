@@ -281,7 +281,7 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
 def word_acceptance(nfa: dict, word: list) -> bool:
     """ Checks if a given word is accepted by a NFA
 
-    TODO short-detailed explanation of NFAs word acceptance
+    The word w is accepted by a NFA if exists at least an accepting run on w.
 
     :param nfa: dict() representing a nfa
     :param word: list() of symbols ∈ nfa['alphabet']
