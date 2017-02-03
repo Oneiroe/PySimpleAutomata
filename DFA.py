@@ -492,6 +492,7 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
     visited.add(dfa['initial_state'])
     while queue:
         state = queue.pop()
+        visited.add(state)
         for a in dfa['alphabet']:
             if (state, a) in dfa['transitions']:
                 if dfa['transitions'][state, a] in dfa['accepting_states']:
