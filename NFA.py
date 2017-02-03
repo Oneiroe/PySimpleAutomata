@@ -245,7 +245,9 @@ def nfa_interestingness_check(nfa: dict) -> bool:
 def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     """ Checks if a given 'run' on a 'nfa' accepts a given input 'word'
 
-    TODO short-detailed explanation of NFAs run acceptance
+    A run r of NFA on a finite word w = a_0 · · · a_n−1 ∈ Σ∗ is a sequence s_0 · · · s_n of n+1 states in S
+    such that s_0 ∈ S^0 , and s_i+1 ∈ ρ(s_i , a_i ) for 0 ≤ i ≤ n. Note that a nondeterministic automaton
+    can have multiple run on a given input word. The run r is accepting if s_n ∈ F .
 
     :param nfa: dict() representing a nfa
     :param run: list() of states ∈ nfa['states']
