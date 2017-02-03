@@ -428,15 +428,15 @@ class TestNfaNonuniversalityCheck(TestCase):
         }
 
     def test_nfa_nonuniversality_check(self):
-        """ Tests a correct nfa nonuniversality check"""
+        """ Tests a correct nfa nonuniversality check """
         self.assertTrue(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_01))
 
     def test_nfa_nonuniversality_check_false(self):
-        """ Tests a correct nfa nonuniversality check, where the nfa is universal"""
+        """ Tests a correct nfa nonuniversality check, where the nfa is universal """
         self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_02))
 
     def test_nfa_nonuniversality_check_empty(self):
-        """ Tests the nonuniversality of an empty nfa"""
+        """ Tests the nonuniversality of an empty nfa """
         self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_empty))
 
     @unittest.expectedFailure
@@ -457,9 +457,45 @@ class TestNfaNonuniversalityCheck(TestCase):
 
 
 class TestNfaInterestingnessCheck(TestCase):
-    @unittest.skip("TestNfaInterestingnessCheck TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_interestingness_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_interestingness_test_01.dot')
+        self.nfa_interestingness_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_interestingness_test_02.dot')
+        self.nfa_interestingness_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_nfa_interestingness_check(self):
-        self.fail()
+        """ Tests a correct nfa interestingness check """
+        self.assertTrue(NFA.nfa_interestingness_check(self.nfa_interestingness_test_01))
+
+    def test_nfa_interestingness_check_false(self):
+        """ Tests a correct nfa interestingness check, where the nfa is universal """
+        self.assertFalse(NFA.nfa_interestingness_check(self.nfa_interestingness_test_02))
+
+    def test_nfa_interestingness_check_empty(self):
+        """ Tests the interestingness of an empty nfa """
+        self.assertFalse(NFA.nfa_interestingness_check(self.nfa_interestingness_test_empty))
+
+    @unittest.expectedFailure
+    def test_nfa_interestingness_check_wrong_dict(self):
+        """ Tests the interestingness of an input dict different from a dict representing a nfa """
+        self.assertFalse(NFA.nfa_interestingness_check({}))
+
+    @unittest.expectedFailure
+    def test_nfa_interestingness_check_wrong_input(self):
+        """ Tests the nonemptines of an input different from a dict object """
+        self.assertFalse(NFA.nfa_interestingness_check(0))
+
+    def test_nfa_interestingness_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.nfa_interestingness_test_01)
+        NFA.nfa_interestingness_check(self.nfa_interestingness_test_01)
+        self.assertDictEqual(before, self.nfa_interestingness_test_01)
 
 
 class TestRunAcceptance(TestCase):

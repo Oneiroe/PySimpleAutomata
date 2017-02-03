@@ -232,7 +232,8 @@ def nfa_nonuniversality_check(nfa: dict) -> bool:
 def nfa_interestingness_check(nfa: dict) -> bool:
     """ Checks if the input nfa is interesting, returning True/False.
 
-    TODO short-detailed explanation of NFAs interestingness
+    An automaton is “interesting” if it defines an “interesting” language,
+    i.e., a language that is neither empty nor contains all possible words.
 
     :param nfa: dict() representing a nfa
     :return: bool, True if the input nfa is interesting, False otherwise
