@@ -283,12 +283,12 @@ class TestNfaDeterminization(TestCase):
 
     @unittest.expectedFailure
     def test_nfa_determinization_wrong_input(self):
-        """ Tests the function using an input different from a dict object """
+        """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
         NFA.nfa_determinization(0)
 
     @unittest.expectedFailure
     def test_nfa_determinization_wrong_dict(self):
-        """ Tests the function using an input different from a well formatted dict representing a nfa """
+        """ Tests the function using an input different from a well formatted dict representing a nfa. [EXPECTED FAILURE] """
         NFA.nfa_determinization({'goofy': 'donald'})
 
     def test_nfa_determinization_side_effects(self):
@@ -357,12 +357,12 @@ class TestNfaComplementation(TestCase):
 
     @unittest.expectedFailure
     def test_nfa_complementation_wrong_input(self):
-        """ Tests the function using an input different from a dict object """
+        """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
         NFA.nfa_complementation(0)
 
     @unittest.expectedFailure
     def test_nfa_complementation_wrong_dict(self):
-        """ Tests the function using an input different from a well formatted dict representing a nfa """
+        """ Tests the function using an input different from a well formatted dict representing a nfa. [EXPECTED FAILURE] """
         NFA.nfa_complementation({'goofy': 'donald'})
 
     def test_nfa_complementation_side_effects(self):
@@ -399,12 +399,12 @@ class TestNfaNonemptinessCheck(TestCase):
 
     @unittest.expectedFailure
     def test_nfa_nonemptiness_check_wrong_dict(self):
-        """ Tests the nonemptiness of an input dict different from a dict representing a nfa """
+        """ Tests the nonemptiness of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonemptiness_check({}))
 
     @unittest.expectedFailure
     def test_nfa_nonemptiness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object """
+        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonemptiness_check(0))
 
     def test_nfa_nonemptiness_check_side_effects(self):
@@ -441,12 +441,12 @@ class TestNfaNonuniversalityCheck(TestCase):
 
     @unittest.expectedFailure
     def test_nfa_nonuniversality_check_wrong_dict(self):
-        """ Tests the nonuniversality of an input dict different from a dict representing a nfa """
+        """ Tests the nonuniversality of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonuniversality_check({}))
 
     @unittest.expectedFailure
     def test_nfa_nonuniversality_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object """
+        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonuniversality_check(0))
 
     def test_nfa_nonuniversality_check_side_effects(self):
@@ -483,12 +483,12 @@ class TestNfaInterestingnessCheck(TestCase):
 
     @unittest.expectedFailure
     def test_nfa_interestingness_check_wrong_dict(self):
-        """ Tests the interestingness of an input dict different from a dict representing a nfa """
+        """ Tests the interestingness of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_interestingness_check({}))
 
     @unittest.expectedFailure
     def test_nfa_interestingness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object """
+        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_interestingness_check(0))
 
     def test_nfa_interestingness_check_side_effects(self):

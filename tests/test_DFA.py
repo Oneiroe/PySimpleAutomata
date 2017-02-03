@@ -1114,17 +1114,17 @@ class TestDfaProjection(TestCase):
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_input_1(self):
-        """ Tests a dfa projection where the first input is different from a dict representing a dfa """
+        """ Tests a dfa projection where the first input is different from a dict representing a dfa. [EXPECTED FAILURE] """
         DFA.dfa_projection(0, {'5c'})
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_dict(self):
-        """ Tests a dfa projection where the first input is different from a well formatted dict representing a dfa """
+        """ Tests a dfa projection where the first input is different from a well formatted dict representing a dfa. [EXPECTED FAILURE] """
         DFA.dfa_projection({}, {'5c'})
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_input_2(self):
-        """ Tests a dfa projection where the second input is different from a set of word """
+        """ Tests a dfa projection where the second input is different from a set of word. [EXPECTED FAILURE] """
         DFA.dfa_projection(self.dfa_projection_test_01, 0)
 
     def test_dfa_projection_side_effects(self):
@@ -1176,16 +1176,16 @@ class TestDfaNonemptinessCheck(TestCase):
 
     @unittest.expectedFailure
     def test_dfa_nonemptiness_check_wrong_dict(self):
-        """ Tests the nonemptines of an input dict different from a dict representing a dfa """
+        """ Tests the nonemptines of an input dict different from a dict representing a dfa. [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check({}))
 
     def test_dfa_nonemptiness_check_wromg_dict_format(self):
-        """ Tests the nonemptines of a dfa dict object with inconsistent data (transitions not present in alphabet) """
+        """ Tests the nonemptines of a dfa dict object with inconsistent data (transitions not present in alphabet). [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check(self.dfa_nonemptiness_check_test_04))
 
     @unittest.expectedFailure
     def test_dfa_nonemptiness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object """
+        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check(0))
 
     def test_dfa_nonemptiness_check_side_effects(self):

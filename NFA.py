@@ -19,14 +19,7 @@ In this module a NFA is defined as follows
 
 from itertools import product as cartesian_product
 import DFA
-from copy import deepcopy
-from copy import copy
 
-
-# ###
-# TO-DO
-# TODO Handle Side effects
-# TODO . [EXPECTED FAILURE] in doc when needed
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """ Returns a NFA that reads the intersection of the of the NFAs in input.
@@ -263,7 +256,7 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
             return False
     else:
         # If empty input check if the initial state is also accepting
-        if len(nfa['initial_states'].intersection(nfa['accepting_states']))>0:
+        if len(nfa['initial_states'].intersection(nfa['accepting_states'])) > 0:
             return True
         else:
             return False
