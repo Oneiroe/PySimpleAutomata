@@ -415,9 +415,45 @@ class TestNfaNonemptinessCheck(TestCase):
 
 
 class TestNfaNonuniversalityCheck(TestCase):
-    @unittest.skip("TestNfaNonuniversalityCheck TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_nonuniversality_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonuniversality_test_01.dot')
+        self.nfa_nonuniversality_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonuniversality_test_02.dot')
+        self.nfa_nonuniversality_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_nfa_nonuniversality_check(self):
-        self.fail()
+        """ Tests a correct nfa nonuniversality check"""
+        self.assertTrue(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_01))
+
+    def test_nfa_nonuniversality_check_false(self):
+        """ Tests a correct nfa nonuniversality check, where the nfa is universal"""
+        self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_02))
+
+    def test_nfa_nonuniversality_check_empty(self):
+        """ Tests the nonuniversality of an empty nfa"""
+        self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_empty))
+
+    @unittest.expectedFailure
+    def test_nfa_nonuniversality_check_wrong_dict(self):
+        """ Tests the nonuniversality of an input dict different from a dict representing a nfa """
+        self.assertFalse(NFA.nfa_nonuniversality_check({}))
+
+    @unittest.expectedFailure
+    def test_nfa_nonuniversality_check_wrong_input(self):
+        """ Tests the nonemptines of an input different from a dict object """
+        self.assertFalse(NFA.nfa_nonuniversality_check(0))
+
+    def test_nfa_nonuniversality_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.nfa_nonuniversality_test_01)
+        NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_01)
+        self.assertDictEqual(before, self.nfa_nonuniversality_test_01)
 
 
 class TestNfaInterestingnessCheck(TestCase):
