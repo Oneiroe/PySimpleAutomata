@@ -65,6 +65,7 @@ class TestRunAcceptance(TestCase):
         DFA.run_acceptance(self.dfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
         self.assertDictEqual(before, self.dfa_run_acceptance_test_01)
 
+
 class TestWordAcceptance(TestCase):
     def setUp(self):
         self.dfa_word_acceptance_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_word_acceptance_test_01.dot')
@@ -783,7 +784,8 @@ class TestDfaMinimization(TestCase):
         self.dfa_minimization_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_01_minimized = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_02.dot')
-        self.dfa_minimization_test_02_minimized_s2 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_01.dot')
+        self.dfa_minimization_test_02_minimized_s2 = automata_IO.dfa_dot_importer(
+            './dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_02_minimized_s4 = automata_IO.dfa_dot_importer(
             './dot/dfa/dfa_minimization_test_01_s4.dot')
         self.dfa_minimization_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_minimization_test_03.dot')
@@ -852,7 +854,8 @@ class TestDfaReachable(TestCase):
         self.maxDiff = None
         self.dfa_reachable_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_01.dot')
         self.dfa_reachable_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_02.dot')
-        self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_02_reachable.dot')
+        self.dfa_reachable_test_02_reachable = automata_IO.dfa_dot_importer(
+            './dot/dfa/dfa_reachable_test_02_reachable.dot')
         self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_03.dot')
         self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_04.dot')
         self.dfa_reachable_test_05 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_reachable_test_05.dot')
@@ -1134,8 +1137,10 @@ class TestDfaProjection(TestCase):
 class TestDfaNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_nonemptiness_check_test_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_nonemptiness_check_test_01.dot')
-        self.dfa_nonemptiness_check_test_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_nonemptiness_check_test_02.dot')
+        self.dfa_nonemptiness_check_test_01 = automata_IO.dfa_dot_importer(
+            './dot/dfa/dfa_nonemptiness_check_test_01.dot')
+        self.dfa_nonemptiness_check_test_02 = automata_IO.dfa_dot_importer(
+            './dot/dfa/dfa_nonemptiness_check_test_02.dot')
         self.dfa_nonemptiness_check_test_03 = {
             'alphabet': set(),
             'states': set(),

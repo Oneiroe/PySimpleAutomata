@@ -569,6 +569,50 @@ class TestRunAcceptance(TestCase):
 
 
 class TestWordAcceptance(TestCase):
-    @unittest.skip("TestWordAcceptance TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_word_acceptance_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_word_acceptance_test_01.dot')
+        self.nfa_word_acceptance_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_word_acceptance(self):
-        self.fail()
+        """ Tests a correct word """
+        self.assertTrue(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'b']))
+
+    def test_word_acceptance_false(self):
+        """ Tests a non correct word, with good alphabet"""
+        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'a', 'a']))
+
+    def test_word_acceptance_wrong_alphabet(self):
+        """ Tests a non correct word, with letters not form the nfa alphabet """
+        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'b', 'wrong']))
+
+    def test_word_acceptance_empty_word(self):
+        """ Tests an empty word"""
+        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_empty, []))
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        NFA.word_acceptance(1, ['a', 'b', 'b', 'a', 'b'])
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_input_2(self):
+        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        NFA.word_acceptance(self.nfa_word_acceptance_test_01, 1)
+
+    @unittest.expectedFailure
+    def test_word_acceptance_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.word_acceptance({'goofy': 'donald'}, ['a', 'b', 'b', 'a', 'b'])
+
+    def test_word_acceptance_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.nfa_word_acceptance_test_01)
+        NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'a', 'b', 'b', 'a'])
+        self.assertDictEqual(before, self.nfa_word_acceptance_test_01)
