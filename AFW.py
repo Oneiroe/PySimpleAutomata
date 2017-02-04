@@ -23,7 +23,7 @@ from itertools import product as cartesian_product
 import NFA
 import itertools
 import re
-
+import copy
 
 # ###
 # TO-DO
@@ -76,7 +76,6 @@ def __recursive_acceptance(afw, state, remaining_word):
     return False
 
 
-# TODO check correctness
 def word_acceptance(afw: dict, word: list) -> bool:
     """ Checks if a word is accepted by input afw, returning True/False.
 
@@ -100,16 +99,17 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     :param nfa: dict() representing a nfa
     :return: dict() representing a afw
     """
-    afw = {}
-    afw['alphabet'] = nfa['alphabet']
-    afw['states'] = nfa['states']
+    afw = {
+        'alphabet': copy.copy(nfa['alphabet']),
+        'states': copy.copy(nfa['states']),
+        'initial_state': 's_root',
+        'accepting_states': copy.copy(nfa['accepting_states']),
+        'transitions': {}
+    }
     afw['states'].add('s_root')
-    afw['initial_state'] = 's_root'
-    afw['accepting_states'] = nfa['accepting_states']
-    afw['transitions'] = {}
 
     for t in nfa['transitions']:
-        boolean_formula = ''
+        boolean_formula = str()
         for state in nfa['transitions'][t]:
             boolean_formula += state + ' or '
         boolean_formula = boolean_formula[0:-4]

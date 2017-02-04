@@ -57,9 +57,77 @@ class TestWordAcceptance(TestCase):
 
 
 class TestNfaToAfwConversion(TestCase):
-    @unittest.skip("TestNfaToAfwConversion TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_nfa_to_afw_test_01 = automata_IO.nfa_dot_importer('./dot/afw/nfa_nfa_to_afw_test_01.dot')
+        self.afw_nfa_to_afw_test_01 = automata_IO.afw_json_importer('./json/afw/afw_nfa_to_afw_test_01.json')
+        self.nfa_nfa_to_afw_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+        self.afw_nfa_to_afw_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_nfa_to_afw_conversion(self):
-        self.fail()
+        """ Tests a correct nfa to afw conversion """
+        afw_01 = AFW.nfa_to_afw_conversion(self.nfa_nfa_to_afw_test_01)
+        self.assertSetEqual(afw_01['alphabet'], self.afw_nfa_to_afw_test_01['alphabet'])
+        self.assertSetEqual(afw_01['states'], self.afw_nfa_to_afw_test_01['states'])
+        self.assertEqual(afw_01['initial_state'], self.afw_nfa_to_afw_test_01['initial_state'])
+        self.assertSetEqual(afw_01['accepting_states'], self.afw_nfa_to_afw_test_01['accepting_states'])
+
+        self.assertEqual(len(afw_01['alphabet']), len(self.afw_nfa_to_afw_test_01['alphabet']))
+        # self.assertDictEqual(afw_01, self.afw_nfa_to_afw_test_01)
+        # due to set-to-string serialization undecidability of items order, it is not possible to match the result
+        # of the operation to a predetermined result without enlist all the possible combination of S^2
+        # i.e a result may be 's2 or s5' or 's5 or s2' unpredictably
+
+    def test_nfa_to_afw_conversion_empty_states(self):
+        """ Tests converting an empty nfa """
+        expected_solution = {
+            'alphabet': set(),
+            'states': {'s_root'},
+            'initial_state': 's_root',
+            'accepting_states': set(),
+            'transitions': {}
+        }
+        self.assertDictEqual(AFW.nfa_to_afw_conversion(self.nfa_nfa_to_afw_test_empty), expected_solution)
+
+    def test_nfa_to_afw_conversion_empty_transition(self):
+        """ Tests converting an nfa without transition """
+        expected_solution = {
+            'alphabet': self.nfa_nfa_to_afw_test_01['alphabet'],
+            'states': self.nfa_nfa_to_afw_test_01['states'].union({'s_root'}),
+            'initial_state': 's_root',
+            'accepting_states': self.nfa_nfa_to_afw_test_01['accepting_states'],
+            'transitions': {}
+        }
+        self.nfa_nfa_to_afw_test_01['transitions'] = {}
+        self.assertDictEqual(AFW.nfa_to_afw_conversion(self.nfa_nfa_to_afw_test_01), expected_solution)
+
+    @unittest.expectedFailure
+    def test_nfa_to_afw_conversion_wrong_input(self):
+        """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
+        AFW.nfa_to_afw_conversion(0)
+
+    @unittest.expectedFailure
+    def test_nfa_to_afw_conversion_wrong_dict(self):
+        """ Tests the function using an input different from a well formatted dict representing a afw. [EXPECTED FAILURE] """
+        AFW.nfa_to_afw_conversion({'goofy': 'donald'})
+
+    def test_nfa_to_afw_conversion_side_effects(self):
+        """ Tests the function doesn't make any side effect on the input """
+        before = copy.deepcopy(self.nfa_nfa_to_afw_test_01)
+        AFW.nfa_to_afw_conversion(self.nfa_nfa_to_afw_test_01)
+        self.assertDictEqual(before, self.nfa_nfa_to_afw_test_01)
 
 
 class TestAfwToNfaConversion(TestCase):
