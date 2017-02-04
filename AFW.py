@@ -29,7 +29,7 @@ import copy
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
 #      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
-# TODO change doc to laTex math formula
+# TODO change doc to laTex math formula using :math:`MATH_HERE`
 
 def __recursive_acceptance(afw, state, remaining_word):
     """ recursive call for word acceptance
@@ -94,7 +94,16 @@ def word_acceptance(afw: dict, word: list) -> bool:
 def nfa_to_afw_conversion(nfa: dict) -> dict:
     """ Returns a afw reading the same language of input nfa.
 
-    TODO short-detailed explanation of NFAs to AFWs conversion
+    Let :math:`A = (Σ,S,S^0, ρ,F)`  be an nfa. Then we define the afw AA such that :math:`L(AA) = L(A)` as follows
+    :math:`AA = (Σ, S ∪ {s_0}, s_0 , ρ_A , F )` where :math:`s_0` is a new state and :math:`ρ_A` is defined as follows:
+
+     • :math:`ρ_A(s, a)= ⋁_{(s,a,s')∈ρ}s'`, for all :math:`a ∈ Σ` and :math:`s ∈ S`
+     • :math:`ρ_A(s^0, a)= ⋁_{s∈S^0,(s,a,s')∈ρ}s'`, for all :math:`a ∈ Σ`
+
+    We take an empty disjunction in the definition of AA to be equivalent to false. Essentially,
+    the transitions of A are viewed as disjunctions in AA . A special treatment is needed for the
+    initial state, since we allow a set of initial states in nondeterministic automata, but only a
+    single initial state in alternating automata.
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a afw
