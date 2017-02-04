@@ -29,7 +29,7 @@ import copy
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
 #      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
-
+# TODO change doc to laTex math formula
 
 def __recursive_acceptance(afw, state, remaining_word):
     """ recursive call for word acceptance

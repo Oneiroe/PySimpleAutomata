@@ -20,6 +20,9 @@ In this module a NFA is defined as follows
 from itertools import product as cartesian_product
 import DFA
 
+# ###
+# TO-DO
+# TODO change doc to laTex math formula
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """ Returns a NFA that reads the intersection of the of the NFAs in input.
