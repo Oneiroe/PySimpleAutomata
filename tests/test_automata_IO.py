@@ -87,7 +87,8 @@ class TestDfaPydotRender(TestCase):
         self.maxDiff = None
         self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
         self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_01.dot')
-        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io/automata_io_dfa_imported_intersection.dot')
+        self.dfa_imported_intersect = automata_IO.dfa_dot_importer(
+            './dot/automata_io/automata_io_dfa_imported_intersection.dot')
         self.dfa_intersected = DFA.dfa_intersection(self.dfa_01, self.dfa_02)
 
     def test_dfa_pydot_render(self):
@@ -103,7 +104,8 @@ class TestDfaGraphvizRender(TestCase):
         self.maxDiff = None
         self.dfa_01 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_1_test_01.dot')
         self.dfa_02 = automata_IO.dfa_dot_importer('./dot/dfa/dfa_intersection_2_test_01.dot')
-        self.dfa_imported_intersect = automata_IO.dfa_dot_importer('./dot/automata_io/automata_io_dfa_imported_intersection.dot')
+        self.dfa_imported_intersect = automata_IO.dfa_dot_importer(
+            './dot/automata_io/automata_io_dfa_imported_intersection.dot')
         self.dfa_intersected = DFA.dfa_intersection(self.dfa_01, self.dfa_02)
 
     def test_dfa_graphviz_render(self):
@@ -439,3 +441,35 @@ class TestNfaGraphvizRender(TestCase):
     def test_nfa_graphviz_intersection_render(self):
         """ Tests rendering through graphviz library a nfa derived from an intersection """
         automata_IO.nfa_graphviz_render(self.nfa_test_02, 'graphviz_nfa_intersection')
+
+
+class TestAfwJsonImporter(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_test_01 = {
+            'alphabet': {'a', 'b'},
+            'states': {'s', 'q0', 'q1', 'q2'},
+            'initial_state': 's',
+            'accepting_states': {'q0'},
+            'transitions': {
+                ('q0', 'b'): 'q0 or q2',
+                ('q0', 'a'): 'q1',
+                ('q1', 'a'): 'q0',
+                ('q1', 'b'): 'q1 or q2',
+                ('q2', 'a'): 'q2',
+                ('s', 'a'): 'q0',
+                ('s', 'b'): 's and q0'
+            }
+        }
+        self.afw_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': 'state_0',
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
+    def test_afw_json_importer(self):
+        """ Tests importing a afw from a .json file """
+        afw_01 = automata_IO.afw_json_importer('./json/automata_io/automata_io_afw_json_importer_test_01.json')
+        self.assertDictEqual(afw_01, self.afw_test_01)

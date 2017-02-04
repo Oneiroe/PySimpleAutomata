@@ -425,10 +425,11 @@ def afw_json_importer(input_file):
     # return [alphabet, states, initial_state, accepting_states, transitions]
 
     # return map
-    afw = {}
-    afw['alphabet'] = alphabet
-    afw['states'] = states
-    afw['initial_state'] = initial_state
-    afw['accepting_states'] = accepting_states
-    afw['transitions'] = transitions
+    afw = {
+        'alphabet': alphabet,
+        'states': states,
+        'initial_state': initial_state,
+        'accepting_states': accepting_states,
+        'transitions': transitions
+    }
     return afw
