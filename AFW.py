@@ -80,10 +80,12 @@ def __recursive_acceptance(afw, state, remaining_word):
 def word_acceptance(afw: dict, word: list) -> bool:
     """ Checks if a word is accepted by input afw, returning True/False.
 
-    TODO short-detailed explanation of AFWs word acceptance
+    The word w is accepted by a AFW if exists at least an accepting run on w. A run for AFWs is a tree and
+    an alternating automaton can have multiple runs on a given input.
+    A run is accepting if all the leaf nodes are accepting states.
 
     :param afw: dict() representing a afw
-    :param word: list() of symbols ∈ afw['']
+    :param word: list() of symbols ∈ afw['alphabet']
     :return: bool, True if the word is accepted, False otherwise
     """
     return __recursive_acceptance(afw, afw['initial_state'], word)
