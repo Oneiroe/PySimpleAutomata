@@ -31,8 +31,15 @@ import re
 #      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
 
 
-# recursive call for word acceptance
 def __recursive_acceptance(afw, state, remaining_word):
+    """ recursive call for word acceptance
+
+        :param afw: dict() representing a afw
+        :param state: str() current state
+        :param remaining_word: list() containing the remaining word
+        :return: bool, True if the word is accepted, false otherwise
+        """
+    # the word is accepted only if all the final states are accepting states
     if len(remaining_word) == 0:
         if state in afw['accepting_states']:
             return True
@@ -44,21 +51,27 @@ def __recursive_acceptance(afw, state, remaining_word):
         return False
 
     transition = (state, action)
+    # extract from the boolean formula of the transition the states involved in it
     involved_states = list(
         set(re.findall(r"[\w']+", afw['transitions'][transition])).difference({'and', 'or', 'True', 'False'}))
     possible_assignments = set(itertools.product([True, False], repeat=len(involved_states)))
+    # For all possible assignment of the the transition (a boolean formula over the states)
     for assignment in possible_assignments:
         mapping = dict(zip(involved_states, assignment))
+        # If the assignment evaluation is positive
         if eval(afw['transitions'][transition], mapping):
             ok = True
-            mapping.pop('__builtins__')
+            mapping.pop('__builtins__')  # removes useless entry added by the function eval()
+            # Check if the word is accepted in ALL the states mapped to True by the assignment
             for mapped_state in mapping:
                 if mapping[mapped_state] == False:
                     continue
                 if not __recursive_acceptance(afw, mapped_state, remaining_word[1:]):
+                    # if one positive state of the assignment doesn't accepts the word,the whole assignment is discarded
                     ok = False
                     break
             if ok:
+                # If at least one assignment accepts the word, the word is accepted by the afw
                 return True
     return False
 
