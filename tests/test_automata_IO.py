@@ -457,7 +457,7 @@ class TestAfwJsonImporter(TestCase):
                 ('q1', 'a'): 'q0',
                 ('q1', 'b'): 'q1 or q2',
                 ('q2', 'a'): 'q2',
-                ('s', 'a'): 'q0',
+                ('s', 'a'): 's',
                 ('s', 'b'): 's and q0'
             }
         }
