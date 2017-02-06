@@ -142,10 +142,10 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     """
 
     nfa = {
-        'alphabet': afw['alphabet'],
+        'alphabet': copy.copy(afw['alphabet']),
         'initial_states': {afw['initial_state']},
-        'states': afw['states'],
-        'accepting_states': afw['accepting_states'],
+        'states': copy.copy(afw['states']),
+        'accepting_states': copy.copy(afw['accepting_states']),
         'transitions': {}
     }
 

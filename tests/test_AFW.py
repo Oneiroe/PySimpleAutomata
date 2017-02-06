@@ -152,44 +152,46 @@ class TestAfwToNfaConversion(TestCase):
             'transitions': {}
         }
 
-    def test_afw_to_nfa_conversion(self):
-        """ Test comparing language read by the automaton """
+    def test_afw_to_nfa_conversion_language(self):
+        """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
         automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
-        # self.assertTrue(NFA.word_acceptance(nfa_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a']))
         i = 0
-        last = 6
-        results = {
-            True: 0,
-            False: 0
-        }
+        last = 7
         while i <= last:
             base = list(itertools.repeat('a', i))
             base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
+                # print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
                 nfa_acceptance = NFA.word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
-                results[nfa_acceptance] += 1
             i += 1
-        print(results)
 
-    def test_single(self):
-        nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
-        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
-        word = ['b', 'a', 'b']
-        afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
-        nfa_acceptance = NFA.word_acceptance(nfa_01, word)
-        self.assertEqual(afw_acceptance, nfa_acceptance)
-
-    def test_afw_to_nfa_conversion_bis(self):
-        """ Test based on the dictionary comparison """
+    def test_afw_to_nfa_conversion_language_bis(self):
+        """ Test a correct afw conversion to nfa comparing the language read by the two automaton.
+            Here we take a nfa we covert it to afw and back to nfa,
+            then the original and final nfa are compared trough the language read.
+        """
         original_nfa_to_afw = AFW.nfa_to_afw_conversion(self.nfa_afw_to_nfa_test_01)
-        new_nfa_from_created_afw = AFW.afw_to_nfa_conversion(original_nfa_to_afw)
-        # self.assertDictEqual(self.nfa_afw_to_nfa_test_01, new_nfa_from_created_afw)
+        nfa_01 = AFW.afw_to_nfa_conversion(original_nfa_to_afw)
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                # print(word)
+                original_nfa_acceptance = NFA.word_acceptance(self.nfa_afw_to_nfa_test_01, word)
+                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                self.assertEqual(original_nfa_acceptance, nfa_acceptance)
+            i += 1
 
     def test_afw_to_nfa_conversion_side_effects(self):
         """ Tests the function doesn't make any side effect on the input """
