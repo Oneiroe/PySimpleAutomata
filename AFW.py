@@ -51,6 +51,11 @@ def __recursive_acceptance(afw, state, remaining_word):
     if (state, action) not in afw['transitions']:
         return False
 
+    if afw['transitions'][state, action] == 'True':
+        return True
+    elif afw['transitions'][state, action] == 'False':
+        return False
+
     transition = (state, action)
     # extract from the boolean formula of the transition the states involved in it
     involved_states = list(
@@ -75,6 +80,19 @@ def __recursive_acceptance(afw, state, remaining_word):
                 # If at least one assignment accepts the word, the word is accepted by the afw
                 return True
     return False
+
+
+# Side effect on input afw
+def afw_completion(afw):
+    """ [Side effect on input] Complete the afw adding not present transitions marking them as False
+
+    :param afw: dict() representing an afw
+    """
+
+    for state in afw['states']:
+        for a in afw['alphabet']:
+            if (state, a) not in afw['transitions']:
+                afw['transitions'][state, a] = 'False'
 
 
 def word_acceptance(afw: dict, word: list) -> bool:
@@ -216,9 +234,9 @@ def afw_complementation(afw: dict) -> dict:
     :return: dict() representing a afw
     """
     complemented_afw = {
-        'alphabet': afw['alphabet'],
-        'states': afw['states'],
-        'initial_state': afw['initial_state'],
+        'alphabet': copy.copy(afw['alphabet']),
+        'states': copy.copy(afw['states']),
+        'initial_state': copy.copy(afw['initial_state']),
         'accepting_states': afw['states'].difference(afw['accepting_states']),
         'transitions': {}
     }
