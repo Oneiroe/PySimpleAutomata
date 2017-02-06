@@ -130,7 +130,6 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     return afw
 
 
-# TODO check correctness
 # TODO "We take an empty conjunction in the definition of ρ N to be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
 def afw_to_nfa_conversion(afw: dict) -> dict:
     """ Returns a nfa reading the same language of input afw.
@@ -159,6 +158,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
         for s in state:
             if s not in afw['accepting_states']:
                 accepting_state = False
+                break
         if accepting_state:
             nfa['accepting_states'].add(state)
 
