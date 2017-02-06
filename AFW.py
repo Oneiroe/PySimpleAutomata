@@ -93,6 +93,7 @@ def afw_completion(afw):
         for a in afw['alphabet']:
             if (state, a) not in afw['transitions']:
                 afw['transitions'][state, a] = 'False'
+    return afw
 
 
 def word_acceptance(afw: dict, word: list) -> bool:
@@ -230,22 +231,25 @@ def afw_complementation(afw: dict) -> dict:
     where :math:`\overline{ρ}(s, a) = \overline{ρ(s, a)}` for all :math:`s ∈ S` and :math:`a ∈ Σ`.
     That is, :math:`\overline{ρ}` is the dualized transition function. It can be shown that :math:`L( Ā) = Σ^∗ − L(A)`.
 
+    The input afw need to be completed i.e. each non existing transition must be added pointing to False
+
     :param afw: dict() representing a afw
     :return: dict() representing a afw
     """
+    completed_input = afw_completion(copy.deepcopy(afw))
+
     complemented_afw = {
-        'alphabet': copy.copy(afw['alphabet']),
-        'states': copy.copy(afw['states']),
-        'initial_state': copy.copy(afw['initial_state']),
-        'accepting_states': afw['states'].difference(afw['accepting_states']),
+        'alphabet': copy.copy(completed_input['alphabet']),
+        'states': copy.copy(completed_input['states']),
+        'initial_state': copy.copy(completed_input['initial_state']),
+        'accepting_states': completed_input['states'].difference(afw['accepting_states']),
         'transitions': {}
     }
 
     conversion_dictionary = {'and': 'or', 'or': 'and', 'True': 'False', 'False': 'True'}
-    for transition in afw['transitions']:
+    for transition in completed_input['transitions']:
         complemented_afw['transitions'][transition] = __replace_all(conversion_dictionary,
-                                                                    afw['transitions'][transition])
-
+                                                                    completed_input['transitions'][transition])
     return complemented_afw
 
 

@@ -235,7 +235,7 @@ class TestAfwToNfaConversion(TestCase):
         self.assertDictEqual(before, self.afw_afw_to_nfa_test_01)
 
 
-class TestCompletion(TestCase):
+class TestAfwCompletion(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.afw_completion_test_01 = automata_IO.afw_json_importer('./json/afw/afw_completion_test_01.json')
@@ -247,7 +247,7 @@ class TestCompletion(TestCase):
             'transitions': {}
         }
 
-    def test_completion(self):
+    def test_afw_completion(self):
         """ Test a correct afw completion comparing the language read, that must be the same"""
         original = copy.deepcopy(self.afw_completion_test_01)
         AFW.afw_completion(self.afw_completion_test_01)
@@ -267,9 +267,11 @@ class TestCompletion(TestCase):
                 self.assertEqual(original_acceptance, completed_acceptance)
             i += 1
 
-
-class Test_afw_completion(TestCase):
-    pass
+    def test_afw_completion_side_effects(self):
+        """ Tests the function makes side effect on the input """
+        before = copy.deepcopy(self.afw_completion_test_01)
+        AFW.afw_completion(self.afw_completion_test_01)
+        self.assertNotEqual(before, self.afw_completion_test_01)
 
 
 class TestAfwComplementation(TestCase):
@@ -286,7 +288,7 @@ class TestAfwComplementation(TestCase):
 
     def test_afw_complementation(self):
         """ Test a correct afw complementation comparing the language read, that must be discording"""
-        self.afw_complementation_test_01['transitions']['q2', 'a'] = False
+        # AFW.afw_completion(self.afw_complementation_test_01)
         afw_complemented = AFW.afw_complementation(self.afw_complementation_test_01)
 
         i = 0
@@ -301,19 +303,8 @@ class TestAfwComplementation(TestCase):
                 print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_complementation_test_01, word)
                 complement_acceptance = AFW.word_acceptance(afw_complemented, word)
-                # Note that the complement reads everything but the language read by the original afw,
-                # so if both doesn't read a language is ok
-                # self.assertFalse(afw_acceptance and complement_acceptance)
                 self.assertNotEqual(afw_acceptance, complement_acceptance)
             i += 1
-
-    def test_single(self):
-        self.afw_complementation_test_01['transitions']['q2', 'b'] = 'False'
-        afw_complemented = AFW.afw_complementation(self.afw_complementation_test_01)
-        word = ['b', 'a', 'b', 'b']
-        afw_acceptance = AFW.word_acceptance(self.afw_complementation_test_01, word)
-        complement_acceptance = AFW.word_acceptance(afw_complemented, word)
-        self.assertNotEqual(afw_acceptance, complement_acceptance)
 
     def test_afw_complementation_side_effects(self):
         """ Tests the function doesn't make any side effect on the input """
