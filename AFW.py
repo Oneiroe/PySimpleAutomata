@@ -195,6 +195,12 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
 
 
 def __replace_all(repls, str):
+    """ Replace from the string str all the occurrence of the keys element of the dictionary repls with their relative value.
+
+    :param repls: dict(), dictionary containing the mapping between the values to be changed and their appropriate substitution
+    :param str: str(), original string
+    :return: str(), string with the appropriate values replaced
+    """
     # return re.sub('|'.join(repls.keys()), lambda k: repls[k.group(0)], str)
     return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
@@ -202,17 +208,20 @@ def __replace_all(repls, str):
 def afw_complementation(afw: dict) -> dict:
     """ returns a afw reading the complemented language read by input afw.
 
-    TODO short-detailed explanation of AFWs complementation
+    Let :math:`A = (Σ, S, s^0 , ρ, F )`. Define :math:`Ā = (Σ, S, s^0 , \overline{ρ}, S − F )`,
+    where :math:`\overline{ρ}(s, a) = \overline{ρ(s, a)}` for all :math:`s ∈ S` and :math:`a ∈ Σ`.
+    That is, :math:`\overline{ρ}` is the dualized transition function. It can be shown that :math:`L( Ā) = Σ^∗ − L(A)`.
 
     :param afw: dict() representing a afw
     :return: dict() representing a afw
     """
-    complemented_afw = {}
-    complemented_afw['alphabet'] = afw['alphabet']
-    complemented_afw['states'] = afw['states']
-    complemented_afw['initial_state'] = afw['initial_state']
-    complemented_afw['accepting_states'] = afw['states'].difference(afw['accepting_states'])
-    complemented_afw['transitions'] = {}
+    complemented_afw = {
+        'alphabet': afw['alphabet'],
+        'states': afw['states'],
+        'initial_state': afw['initial_state'],
+        'accepting_states': afw['states'].difference(afw['accepting_states']),
+        'transitions': {}
+    }
 
     conversion_dictionary = {'and': 'or', 'or': 'and', 'True': 'False', 'False': 'True'}
     for transition in afw['transitions']:
