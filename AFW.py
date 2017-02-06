@@ -25,6 +25,7 @@ import itertools
 import re
 import copy
 
+
 # ###
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
@@ -129,6 +130,8 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     return afw
 
 
+# TODO check correctness
+# TODO "We take an empty conjunction in the definition of ρ N to be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
 def afw_to_nfa_conversion(afw: dict) -> dict:
     """ Returns a nfa reading the same language of input afw.
 
@@ -137,53 +140,48 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     :param afw: dict() representing a afw
     :return: dict() representing a nfa
     """
-    # TODO check correctness
-    # TODO "We take an empty conjunction in the definition of ρ N to be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
-    nfa = {}
-    nfa['alphabet'] = afw['alphabet']
-    nfa['initial_states'] = {afw['initial_state']}
 
-    nfa['states'] = afw['states']
-    nfa['accepting_states'] = afw['accepting_states']
-    nfa['transitions'] = {}
+    nfa = {
+        'alphabet': afw['alphabet'],
+        'initial_states': {afw['initial_state']},
+        'states': afw['states'],
+        'accepting_states': afw['accepting_states'],
+        'transitions': {}
+    }
 
     i = len(afw['states'])
     while i > 1:
         nfa['states'] = nfa['states'].union(set(itertools.combinations(afw['states'], i)))
         i -= 1
 
-    i = len(afw['accepting_states'])
-    while i > 1:
-        nfa['accepting_states'] = nfa['accepting_states'].union(set(itertools.combinations(afw['accepting_states'], i)))
-        i -= 1
+    for state in nfa['states']:
+        accepting_state = True
+        for s in state:
+            if s not in afw['accepting_states']:
+                accepting_state = False
+        if accepting_state:
+            nfa['accepting_states'].add(state)
 
-    for transition in afw['transitions']:
+    for state in nfa['states']:
         # NAIVE
-        mapping = dict.fromkeys(afw['states'], False)
-        for state in nfa['states']:
+        for action in nfa['alphabet']:
+            boolean_formula = 'True'
             for s in state:
-                mapping[s] = True
-            if eval(afw['transitions'][transition], mapping):
-                nfa['transitions'].setdefault(transition, set()).add(state)
-            for s in state:
-                mapping[s] = False
+                if (s, action) not in afw['transitions']:
+                    boolean_formula += ' and False'
+                else:
+                    boolean_formula += ' and (' + afw['transitions'][s, action] + ')'
 
-                # SLIGHTLY BETTER #TODO uncorrect for now, NAIVE is instead
-                # # set with states involved in the boolean formula of the transition
-                # involved_states = list(
-                #     set(re.findall(r"[\w']+", afw['transitions'][transition])).difference({'and', 'or', 'True', 'False'}))
-                # # all the possible True/False assignment to these states
-                # possible_assignments = list(itertools.product([True, False], repeat=len(involved_states)))
-                # for assignment in possible_assignments:
-                #     mapping = dict(zip(involved_states, assignment))
-                #     if eval(afw['transitions'][transition], mapping):
-                #         mapping.pop('__builtins__')
-                #         next_state = set()
-                #         for state in mapping:
-                #             if mapping[state] == True:
-                #                 next_state.add(state)
-                #         nfa['transitions'].setdefault(transition, set()).update(next_state)
-                #         # TODO make a transition for each set of states leading to the conjunction of destination of the single states
+            mapping = dict.fromkeys(afw['states'], False)
+            for evaluation in nfa['states']:
+                for e in evaluation:
+                    mapping[e] = True
+
+                if eval(boolean_formula, mapping):
+                    nfa['transitions'].setdefault((state, action), set()).add(evaluation)
+
+                for e in evaluation:
+                    mapping[e] = False
 
     return nfa
 

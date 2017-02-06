@@ -3,6 +3,8 @@ import unittest
 import AFW
 import automata_IO
 import copy
+import NFA
+import itertools
 
 
 class TestWordAcceptance(TestCase):
@@ -131,9 +133,69 @@ class TestNfaToAfwConversion(TestCase):
 
 
 class TestAfwToNfaConversion(TestCase):
-    @unittest.skip("TestAfwToNfaConversion TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_afw_to_nfa_test_01 = automata_IO.nfa_dot_importer('./dot/afw/nfa_afw_to_nfa_test_01.dot')
+        self.afw_afw_to_nfa_test_01 = automata_IO.afw_json_importer('./json/afw/afw_afw_to_nfa_test_01.json')
+        self.nfa_afw_to_nfa_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_states': set(),
+            'accepting_states': set(),
+            'transitions': {}
+        }
+        self.afw_afw_to_nfa_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_afw_to_nfa_conversion(self):
-        self.fail()
+        """ Test comparing language read by the automaton """
+        nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
+        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
+        # self.assertTrue(NFA.word_acceptance(nfa_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a']))
+        i = 0
+        last = 6
+        results = {
+            True: 0,
+            False: 0
+        }
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                print(word)
+                afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
+                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                self.assertEqual(afw_acceptance, nfa_acceptance)
+                results[nfa_acceptance] += 1
+            i += 1
+        print(results)
+
+    def test_single(self):
+        nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
+        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
+        word = ['b', 'a', 'b']
+        afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
+        nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+        self.assertEqual(afw_acceptance, nfa_acceptance)
+
+    def test_afw_to_nfa_conversion_bis(self):
+        """ Test based on the dictionary comparison """
+        original_nfa_to_afw = AFW.nfa_to_afw_conversion(self.nfa_afw_to_nfa_test_01)
+        new_nfa_from_created_afw = AFW.afw_to_nfa_conversion(original_nfa_to_afw)
+        # self.assertDictEqual(self.nfa_afw_to_nfa_test_01, new_nfa_from_created_afw)
+
+    def test_afw_to_nfa_conversion_side_effects(self):
+        """ Tests the function doesn't make any side effect on the input """
+        before = copy.deepcopy(self.afw_afw_to_nfa_test_01)
+        AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
+        self.assertDictEqual(before, self.afw_afw_to_nfa_test_01)
 
 
 class TestReplaceAll(TestCase):
