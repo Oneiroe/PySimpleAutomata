@@ -134,7 +134,15 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
 def afw_to_nfa_conversion(afw: dict) -> dict:
     """ Returns a nfa reading the same language of input afw.
 
-    TODO short-detailed explanation of AFWs to NFAs conversion
+    Let :math:`A = (Σ, S, s^0 , ρ, F )`  be an afw. Then we define the nfa :math:`A_N` such that :math:`L(A_N) = L(A)`
+    as follows :math:`AN = (Σ, S_N , S^0_N , ρ_N , F_N )` where:
+
+     • :math:`S_N = 2^S`
+     • :math:`S^0_N= \{\{s^0 \}\}`
+     • :math:`F_N=2^F`
+     • :math:`(Q,a,Q') ∈ ρ_N` iff :math:`Q'` satisfies :math:`⋀_{s∈Q} ρ(s, a)`
+
+     We take an empty conjunction in the definition of :math:`ρ_N` to be equivalent to true; thus, :math:`(∅, a, ∅) ∈ ρ_N`.
 
     :param afw: dict() representing a afw
     :return: dict() representing a nfa
