@@ -255,15 +255,20 @@ def afw_complementation(afw: dict) -> dict:
 
 
 # TODO states with the same name but from different afw should be considered as distinct state!
+# TODO Documentation
 def afw_union(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a afw that reads the union of the languages read by input afws
 
-    TODO short-detailed explanation of AFWs union
+    Let :math:`A_1 = (Σ, S_1 , s^0_1, ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s^0_2, ρ_2 , F_2 )`
+    be alternating automata accepting the languages :math:`L(A_1)` and :math:`L(A_2)`.
+    Then, :math:`B_∪ = (Σ, S_1 ∪ S_2 ∪ {root}, ρ_∪ , root , F_1 ∪ F_2 )` with
+    :math:`ρ_∪ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∨ ρ(s^0_2 , a)]` accepts :math:`L(A_1) ∪ L(A_2)`.
 
     :param afw_1: dict() representing a afw
     :param afw_2: dict() representing a afw
     :return: dict() representing a afw
     """
+    # Reference Lecture6a Lemma 6
     union = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
         'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
@@ -294,12 +299,17 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
 
 
 # - AFW Intersection
-# unsure on correctness of the source material [lecture06a.pdf]
+# unsure on correctness of the source material [lecture06a.pdf lemma 6]
 # TODO check equality between AFWs alphabets
 def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a afw that reads the intersection of the languages read by input afws.
 
-    TODO short-detailed explanation of AFWs intersection
+
+    Let :math:`A_1 = (Σ, S_1 , s^0_1, ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s^0_2, ρ_2 , F_2 )`
+    be alternating automata accepting the languages :math:`L(A_1)` and :math:`L(A_2)`.
+    Then, :math:`B_∩ = (Σ, S_1 ∪ S_2 ∪ {root}, root, ρ_∩ , F_1 ∪ F_2 )` with
+    :math:`ρ_∩ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∧ ρ(s^0_2 , a)]` accepts :math:`L(A_1) ∩ L(A_2)`.
+
 
     :param afw_1: dict() representing a afw
     :param afw_2: dict() representing a afw
