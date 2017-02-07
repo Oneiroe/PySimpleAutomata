@@ -453,9 +453,10 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_union_test_empty, word)
                 union_acceptance = AFW.word_acceptance(union, word)
-                self.assertEqual(original_acceptance, union_acceptance)
+                self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
     def test_afw_union_empty_states_2(self):
@@ -470,9 +471,10 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_union_test_empty, word)
                 union_acceptance = AFW.word_acceptance(union, word)
-                self.assertEqual(original_acceptance, union_acceptance)
+                self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
     @unittest.expectedFailure
@@ -509,9 +511,144 @@ class TestAfwUnion(TestCase):
 
 
 class TestAfwIntersection(TestCase):
-    @unittest.skip(" TODO")
-    def test_afw_intersection(self):
-        self.fail()
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_intersection_1_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_1_test_01.json')
+        self.afw_intersection_2_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_2_test_01.json')
+        self.afw_intersection_3_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_3_test_01.json')
+        self.afw_intersection_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
+    def test_afw_intersection_disjoint(self):
+        """ Tests a correct afw intersection with completely disjoint afws  """
+        intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_2_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_2_test_01, word)
+                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
+            i += 1
+
+    def test_afw_intersection_intersecting(self):
+        """ Tests a correct afw intersection where the afws have some state in common  """
+        intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_3_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                print(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_3_test_01, word)
+                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
+            i += 1
+
+    def test_afw_intersection_equals(self):
+        """ Tests a correct afw intersection with the same afw """
+        intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_1_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
+            i += 1
+
+    def test_afw_intersection_empty_states_1(self):
+        """ Tests a afw intersection where the first afw is empty """
+        intersection = AFW.afw_intersection(self.afw_intersection_test_empty, self.afw_intersection_1_test_01)
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_test_empty, word)
+                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
+            i += 1
+
+    def test_afw_intersection_empty_states_2(self):
+        """ Tests a afw intersection where the second afw is empty """
+        intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_test_empty)
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_test_empty, word)
+                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
+            i += 1
+
+    @unittest.expectedFailure
+    def test_afw_intersection_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_intersection(0, self.afw_intersection_1_test_01)
+
+    @unittest.expectedFailure
+    def test_afw_intersection_wrong_input_2(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_intersection(self.afw_intersection_1_test_01, 0)
+
+    @unittest.expectedFailure
+    def test_afw_intersection_wrong_dict_1(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
+        AFW.afw_intersection(self.afw_intersection_1_test_01, {'goofy': 'donald'})
+
+    @unittest.expectedFailure
+    def test_afw_intersection_wrong_dict_2(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
+        AFW.afw_intersection({'goofy': 'donald'}, self.afw_intersection_1_test_01)
+
+    def test_afw_intersection_side_effects_1(self):
+        """ Tests the function makes side effect on the first input """
+        before = copy.deepcopy(self.afw_intersection_1_test_01)
+        AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_2_test_01)
+        self.assertEqual(before, self.afw_intersection_1_test_01)
+
+    def test_afw_intersection_side_effects_2(self):
+        """ Tests the function makes side effect on the second input """
+        before = copy.deepcopy(self.afw_intersection_2_test_01)
+        AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_2_test_01)
+        self.assertEqual(before, self.afw_intersection_2_test_01)
 
 
 class TestAfwNonemptinessCheck(TestCase):

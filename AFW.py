@@ -255,7 +255,6 @@ def afw_complementation(afw: dict) -> dict:
 
 
 # TODO states with the same name but from different afw should be considered as distinct state!
-# TODO Documentation
 def afw_union(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a afw that reads the union of the languages read by input afws
 
@@ -300,31 +299,33 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
 
 # - AFW Intersection
 # unsure on correctness of the source material [lecture06a.pdf lemma 6]
-# TODO check equality between AFWs alphabets
+# TODO states with the same name but from different afw should be considered as distinct state!
 def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a afw that reads the intersection of the languages read by input afws.
-
 
     Let :math:`A_1 = (Σ, S_1 , s^0_1, ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s^0_2, ρ_2 , F_2 )`
     be alternating automata accepting the languages :math:`L(A_1)` and :math:`L(A_2)`.
     Then, :math:`B_∩ = (Σ, S_1 ∪ S_2 ∪ {root}, root, ρ_∩ , F_1 ∪ F_2 )` with
     :math:`ρ_∩ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∧ ρ(s^0_2 , a)]` accepts :math:`L(A_1) ∩ L(A_2)`.
 
-
     :param afw_1: dict() representing a afw
     :param afw_2: dict() representing a afw
     :return: dict() representing a afw
     """
-    intersection = {}
-    intersection['alphabet'] = afw_1['alphabet']
-    intersection['states'] = afw_1['states'].union(afw_2['states']).union({'s_root'})
-    intersection['initial_state'] = 's_root'
-    intersection['accepting_states'] = afw_1['accepting_states'].union(afw_2['accepting_states'])
-    intersection['transitions'] = afw_1['transitions'].copy()
+    intersection = {
+        'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
+        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
+        'initial_state': 's_root',
+        'accepting_states': afw_1['accepting_states'].union(afw_2['accepting_states']),
+        'transitions': afw_1['transitions'].copy()
+    }
+
+    if afw_1['initial_state'] in afw_1['accepting_states'] and afw_2['initial_state'] in afw_2['accepting_states']:
+        intersection['accepting_states'].add(intersection['initial_state'])
 
     for transition in afw_2['transitions']:
         if transition in intersection['transitions']:
-            intersection['transitions'][transition] += ' or ' + afw_2['transitions'][transition]
+            intersection['transitions'][transition] += ' or (' + afw_2['transitions'][transition] + ')'
         else:
             intersection['transitions'][transition] = afw_2['transitions'][transition]
 
@@ -332,10 +333,13 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
             intersection['transitions']['s_root', action] = afw_1['transitions'][afw_1['initial_state'], action]
             if (afw_2['initial_state'], action) in afw_2['transitions']:
-                intersection['transitions']['s_root', action] += ' and ' + afw_2['transitions'][
-                    afw_2['initial_state'], action]
+                intersection['transitions']['s_root', action] += ' and (' + afw_2['transitions'][
+                    afw_2['initial_state'], action] + ')'
+            else:
+                intersection['transitions']['s_root', action] += ' and False'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            intersection['transitions']['s_root', action] = afw_2['transitions'][afw_2['initial_state'], action]
+            intersection['transitions']['s_root', action] = 'False and (' + afw_2['transitions'][
+                afw_2['initial_state'], action] + ')'
 
     return intersection
 
