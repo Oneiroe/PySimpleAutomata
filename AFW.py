@@ -347,7 +347,7 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
 def afw_nonemptiness_check(afw: dict) -> dict:
     """ Checks if the input afw reads any language other than the empty one, returning True/False.
 
-    TODO short-detailed explanation of AFWs nonemptiness
+    The afw is translated into a nfa and then its nonemptiness is checked.
 
     :param afw: dict() representing a afw
     :return: bool, True if input afw is nonempty, False otherwise
@@ -356,14 +356,13 @@ def afw_nonemptiness_check(afw: dict) -> dict:
     return NFA.nfa_nonemptiness_check(nfa)
 
 
-# - AFW nonuniversality
 def afw_nonuniversality_check(afw: dict) -> dict:
     """ Checks if the language read by the input afw is different from Σ∗, returning True/False.
 
-    TODO short-detailed explanation of AFWs nonuniversality
+    The afw is translated into a nfa and then its nonuniversality is checked.
 
     :param afw: dict() representing a afw
     :return: bool, True if input afw is nonuniversal, False otherwise
     """
     nfa = afw_to_nfa_conversion(afw)
-    return NFA.nfa_nonemptiness_check(nfa)
+    return NFA.nfa_nonuniversality_check(nfa)
