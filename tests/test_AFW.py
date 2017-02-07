@@ -219,12 +219,12 @@ class TestAfwToNfaConversion(TestCase):
         self.assertEqual(len(nfa_01['states']), len(result['states']))
 
     @unittest.expectedFailure
-    def test_afw_to_nfa_conversion__wrong_input(self):
+    def test_afw_to_nfa_conversion_wrong_input(self):
         """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
         AFW.afw_to_nfa_conversion(0)
 
     @unittest.expectedFailure
-    def test_afw_to_nfa_conversion__wrong_dict(self):
+    def test_afw_to_nfa_conversion_wrong_dict(self):
         """ Tests the function using an input different from a well formatted dict representing a afw. [EXPECTED FAILURE] """
         AFW.afw_to_nfa_conversion({'goofy': 'donald'})
 
@@ -239,7 +239,7 @@ class TestAfwCompletion(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.afw_completion_test_01 = automata_IO.afw_json_importer('./json/afw/afw_completion_test_01.json')
-        self.afw_complementation_test_empty = {
+        self.afw_completion_test_empty = {
             'alphabet': set(),
             'states': set(),
             'initial_state': None,
@@ -261,11 +261,42 @@ class TestAfwCompletion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
                 original_acceptance = AFW.word_acceptance(original, word)
                 completed_acceptance = AFW.word_acceptance(self.afw_completion_test_01, word)
                 self.assertEqual(original_acceptance, completed_acceptance)
             i += 1
+
+    def test_afw_completion_empty_states(self):
+        """ Tests a completion of a afw without states"""
+        AFW.afw_completion(self.afw_completion_test_empty)
+        result = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+        self.assertDictEqual(self.afw_completion_test_empty, result)
+
+    def test_afw_completion_empty_transitions(self):
+        """ Tests a completion of a afw without transitions"""
+        self.afw_completion_test_01['transitions'] = {}
+        result = copy.deepcopy(self.afw_completion_test_01)
+        for state in result['states']:
+            for action in result['alphabet']:
+                result['transitions'][state, action] = 'False'
+        AFW.afw_completion(self.afw_completion_test_01)
+        self.assertDictEqual(self.afw_completion_test_01, result)
+
+    @unittest.expectedFailure
+    def test_afw_completion_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_completion(0)
+
+    @unittest.expectedFailure
+    def test_afw_completion_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        AFW.afw_completion({'goofy': 'donald'})
 
     def test_afw_completion_side_effects(self):
         """ Tests the function makes side effect on the input """
@@ -288,7 +319,6 @@ class TestAfwComplementation(TestCase):
 
     def test_afw_complementation(self):
         """ Test a correct afw complementation comparing the language read, that must be discording"""
-        # AFW.afw_completion(self.afw_complementation_test_01)
         afw_complemented = AFW.afw_complementation(self.afw_complementation_test_01)
 
         i = 0
@@ -300,11 +330,37 @@ class TestAfwComplementation(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_complementation_test_01, word)
                 complement_acceptance = AFW.word_acceptance(afw_complemented, word)
                 self.assertNotEqual(afw_acceptance, complement_acceptance)
             i += 1
+
+    def test_afw_complementation_empty_states(self):
+        """ Tests a complementation of a afw without states"""
+        complemented = AFW.afw_complementation(self.afw_complementation_test_empty)
+        self.assertEqual(complemented, self.afw_complementation_test_empty)
+
+    def test_afw_complementation_empty_transitions(self):
+        """ Tests a complementation of a afw without transitions"""
+        self.afw_complementation_test_01['transitions'] = {}
+        result = copy.deepcopy(self.afw_complementation_test_01)
+        result['accepting_states'] = {'q1', 'q2'}
+        for state in result['states']:
+            for action in result['alphabet']:
+                result['transitions'][state, action] = 'True'
+
+        complemented = AFW.afw_complementation(self.afw_complementation_test_01)
+        self.assertEqual(complemented, result)
+
+    @unittest.expectedFailure
+    def test_afw_complementation_wrong_input(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_complementation(0)
+
+    @unittest.expectedFailure
+    def test_afw_complementation_wrong_dict(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        AFW.afw_complementation({'goofy': 'donald'})
 
     def test_afw_complementation_side_effects(self):
         """ Tests the function doesn't make any side effect on the input """

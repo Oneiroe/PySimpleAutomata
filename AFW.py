@@ -224,6 +224,7 @@ def __replace_all(repls, str):
     return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
 
+# TODO shouldn't an empty afw complementation result in an afw reading everything?
 def afw_complementation(afw: dict) -> dict:
     """ returns a afw reading the complemented language read by input afw.
 
