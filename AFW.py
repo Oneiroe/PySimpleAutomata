@@ -254,7 +254,7 @@ def afw_complementation(afw: dict) -> dict:
     return complemented_afw
 
 
-# TODO check equality between AFWs alphabets
+# TODO states with the same name but from different afw should be considered as distinct state!
 def afw_union(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a afw that reads the union of the languages read by input afws
 
@@ -264,26 +264,31 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     :param afw_2: dict() representing a afw
     :return: dict() representing a afw
     """
-    union = {}
-    union['alphabet'] = afw_1['alphabet']
-    union['states'] = afw_1['states'].union(afw_2['states']).union({'s_root'})
-    union['initial_state'] = 's_root'
-    union['accepting_states'] = afw_1['accepting_states'].union(afw_2['accepting_states'])
-    union['transitions'] = afw_1['transitions'].copy()
+    union = {
+        'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
+        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
+        'initial_state': 's_root',
+        'accepting_states': afw_1['accepting_states'].union(afw_2['accepting_states']),
+        'transitions': afw_1['transitions'].copy()
+    }
+
+    if afw_1['initial_state'] in afw_1['accepting_states'] or afw_2['initial_state'] in afw_2['accepting_states']:
+        union['accepting_states'].add(union['initial_state'])
 
     for transition in afw_2['transitions']:
         if transition in union['transitions']:
-            union['transitions'][transition] += ' or ' + afw_2['transitions'][transition]
+            union['transitions'][transition] += ' or (' + afw_2['transitions'][transition] + ')'
         else:
-            union['transitions'][transition] = afw_2['transitions'][transition]
+            union['transitions'][transition] = '(' + afw_2['transitions'][transition] + ')'
 
     for action in union['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
-            union['transitions']['s_root', action] = afw_1['transitions'][afw_1['initial_state'], action]
+            union['transitions']['s_root', action] = '(' + afw_1['transitions'][afw_1['initial_state'], action] + ')'
             if (afw_2['initial_state'], action) in afw_2['transitions']:
-                union['transitions']['s_root', action] += ' or ' + afw_2['transitions'][afw_2['initial_state'], action]
+                union['transitions']['s_root', action] += ' or (' + afw_2['transitions'][
+                    afw_2['initial_state'], action] + ')'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            union['transitions']['s_root', action] = afw_2['transitions'][afw_2['initial_state'], action]
+            union['transitions']['s_root', action] = '(' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
 
     return union
 

@@ -248,7 +248,7 @@ class TestAfwCompletion(TestCase):
         }
 
     def test_afw_completion(self):
-        """ Test a correct afw completion comparing the language read, that must be the same"""
+        """ Tests a correct afw completion comparing the language read, that must be the same"""
         original = copy.deepcopy(self.afw_completion_test_01)
         AFW.afw_completion(self.afw_completion_test_01)
 
@@ -295,7 +295,7 @@ class TestAfwCompletion(TestCase):
 
     @unittest.expectedFailure
     def test_afw_completion_wrong_dict(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
         AFW.afw_completion({'goofy': 'donald'})
 
     def test_afw_completion_side_effects(self):
@@ -370,9 +370,142 @@ class TestAfwComplementation(TestCase):
 
 
 class TestAfwUnion(TestCase):
-    @unittest.skip("TestAfwUnion TODO")
-    def test_afw_union(self):
-        self.fail()
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_union_1_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_1_test_01.json')
+        self.afw_union_2_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_2_test_01.json')
+        self.afw_union_3_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_3_test_01.json')
+        self.afw_union_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
+    def test_afw_union_disjoint(self):
+        """ Tests a correct afw union with completely disjoint afws  """
+        union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_2_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_union_2_test_01, word)
+                union_acceptance = AFW.word_acceptance(union, word)
+                self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
+            i += 1
+
+    def test_afw_union_intersecting(self):
+        """ Tests a correct afw union where the afws have some state in common  """
+        union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_3_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                print(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_union_3_test_01, word)
+                union_acceptance = AFW.word_acceptance(union, word)
+                self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
+            i += 1
+
+    def test_afw_union_equals(self):
+        """ Tests a correct afw union with the same afw """
+        union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_1_test_01)
+
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                union_acceptance = AFW.word_acceptance(union, word)
+                self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
+            i += 1
+
+    def test_afw_union_empty_states_1(self):
+        """ Tests a afw union where the first afw is empty """
+        union = AFW.afw_union(self.afw_union_test_empty, self.afw_union_1_test_01)
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                union_acceptance = AFW.word_acceptance(union, word)
+                self.assertEqual(original_acceptance, union_acceptance)
+            i += 1
+
+    def test_afw_union_empty_states_2(self):
+        """ Tests a afw union where the second afw is empty """
+        union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_test_empty)
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                original_acceptance = AFW.word_acceptance(self.afw_union_1_test_01, word)
+                union_acceptance = AFW.word_acceptance(union, word)
+                self.assertEqual(original_acceptance, union_acceptance)
+            i += 1
+
+    @unittest.expectedFailure
+    def test_afw_union_wrong_input_1(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_union(0, self.afw_union_1_test_01)
+
+    @unittest.expectedFailure
+    def test_afw_union_wrong_input_2(self):
+        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        AFW.afw_union(self.afw_union_1_test_01, 0)
+
+    @unittest.expectedFailure
+    def test_afw_union_wrong_dict_1(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
+        AFW.afw_union(self.afw_union_1_test_01, {'goofy': 'donald'})
+
+    @unittest.expectedFailure
+    def test_afw_union_wrong_dict_2(self):
+        """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
+        AFW.afw_union({'goofy': 'donald'}, self.afw_union_1_test_01)
+
+    def test_afw_union_side_effects_1(self):
+        """ Tests the function makes side effect on the first input """
+        before = copy.deepcopy(self.afw_union_1_test_01)
+        AFW.afw_union(self.afw_union_1_test_01, self.afw_union_2_test_01)
+        self.assertEqual(before, self.afw_union_1_test_01)
+
+    def test_afw_union_side_effects_2(self):
+        """ Tests the function makes side effect on the second input """
+        before = copy.deepcopy(self.afw_union_2_test_01)
+        AFW.afw_union(self.afw_union_1_test_01, self.afw_union_2_test_01)
+        self.assertEqual(before, self.afw_union_2_test_01)
 
 
 class TestAfwIntersection(TestCase):
