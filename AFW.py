@@ -344,7 +344,7 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     return intersection
 
 
-def afw_nonemptiness_check(afw: dict) -> dict:
+def afw_nonemptiness_check(afw: dict) -> bool:
     """ Checks if the input afw reads any language other than the empty one, returning True/False.
 
     The afw is translated into a nfa and then its nonemptiness is checked.
@@ -356,7 +356,7 @@ def afw_nonemptiness_check(afw: dict) -> dict:
     return NFA.nfa_nonemptiness_check(nfa)
 
 
-def afw_nonuniversality_check(afw: dict) -> dict:
+def afw_nonuniversality_check(afw: dict) -> bool:
     """ Checks if the language read by the input afw is different from Σ∗, returning True/False.
 
     The afw is translated into a nfa and then its nonuniversality is checked.
