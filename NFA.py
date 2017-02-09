@@ -1,10 +1,12 @@
 """
-Formally a NFA, Nondeterministic Finite Automaton, is a tuple (Σ, S, S^0 , ρ, F ), where
+Formally a NFA, Nondeterministic Finite Automaton, is a tuple :math:`(Σ, S, S^0 , ρ, F )`, where
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
- • S^0 is the nonempty set of initial states;
+ • :math:`S^0` is the nonempty set of initial states;
  • F is the set of accepting states;
- • ρ: S × Σ × S is a transition relation. Intuitively, (s, a, s' ) ∈ ρ states that A can move from s into s' when it reads the symbol a. It is allowed that (s, a, s' ) ∈ ρ and (s, a, s'' ) ∈ ρ with S' != S'' .
+ • :math:`ρ: S × Σ × S` is a transition relation. Intuitively, :math:`(s, a, s' ) ∈ ρ` states that A can move from s
+   into s' when it reads the symbol a. It is allowed that :math:`(s, a, s' ) ∈ ρ` and :math:`(s, a, s'' ) ∈ ρ`
+   with :math:`S' ≠ S''` .
 
 In this module a NFA is defined as follows
 
@@ -20,25 +22,23 @@ In this module a NFA is defined as follows
 from itertools import product as cartesian_product
 import DFA
 
-# ###
-# TO-DO
-# TODO change doc to laTex math formula
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """ Returns a NFA that reads the intersection of the of the NFAs in input.
 
-    Let A 1 = (Σ,S_1,S_1^0,ρ_1,F_1) and A 2 =(Σ,S_2,S_2^0,ρ_2,F_2) be two NFAs.
-    There is a NFA A_∧ that runs simultaneously both A_1 and A_2 on the input word, so L(A_∧) = L(A_1)∩L(A_2).
+    Let :math:`A_1 = (Σ,S_1,S_1^0,ρ_1,F_1)` and :math:`A_2 =(Σ,S_2,S_2^0,ρ_2,F_2)` be two NFAs.
+    There is a NFA :math:`A_∧` that runs simultaneously both :math:`A_1` and :math:`A_2` on the input word,
+    so :math:`L(A_∧) = L(A_1)∩L(A_2)`.
     It is defined as:
 
-    A_∧ = ( Σ , S , S_0 , ρ , F )
+    :math:`A_∧ = ( Σ , S , S_0 , ρ , F )`
 
     where
 
-    • S = S_1 × S_2
-    • S_0 = S_1^0 × S_2^0
-    • F = F_1 × F_2
-    • ((s,t), a, (s_X , t_X)) ∈ ρ iff (s, a, s_X ) ∈ ρ_1 and (t, a, t_X ) ∈ ρ_2
+    • :math:`S = S_1 × S_2`
+    • :math:`S_0 = S_1^0 × S_2^0`
+    • :math:`F = F_1 × F_2`
+    • :math:`((s,t), a, (s_X , t_X)) ∈ ρ` iff :math:`(s, a, s_X ) ∈ ρ_1` and :math:`(t, a, t_X ) ∈ ρ_2`
 
     :param nfa_1: dict() representing a nfa
     :param nfa_2: dict() representing a nfa
@@ -70,18 +70,19 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
 def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
     """ Returns a NFA that reads the union of the NFAs in input.
 
-    Let A 1 = (Σ,S_1,S_1^0,ρ_1,F_1) and A 2 =(Σ,S_2,S_2^0,ρ_2,F_2) be two NFAs.
-    There is a NFA A_∨ that nondeterministically chooses A_1 or A_2 and runs it on the input word.
+    Let :math:`A_1 = (Σ,S_1,S_1^0,ρ_1,F_1)` and :math:`A_2 =(Σ,S_2,S_2^0,ρ_2,F_2)` be two NFAs. here is a NFA
+    :math:`A_∨` that nondeterministically chooses :math:`A_1` or :math:`A_2` and runs it on the input word.
     It is defined as:
 
-    A_∨ = (Σ, S, S_0 , ρ, F )
+    :math:`A_∨ = (Σ, S, S_0 , ρ, F )`
 
     where:
 
-    • S = S_1 ∪ S_2
-    • S_0 = S_1^0 ∪ S_2^0
-    • F = F_1 ∪ F_2
-    • ρ = ρ_1 ∪ ρ_2 , that is (s, a, s' ) ∈ ρ if [ s ∈ S_1 and (s, a, s' ) ∈ ρ_1 ] OR [ s ∈ S_2 and (s, a, s' ) ∈ ρ_2 ]
+    • :math:`S = S_1 ∪ S_2`
+    • :math:`S_0 = S_1^0 ∪ S_2^0`
+    • :math:`F = F_1 ∪ F_2`
+    • :math:`ρ = ρ_1 ∪ ρ_2` , that is :math:`(s, a, s' ) ∈ ρ` if
+      :math:`[ s ∈ S_1\ and\ (s, a, s' ) ∈ ρ_1 ]` OR :math:`[ s ∈ S_2\ and\ (s, a, s' ) ∈ ρ_2 ]`
 
     :param nfa_1: dict() representing a nfa
     :param nfa_2: dict() representing a nfa
@@ -105,18 +106,18 @@ def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
 def nfa_determinization(nfa: dict) -> dict:
     """ Returns a dfa that reads the same language of the input nfa.
 
-    Let A be an NFA, then there exists a DFA A_d such that L(A_d) = L(A). Intuitively, A d collapses all possible runs
-    of A on a given input word into one run over a larger state set.
-    A_d is defined as:
+    Let A be an NFA, then there exists a DFA :math:`A_d` such that :math:`L(A_d) = L(A)`. Intuitively, :math:`A_d`
+    collapses all possible runs of A on a given input word into one run over a larger state set.
+    :math:`A_d` is defined as:
 
-    A_d = (Σ, 2^S , s_0 , ρ_d , F_d )
+    :math:`A_d = (Σ, 2^S , s_0 , ρ_d , F_d )`
 
     where:
 
-    • 2^S , i.e., the state set of A_d , consists of all sets of states S in A;
-    • s_0 = S^0 , i.e., the single initial state of A_d is the set S_0 of initial states of A;
-    • F_d = {Q | Q ∩ F != ∅}, i.e., the collection of sets of states that intersect F nontrivially;
-    • ρ_d(Q, a) = {s' | (s, a, s' ) ∈ ρ for some s ∈ Q}.
+    • :math:`2^S` , i.e., the state set of :math:`A_d` , consists of all sets of states S in A;
+    • :math:`s_0 = S^0` , i.e., the single initial state of :math:`A_d` is the set :math:`S_0` of initial states of A;
+    • :math:`F_d = \{Q | Q ∩ F ≠ ∅\}`, i.e., the collection of sets of states that intersect F nontrivially;
+    • :math:`ρ_d(Q, a) = \{s' | (s, a, s' ) ∈ ρ\ for\ some\ s ∈ Q\}`.
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
@@ -167,7 +168,7 @@ def nfa_complementation(nfa: dict) -> dict:
     Complement a nondeterministic automaton is possible complementing the determinization of it.
     The construction is effective, but it involves an exponential blow-up,
     since determinization involves an unavoidable exponential blow-up
-    (i.e., if NFA has n states, then the DFA has 2^n states).
+    (i.e., if NFA has n states, then the DFA has :math:`2^n` states).
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
@@ -180,11 +181,11 @@ def nfa_nonemptiness_check(nfa: dict) -> dict:
     """ Checks if the input nfa reads any language other than the empty one, returning True/False.
 
     The language L(A) recognized by the automaton A is nonempty iff
-    there are states s ∈ S_0 and t ∈ F such that t is connected to s.
+    there are states :math:`s ∈ S_0` and :math:`t ∈ F` such that t is connected to s.
     Thus, automata nonemptiness is equivalent to graph reachability.
 
     A breadth-first-search algorithm can construct in linear time
-    the set of all states connected to a state in S_0. A is nonempty iff this set intersects F nontrivially.
+    the set of all states connected to a state in :math:`S_0`. A is nonempty iff this set intersects F nontrivially.
 
     :param nfa: dict() representing a nfa
     :return: bool, True if the input nfa is nonempty, False otherwise
@@ -241,9 +242,10 @@ def nfa_interestingness_check(nfa: dict) -> bool:
 def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     """ Checks if a given 'run' on a 'nfa' accepts a given input 'word'
 
-    A run r of NFA on a finite word w = a_0 · · · a_n−1 ∈ Σ∗ is a sequence s_0 · · · s_n of n+1 states in S
-    such that s_0 ∈ S^0 , and s_i+1 ∈ ρ(s_i , a_i ) for 0 ≤ i ≤ n. Note that a nondeterministic automaton
-    can have multiple run on a given input word. The run r is accepting if s_n ∈ F .
+    A run r of NFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗` is a sequence :math:`s_0 · · · s_n` of n+1
+    states in S such that :math:`s_0 ∈ S^0` , and :math:`s_{i+1} ∈ ρ(s_i , a_i )` for :math:`0 ≤ i ≤ n`.
+    Note that a nondeterministic automaton can have multiple run on a given input word.
+    The run r is accepting if :math:`s_n ∈ F` .
 
     :param nfa: dict() representing a nfa
     :param run: list() of states ∈ nfa['states']
