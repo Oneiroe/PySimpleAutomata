@@ -169,11 +169,16 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
 
     nfa = {
         'alphabet': copy.copy(afw['alphabet']),
-        'initial_states': {afw['initial_state']},
-        'states': copy.copy(afw['states']),
-        'accepting_states': copy.copy(afw['accepting_states']),
+        'initial_states': {(afw['initial_state'],)},
+        # 'states': copy.copy(afw['states']),
+        'states': set(),
+        # 'accepting_states': copy.copy(afw['accepting_states']),
+        'accepting_states': set(),
         'transitions': {}
     }
+
+    for state in afw['states']:
+        nfa['states'].add((state,))
 
     i = len(afw['states'])
     while i > 1:

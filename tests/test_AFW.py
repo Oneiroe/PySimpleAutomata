@@ -137,6 +137,8 @@ class TestAfwToNfaConversion(TestCase):
         self.maxDiff = None
         self.nfa_afw_to_nfa_test_01 = automata_IO.nfa_dot_importer('./dot/afw/nfa_afw_to_nfa_test_01.dot')
         self.afw_afw_to_nfa_test_01 = automata_IO.afw_json_importer('./json/afw/afw_afw_to_nfa_test_01.json')
+        self.afw_nonemptiness_check_test_2 = automata_IO.afw_json_importer(
+            './json/afw/afw_nonemptiness_check_test_2.json')
         self.nfa_empty = {
             'alphabet': set(),
             'states': set(),
@@ -165,8 +167,27 @@ class TestAfwToNfaConversion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                # print(word)
+                print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
+                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                self.assertEqual(afw_acceptance, nfa_acceptance)
+            i += 1
+
+    def test_afw_to_nfa_conversion_language_bis_bis(self):
+        """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
+        nfa_01 = AFW.afw_to_nfa_conversion(self.afw_nonemptiness_check_test_2)
+        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_strange')
+        i = 0
+        last = 7
+        while i <= last:
+            base = list(itertools.repeat('a', i))
+            base += list(itertools.repeat('b', i))
+            # build all permutation of 'a' and 'b' till length i
+            word_set = set(itertools.permutations(base, i))
+            for word in word_set:
+                word = list(word)
+                print(word)
+                afw_acceptance = AFW.word_acceptance(self.afw_nonemptiness_check_test_2, word)
                 nfa_acceptance = NFA.word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
             i += 1
@@ -196,7 +217,7 @@ class TestAfwToNfaConversion(TestCase):
     def test_afw_to_nfa_conversion_empty_states(self):
         """ Tests a AFW to NFA conversion with an empty AFW """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_empty)
-        self.nfa_empty['initial_states'] = {None}
+        self.nfa_empty['initial_states'] = {(None,)}
         self.assertDictEqual(nfa_01, self.nfa_empty)
 
     def test_afw_to_nfa_conversion_empty_transitions(self):
@@ -204,12 +225,12 @@ class TestAfwToNfaConversion(TestCase):
         self.afw_afw_to_nfa_test_01['transitions'] = {}
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
         result = {
-            'initial_states': {'s'},
-            'accepting_states': {('s', 'q0'), 's', 'q0'},
+            'initial_states': {('s',)},
+            'accepting_states': {('s', 'q0'), ('s',), ('q0',)},
             'transitions': {},
-            'states': {'q1', ('q2', 'q1', 'q0'), ('q2', 'q1', 's'), ('s', 'q0'), ('q2', 'q0'), ('q1', 's', 'q0'),
-                       ('q2', 's'), ('q2', 'q1'), ('q2', 'q1', 's', 'q0'), 's', 'q0', ('q2', 's', 'q0'), ('q1', 'q0'),
-                       ('q1', 's'), 'q2'},
+            'states': {('q1',), ('q2', 'q1', 'q0'), ('q2', 'q1', 's'), ('s', 'q0'), ('q2', 'q0'), ('q1', 's', 'q0'),
+                       ('q2', 's'), ('q2', 'q1'), ('q2', 'q1', 's', 'q0'), ('s',), ('q0',), ('q2', 's', 'q0'),
+                       ('q1', 'q0'), ('q1', 's'), ('q2',)},
             'alphabet': {'b', 'a'}
         }
         self.assertSetEqual(nfa_01['initial_states'], result['initial_states'])
@@ -402,6 +423,7 @@ class TestAfwUnion(TestCase):
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
+    # TODO solve
     def test_afw_union_intersecting(self):
         """ Tests a correct afw union where the afws have some state in common  """
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_3_test_01)
@@ -543,6 +565,7 @@ class TestAfwIntersection(TestCase):
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
+    # TODO solve
     def test_afw_intersection_intersecting(self):
         """ Tests a correct afw intersection where the afws have some state in common  """
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_3_test_01)
@@ -651,13 +674,50 @@ class TestAfwIntersection(TestCase):
         self.assertEqual(before, self.afw_intersection_2_test_01)
 
 
+# TODO
 class TestAfwNonemptinessCheck(TestCase):
-    @unittest.skip("TestAfwNonemptinessCheck TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_nonemptiness_check_test_1 = automata_IO.afw_json_importer(
+            './json/afw/afw_nonemptiness_check_test_1.json')
+        self.afw_nonemptiness_check_test_2 = automata_IO.afw_json_importer(
+            './json/afw/afw_nonemptiness_check_test_2.json')
+        self.afw_nonemptiness_check_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_afw_nonemptiness_check(self):
-        self.fail()
+        self.assertTrue(AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_1))
+
+    def test_afw_nonemptiness_check_false(self):
+        pass
+
+    def test_afw_nonemptiness_check_empty(self):
+        self.assertFalse(AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_empty))
 
 
+# TODO
 class TestAfwNonuniversalityCheck(TestCase):
-    @unittest.skip("TestAfwNonuniversalityCheck TODO")
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_nonuniversality_check_test_1 = automata_IO.afw_json_importer(
+            './json/afw/afw_nonuniversality_check_test_1.json')
+        self.afw_nonuniversality_check_test_2 = automata_IO.afw_json_importer(
+            './json/afw/afw_nonuniversality_check_test_2.json')
+        self.afw_nonuniversality_check_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': None,
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
     def test_afw_nonuniversality_check(self):
-        self.fail()
+        self.assertTrue(AFW.afw_nonuniversality_check(self.afw_nonuniversality_check_test_1))
+
+    def test_afw_nonuniversality_check_false(self):
+        pass
