@@ -721,7 +721,7 @@ class TestAfwNonemptinessCheck(TestCase):
         AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_1)
         self.assertDictEqual(before, self.afw_nonemptiness_check_test_1)
 
-# TODO
+
 class TestAfwNonuniversalityCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
@@ -738,7 +738,29 @@ class TestAfwNonuniversalityCheck(TestCase):
         }
 
     def test_afw_nonuniversality_check(self):
+        """ Tests a correct afw nonuniversality check """
         self.assertTrue(AFW.afw_nonuniversality_check(self.afw_nonuniversality_check_test_1))
 
     def test_afw_nonuniversality_check_false(self):
-        pass
+        """ Tests a correct afw nonuniversality check, where the afw is empty """
+        self.assertFalse(AFW.afw_nonuniversality_check(self.afw_nonuniversality_check_test_2))
+
+    def test_afw_nonuniversality_check_empty(self):
+        """ Tests the nonuniversality of an empty afw"""
+        self.assertFalse(AFW.afw_nonuniversality_check(self.afw_nonuniversality_check_test_empty))
+
+    @unittest.expectedFailure
+    def test_afw_nonuniversality_check_wrong_dict(self):
+        """ Tests the nonuniversality of an input dict different from a dict representing a afw. [EXPECTED FAILURE] """
+        self.assertFalse(AFW.afw_nonuniversality_check({}))
+
+    @unittest.expectedFailure
+    def test_afw_nonuniversality_check_wrong_input(self):
+        """ Tests the nonuniversality of an input different from a dict object. [EXPECTED FAILURE] """
+        self.assertFalse(AFW.afw_nonuniversality_check(0))
+
+    def test_afw_nonuniversality_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.afw_nonuniversality_check_test_1)
+        AFW.afw_nonuniversality_check(self.afw_nonuniversality_check_test_1)
+        self.assertDictEqual(before, self.afw_nonuniversality_check_test_1)
