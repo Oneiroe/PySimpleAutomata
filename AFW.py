@@ -1,12 +1,12 @@
 """
-Formally a AFW (Alternating Finite automaton on Words) is a tuple (Σ, S, s0, ρ, F ), where:
+Formally a AFW (Alternating Finite automaton on Words) is a tuple :math:`(Σ, S, s0, ρ, F )`, where:
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
- • s0 ∈ S is the initial state (notice that, as in dfas, we have a unique initial state);
+ • :math:`s0 ∈ S` is the initial state (notice that, as in dfas, we have a unique initial state);
  • F ⊆ S is the set of accepting states;
- • ρ : S × Σ → B+(S) is a transition function.
-           B+(X) be the set of positive Boolean formulas over a given set X
-           ex. of ρ:  ρ(s, a) = (s1 ∧ s2) ∨ (s3 ∧ s4)
+ • :math:`ρ : S × Σ → B+(S)` is a transition function.
+           :math:`B+(X)` be the set of positive Boolean formulas over a given set X
+           ex. of :math:`ρ: ρ(s, a) = (s1 ∧ s2) ∨ (s3 ∧ s4)`
 
 In this module a AFW is defined as follows
 
@@ -19,7 +19,6 @@ In this module a AFW is defined as follows
                                  expression over states; where we also allow the formulas True and False]
 """
 
-from itertools import product as cartesian_product
 import NFA
 import itertools
 import re
@@ -31,7 +30,6 @@ import copy
 # TODO change name to new initial state when creating AFWs:
 #   CHECK: possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
 #   RESPONSE: same problem as the generic one of states with the same name. Actual solution: whole afw renaming
-# TODO change doc to laTex math formula using :math:`MATH_HERE`
 
 def __recursive_acceptance(afw, state, remaining_word):
     """ recursive call for word acceptance
