@@ -157,7 +157,7 @@ class TestAfwToNfaConversion(TestCase):
     def test_afw_to_nfa_conversion_language(self):
         """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
-        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
+        # automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
         i = 0
         last = 7
         while i <= last:
@@ -167,7 +167,7 @@ class TestAfwToNfaConversion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
+                # print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
                 nfa_acceptance = NFA.word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
@@ -176,7 +176,7 @@ class TestAfwToNfaConversion(TestCase):
     def test_afw_to_nfa_conversion_language_bis_bis(self):
         """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_nonemptiness_check_test_2)
-        automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_strange')
+        # automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_strange')
         i = 0
         last = 7
         while i <= last:
@@ -186,7 +186,7 @@ class TestAfwToNfaConversion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
+                # print(word)
                 afw_acceptance = AFW.word_acceptance(self.afw_nonemptiness_check_test_2, word)
                 nfa_acceptance = NFA.word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
@@ -406,6 +406,7 @@ class TestAfwUnion(TestCase):
 
     def test_afw_union_disjoint(self):
         """ Tests a correct afw union with completely disjoint afws  """
+        AFW.renaming_afw_states(self.afw_union_2_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_2_test_01)
 
         i = 0
@@ -423,9 +424,9 @@ class TestAfwUnion(TestCase):
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
-    # TODO solve
     def test_afw_union_intersecting(self):
         """ Tests a correct afw union where the afws have some state in common  """
+        AFW.renaming_afw_states(self.afw_union_3_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_3_test_01)
 
         i = 0
@@ -437,7 +438,7 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
+                # print(word)
                 original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
                 original_acceptance_2 = AFW.word_acceptance(self.afw_union_3_test_01, word)
                 union_acceptance = AFW.word_acceptance(union, word)
@@ -446,6 +447,7 @@ class TestAfwUnion(TestCase):
 
     def test_afw_union_equals(self):
         """ Tests a correct afw union with the same afw """
+        AFW.renaming_afw_states(self.afw_union_1_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_1_test_01)
 
         i = 0
@@ -548,6 +550,7 @@ class TestAfwIntersection(TestCase):
 
     def test_afw_intersection_disjoint(self):
         """ Tests a correct afw intersection with completely disjoint afws  """
+        AFW.renaming_afw_states(self.afw_intersection_2_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_2_test_01)
 
         i = 0
@@ -565,9 +568,9 @@ class TestAfwIntersection(TestCase):
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
-    # TODO solve
     def test_afw_intersection_intersecting(self):
         """ Tests a correct afw intersection where the afws have some state in common  """
+        AFW.renaming_afw_states(self.afw_intersection_3_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_3_test_01)
 
         i = 0
@@ -579,7 +582,7 @@ class TestAfwIntersection(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                print(word)
+                # print(word)
                 original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
                 original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_3_test_01, word)
                 intersection_acceptance = AFW.word_acceptance(intersection, word)
@@ -588,6 +591,7 @@ class TestAfwIntersection(TestCase):
 
     def test_afw_intersection_equals(self):
         """ Tests a correct afw intersection with the same afw """
+        AFW.renaming_afw_states(self.afw_intersection_1_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_1_test_01)
 
         i = 0
@@ -674,7 +678,6 @@ class TestAfwIntersection(TestCase):
         self.assertEqual(before, self.afw_intersection_2_test_01)
 
 
-# TODO
 class TestAfwNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
@@ -691,14 +694,32 @@ class TestAfwNonemptinessCheck(TestCase):
         }
 
     def test_afw_nonemptiness_check(self):
+        """ Tests a correct afw nonemptiness check """
         self.assertTrue(AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_1))
 
     def test_afw_nonemptiness_check_false(self):
-        pass
+        """ Tests a correct afw nonemptiness check, where the afw is empty """
+        self.assertFalse(AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_2))
 
     def test_afw_nonemptiness_check_empty(self):
+        """ Tests the nonemptiness of an empty afw"""
         self.assertFalse(AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_empty))
 
+    @unittest.expectedFailure
+    def test_afw_nonemptiness_check_wrong_dict(self):
+        """ Tests the nonemptiness of an input dict different from a dict representing a afw. [EXPECTED FAILURE] """
+        self.assertFalse(AFW.afw_nonemptiness_check({}))
+
+    @unittest.expectedFailure
+    def test_afw_nonemptiness_check_wrong_input(self):
+        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
+        self.assertFalse(AFW.afw_nonemptiness_check(0))
+
+    def test_afw_nonemptiness_check_side_effects(self):
+        """ Tests that the function doesn't make any side effect on the input"""
+        before = copy.deepcopy(self.afw_nonemptiness_check_test_1)
+        AFW.afw_nonemptiness_check(self.afw_nonemptiness_check_test_1)
+        self.assertDictEqual(before, self.afw_nonemptiness_check_test_1)
 
 # TODO
 class TestAfwNonuniversalityCheck(TestCase):

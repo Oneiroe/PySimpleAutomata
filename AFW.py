@@ -257,19 +257,24 @@ def afw_complementation(afw: dict) -> dict:
 
 
 # SIDE EFFECTS
-# TODO AVOID discriminator that can for special word like "as" etc..
-def renaming_afw_states(afw, disciminator):
+# TODO AVOID discriminator that can form special word like "as" etc..
+def renaming_afw_states(afw, suffix):
+    """ [Side effect on input] Rename all the state of the AFW with the suffix contained in "suffix"
+
+    :param afw: dict() representing a AFW
+    :param suffix: str() string representig the suffix to be added at each state name
+    """
     conversion_dict = {}
     new_states = set()
     new_accepting = set()
     for state in afw['states']:
-        conversion_dict[state] = '' + disciminator + state
-        new_states.add('' + disciminator + state)
+        conversion_dict[state] = '' + suffix + state
+        new_states.add('' + suffix + state)
         if state in afw['accepting_states']:
-            new_accepting.add('' + disciminator + state)
+            new_accepting.add('' + suffix + state)
 
     afw['states'] = new_states
-    afw['initial_state'] = '' + disciminator + afw['initial_state']
+    afw['initial_state'] = '' + suffix + afw['initial_state']
     afw['accepting_states'] = new_accepting
 
     new_transitions = {}

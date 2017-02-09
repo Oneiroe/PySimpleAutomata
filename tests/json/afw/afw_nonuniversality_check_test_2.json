@@ -13,7 +13,7 @@
   ],
   "initial_state": "s_root",
   "accepting_states": [
-    "s0"
+    "s2"
   ],
   "transitions": [
     [
@@ -44,7 +44,7 @@
     [
       "s1",
       "b",
-      "s2"
+      "s2 and s1"
     ],
     [
       "s2",
@@ -54,7 +54,7 @@
     [
       "s3",
       "a",
-      "s2"
+      "s2 and s3"
     ],
     [
       "s3",
