@@ -257,18 +257,19 @@ def afw_complementation(afw: dict) -> dict:
 
 
 # SIDE EFFECTS
-def renaming_afw_states(afw):
+# TODO AVOID discriminator that can for special word like "as" etc..
+def renaming_afw_states(afw, disciminator):
     conversion_dict = {}
     new_states = set()
     new_accepting = set()
     for state in afw['states']:
-        conversion_dict[state] = 'a_' + state
-        new_states.add('a_' + state)
+        conversion_dict[state] = '' + disciminator + state
+        new_states.add('' + disciminator + state)
         if state in afw['accepting_states']:
-            new_accepting.add('a_' + state)
+            new_accepting.add('' + disciminator + state)
 
     afw['states'] = new_states
-    afw['initial_state'] = 'a_' + afw['initial_state']
+    afw['initial_state'] = '' + disciminator + afw['initial_state']
     afw['accepting_states'] = new_accepting
 
     new_transitions = {}
