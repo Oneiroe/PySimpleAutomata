@@ -1,11 +1,12 @@
 """
-Formally a DFA, Deterministic Finite Automaton, is a tuple A=(Σ,S,s_0,ρ,F), where
+Formally a DFA, Deterministic Finite Automaton, is a tuple :math:`A=(Σ,S,s_0,ρ,F)`, where
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
- • s_0 ∈ S is the initial state;
+ • :math:`s_0 ∈ S` is the initial state;
  • F ⊆ S is the set of accepting states;
- • ρ: S × Σ → S is a transition function, which can be a partial function.
-    Intuitively, s_0 = ρ(s, a) is the state that A can move into when it is in state s and it reads the symbol a. (If ρ(s, a) is undefined then reading a leads to rejection.)
+ • :math:`ρ: S × Σ → S` is a transition function, which can be a partial function.
+   Intuitively, :math:`s_0 = ρ(s, a)` is the state that A can move into when it is in state s and it reads the symbol a.
+   (If :math:`ρ(s, a)` is undefined then reading a leads to rejection.)
 
 In this module a DFA is defined as follows
 
@@ -26,15 +27,14 @@ from copy import copy
 # TO-DO
 # TODO lambda functions
 # TODO solve empty dfa with "None" node
-# TODO change doc to laTex math formula
 
 
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     """ Checks if the given 'run' of states in 'dfa' accepts the given 'word', returning True/False.
 
-    A run r of DFA on a finite word w = a_0 · · · a_n−1 ∈ Σ∗ is a sequence s_0 · · · s_n of n+1 states in S
-    such that s_0 = s_0 , and s_i+1 = ρ(s_i , a_i ) for 0 ≤ i ≤ n. Note that a deterministic automaton
-    can have at most one run on a given input word. The run r is accepting if s_n ∈ F .
+    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗` is a sequence :math:`s_0 · · · s_n` of n+1 states in S
+    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i , a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic automaton
+    can have at most one run on a given input word. The run r is accepting if :math:`s_n ∈ F` .
 
     :param dfa: dict() representing a dfa
     :param run: list() of states ∈ dfa['states']
@@ -70,7 +70,8 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
 def word_acceptance(dfa: dict, word: list) -> bool:
     """ Checks if a given 'word' is accepted by a 'dfa', returning True/false.
 
-    The word w is accepted by a DFA if DFA has an accepting run on w. Since A is deterministic, w ∈ L(A) if and only if ρ(s 0 , w) ∈ F .
+    The word w is accepted by a DFA if DFA has an accepting run on w. Since A is deterministic,
+    :math:`w ∈ L(A)` if and only if :math:`ρ(s_0 , w) ∈ F` .
 
     :param dfa: dict() representing a dfa
     :param word: list() of actions ∈ dfa['alphabet']
@@ -92,10 +93,11 @@ def word_acceptance(dfa: dict, word: list) -> bool:
 def dfa_completion(dfa: dict) -> dict:
     """ [Side effect on input] It completes the dfa assigning to each state a transition for each letter in the alphabet (if not already defined).
 
-    We say that a DFA is complete if its transition function ρ:S×Σ→S is a total function,
-    that is, for all s ∈ S and all a ∈ Σ we have that exists a ρ(s,a)=s_x for some s_x ∈ S.
-    Given an arbitrary DFA A, its completed version A_T is obtained as follows:
-    A_T = (Σ, S ∪ {sink}, s_0 , ρ_T , F ) with ρ_T(s,a)=sink when ρ(s,a) is not defined in A and ρ_T=ρ in the other cases.
+    We say that a DFA is complete if its transition function :math:`ρ:S×Σ→S` is a total function, that is,
+    for all :math:`s ∈ S` and all :math:`a ∈ Σ` we have that exists a :math:`ρ(s,a)=s_x` for some :math:`s_x ∈ S`.
+    Given an arbitrary DFA A, its completed version :math:`A_T` is obtained as follows:
+    :math:`A_T = (Σ, S ∪ \{sink\}, s_0 , ρ_T , F )` with :math:`ρ_T(s,a)=sink`
+    when :math:`ρ(s,a)` is not defined in A and :math:`ρ_T=ρ` in the other cases.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the completed dfa
@@ -111,7 +113,8 @@ def dfa_completion(dfa: dict) -> dict:
 def dfa_complementation(dfa: dict) -> dict:
     """ Generates a dfa that accepts any word but he one accepted by input 'dfa'.
 
-    Let A be a completed DFA, Ā = (Σ, S, s_0 , ρ, S − F ) is the DFA that runs A but accepts whatever word A does not.
+    Let A be a completed DFA, :math:`Ā = (Σ, S, s_0 , ρ, S − F )` is the DFA that runs A
+    but accepts whatever word A does not.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the complement of the input dfa
@@ -124,15 +127,16 @@ def dfa_complementation(dfa: dict) -> dict:
 def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the intersection of the DFAs in input.
 
-    Let A_1 = (Σ, S_1 , s_01 , ρ_1 , F_1 ) and A_2 = (Σ, S_2 , s_02 , ρ_2 , F_2 ) be two DFAs.
-    Then there is a DFA A_∧ that runs simultaneously both A_1 and A_2 on the input word and accepts when both accept.
+    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two DFAs.
+    Then there is a DFA :math:`A_∧` that runs simultaneously both :math:`A_1` and :math:`A_2` on the input word and
+    accepts when both accept.
     It is defined as:
 
-    A_∧ = (Σ, S_1 × S_2 , (s_01 , s_02 ), ρ, F_1 × F_2 )
+    :math:`A_∧ = (Σ, S_1 × S_2 , (s_{01} , s_{02} ), ρ, F_1 × F_2 )`
 
     where
 
-    ρ((s_1 , s_2 ), a) = (s_X1 , s_X2 ) iff s_X1 = ρ_1 (s_1 , a) and s_X2 = ρ_2 (s_2 , a)
+    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2}= ρ_2 (s_2 , a)`
 
     :param dfa_1: dict() representing a dfa
     :param dfa_2: dict() representing a dfa
@@ -158,15 +162,16 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
 def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the union of the dfas in input.
 
-    Let A_1 = (Σ, S_1 , s_01 , ρ_1 , F_1 ) and A_2 = (Σ, S_2 , s_02 , ρ_2 , F_2 ) be two completed DFAs.
-    Then there is a DFA A_∨ that runs simultaneously both A_1 and A_2 on the input word and accepts when one of them accepts.
+    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two completed DFAs.
+    Then there is a DFA :math:`A_∨` that runs simultaneously both :math:`A_1` and :math:`A_2` on the input word
+    and accepts when one of them accepts.
     It is defined as:
 
-    A_∨ = (Σ, S_1 × S_2 , (s_01 , s_02 ), ρ, (F_1 × S_2 ) ∪ (S_1 × F_2 ))
+    :math:`A_∨ = (Σ, S_1 × S_2 , (s_{01} , s_{02} ), ρ, (F_1 × S_2 ) ∪ (S_1 × F_2 ))`
 
     where
 
-    ρ((s_1 , s_2 ), a) = (s_X1 , s_X2 ) iff s_X1 = ρ_1 (s_1 , a) and s_X2 = ρ(s_2 , a)
+    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2} = ρ(s_2 , a)`
 
 
     :param dfa_1: dict() representing a dfa
@@ -196,15 +201,17 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
 def dfa_minimization(dfa: dict) -> dict:
     """ Returns the minimization of the dfa in input through a greatest fix-point method.
 
-    Given a completed DFA A (Σ, S, s_0 , ρ, F ) there exists a single minimal DFA A_m which is equivalent to A,
-    i.e. reads the same language L(A) = L(A_m) and with a minimal number of states.
+    Given a completed DFA :math:`A = (Σ, S, s_0 , ρ, F )` there exists a single minimal DFA :math:`A_m`
+    which is equivalent to A, i.e. reads the same language :math:`L(A) = L(A_m)` and with a minimal number of states.
     To construct such a DFA we exploit bisimulation as a suitable equivalence relation between states.
 
-    A bisimulation relation E ∈ S × S is a relation between states that satisfies the following condition:
-    if (s, t) ∈ E then:
-    • s ∈ F iff t ∈ F;
-    • For all s_X,a such that ρ(s, a) = s_X , there exists t_X such that ρ(t, a) = t_X and (s_X , t_X ) ∈ E;
-    • For all t_X,a such that ρ(t, a) = t_X , there exists s_X such that ρ(s, a) = s_X and (s_X , t_X ) ∈ E.
+    A bisimulation relation :math:`E ∈ S × S` is a relation between states that satisfies the following condition:
+    if :math:`(s, t) ∈ E` then:
+     • s ∈ F iff t ∈ F;
+     • For all :math:`(s_X,a)` such that :math:`ρ(s, a) = s_X`, there exists :math:`t_X` such that :math:`ρ(t, a) = t_X`
+       and :math:`(s_X , t_X ) ∈ E`;
+     • For all :math:`(t_X,a)` such that :math:`ρ(t, a) = t_X` , there exists :math:`s_X` such that :math:`ρ(s, a) = s_X`
+       and :math:`(s_X , t_X ) ∈ E`.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the minimized dfa
@@ -280,14 +287,14 @@ def dfa_reachable(dfa: dict) -> dict:
     """ [Side effects on input] Removes unreachable states of a dfa and returns the pruned dfa.
 
     It is possible to remove from a DFA A all unreachable states from the initial state without altering the language.
-    The reachable DFA A_R corresponding to A is defined as:
+    The reachable DFA :math:`A_R` corresponding to A is defined as:
 
-    A_R = (Σ, S_R , s_0 , ρ|S_R , F ∩ S_R )
+    :math:`A_R = (Σ, S_R , s_0 , ρ|S_R , F ∩ S_R )`
 
     where
 
-    • S_R set of reachable state from the initial one
-    • ρ|S_R is the restriction on S_R × Σ of ρ.
+    • :math:`S_R` set of reachable state from the initial one
+    • :math:`ρ|S_R` is the restriction on :math:`S_R × Σ` of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
@@ -322,14 +329,14 @@ def dfa_co_reachable(dfa: dict) -> dict:
     """ [Side effects on input] Removes states that do not reach a final state and returns the pruned dfa.
 
     It is possible to remove from a DFA A all states that do not reach a final state without altering the language.
-    The co-reachable dfa A_F corresponding to A is defined as:
+    The co-reachable dfa :math:`A_F` corresponding to A is defined as:
 
-    A_F = (Σ, S_F , s_0 , ρ|S_F , F )
+    :math:`A_F = (Σ, S_F , s_0 , ρ|S_F , F )`
 
     where
 
-    • S_F is the set of states that reach a final state
-    • ρ|S_F is the restriction on S_F × Σ of ρ.
+    • :math:`S_F` is the set of states that reach a final state
+    • :math:`ρ|S_F` is the restriction on :math:`S_F × Σ` of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
@@ -378,15 +385,15 @@ def dfa_trimming(dfa: dict) -> dict:
 
     Given a DFA A, the corresponding trimmed DFA contains only those states that are reachable from the initial state
     and that lead to a final state.
-    The trimmed dfa A_RF corresponding to A is defined as
+    The trimmed dfa :math:`A_{RF}` corresponding to A is defined as
 
-    A_RF = (Σ, S_R ∩ S_F , s_0 , ρ|S_R∩S_F , F ∩ S_R )
+    :math:`A_{RF} = (Σ, S_R ∩ S_F , s_0 , ρ|S_R∩S_F , F ∩ S_R )`
 
     where
 
-    • S_R set of reachable states from the initial state
-    • S_F set of states that reaches a final state
-    • ρ|S_R∩S_F is the restriction on (S_R ∩ S_F ) × Σ of ρ.
+    • :math:`S_R` set of reachable states from the initial state
+    • :math:`S_F` set of states that reaches a final state
+    • :math:`ρ|S_R∩S_F` is the restriction on :math:`(S_R ∩ S_F ) × Σ` of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the trimmed input dfa
@@ -404,14 +411,16 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     are projected out of the alphabet.
 
     Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in a set X.
-    Given a dfa A = (Σ, S, s_0 , ρ, F ), we can define an NFA A_πX that recognizes the language πX(L(A)) as
+    Given a dfa :math:`A = (Σ, S, s_0 , ρ, F )`, we can define an NFA :math:`A_{πX}`
+    that recognizes the language :math:`πX(L(A))` as
 
-    A_πX= ( Σ−X, S, S_0 , ρ_X , F )
+    :math:`A_{πX}= ( Σ−X, S, S_0 , ρ_X , F )`
 
     where
 
-    • S_0 = {s | (s_0 , s) ∈ ε_X }
-    • (s,a,s_y ) ∈ ρ_X iff there exist t, t_y s.t. (s,t) ∈ ε_X , t_y = ρ(t,a) and (t_y , s_y ) ∈ ε_X
+    • :math:`S_0 = \{s | (s_0 , s) ∈ ε_X \}`
+    • :math:`(s,a,s_y ) ∈ ρ_X` iff there exist :math:`(t, t_y)` s.t.
+      :math:`(s,t) ∈ ε_X , t_y = ρ(t,a)` and :math:`(t_y , s_y ) ∈ ε_X`
 
     :param dfa: dict() representing a dfa
     :param symbols_to_project: set() containing symbols ∈ dfa['alphabet'] to be projected out from dfa
@@ -479,9 +488,10 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 def dfa_nonemptiness_check(dfa: dict) -> bool:
     """ Checks if the input dfa is nonempty, so if it recognize a language except the empty one
 
-    An automaton A is nonempty if L(A) != ∅. L(A) is nonempty iff there are states s_0 and t ∈ F such that
-    t is connected to s_0. Thus, automata nonemptiness is equivalent to graph reachability, where a breadth-first-search
-    algorithm can construct in linear time the set of all states connected to initial state s_0.
+    An automaton A is nonempty if :math:`L(A) ≠ ∅`. L(A) is nonempty iff there are states :math:`s_0 and t ∈ F` such
+    that t is connected to :math:`s_0`. Thus, automata nonemptiness is equivalent to graph reachability, where a
+    breadth-first-search algorithm can construct in linear time the set of all states connected to initial state
+    :math:`s_0`.
     A is nonempty iff this set intersects F nontrivially.
 
     :param dfa: dict() representing a dfa

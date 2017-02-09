@@ -29,7 +29,8 @@ import copy
 # ###
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
-#      CHECK: possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
+#   CHECK: possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
+#   RESPONSE: same problem as the generic one of states with the same name. Actual solution: whole afw renaming
 # TODO change doc to laTex math formula using :math:`MATH_HERE`
 
 def __recursive_acceptance(afw, state, remaining_word):
@@ -262,7 +263,7 @@ def renaming_afw_states(afw, suffix):
     """ [Side effect on input] Rename all the state of the AFW with the suffix contained in "suffix"
 
     :param afw: dict() representing a AFW
-    :param suffix: str() string representig the suffix to be added at each state name
+    :param suffix: str() string representing the suffix to be added at each state name
     """
     conversion_dict = {}
     new_states = set()
