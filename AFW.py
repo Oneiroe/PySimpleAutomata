@@ -29,7 +29,7 @@ import copy
 # ###
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
-#      possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
+#      CHECK: possibly already existing, expecially if the afw used in the operation is the result of a precedent operation
 # TODO change doc to laTex math formula using :math:`MATH_HERE`
 
 def __recursive_acceptance(afw, state, remaining_word):
@@ -170,9 +170,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     nfa = {
         'alphabet': copy.copy(afw['alphabet']),
         'initial_states': {(afw['initial_state'],)},
-        # 'states': copy.copy(afw['states']),
         'states': set(),
-        # 'accepting_states': copy.copy(afw['accepting_states']),
         'accepting_states': set(),
         'transitions': {}
     }
@@ -225,7 +223,6 @@ def __replace_all(repls, str):
     :param str: str(), original string
     :return: str(), string with the appropriate values replaced
     """
-    # return re.sub('|'.join(repls.keys()), lambda k: repls[k.group(0)], str)
     return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
 
 
@@ -257,6 +254,29 @@ def afw_complementation(afw: dict) -> dict:
         complemented_afw['transitions'][transition] = __replace_all(conversion_dictionary,
                                                                     completed_input['transitions'][transition])
     return complemented_afw
+
+
+# SIDE EFFECTS
+def renaming_afw_states(afw):
+    conversion_dict = {}
+    new_states = set()
+    new_accepting = set()
+    for state in afw['states']:
+        conversion_dict[state] = 'a_' + state
+        new_states.add('a_' + state)
+        if state in afw['accepting_states']:
+            new_accepting.add('a_' + state)
+
+    afw['states'] = new_states
+    afw['initial_state'] = 'a_' + afw['initial_state']
+    afw['accepting_states'] = new_accepting
+
+    new_transitions = {}
+    for transition in afw['transitions']:
+        new_transition = __replace_all(conversion_dict, transition[0])
+        new_transitions[new_transition, transition[1]] = __replace_all(conversion_dict,
+                                                                       afw['transitions'][transition])
+    afw['transitions'] = new_transitions
 
 
 # TODO states with the same name but from different afw should be considered as distinct state!
