@@ -1,5 +1,6 @@
 from unittest import TestCase
 import unittest
+from .context import PySimpleAutomata
 import AFW
 import automata_IO
 import copy
@@ -10,7 +11,7 @@ import itertools
 class TestWordAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.afw_word_acceptance_test_01 = automata_IO.afw_json_importer('./json/afw/afw_word_acceptance_test_01.json')
+        self.afw_word_acceptance_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_word_acceptance_test_01.json')
         self.afw_word_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -61,8 +62,8 @@ class TestWordAcceptance(TestCase):
 class TestNfaToAfwConversion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_nfa_to_afw_test_01 = automata_IO.nfa_dot_importer('./dot/afw/nfa_nfa_to_afw_test_01.dot')
-        self.afw_nfa_to_afw_test_01 = automata_IO.afw_json_importer('./json/afw/afw_nfa_to_afw_test_01.json')
+        self.nfa_nfa_to_afw_test_01 = automata_IO.nfa_dot_importer('./tests/dot/afw/nfa_nfa_to_afw_test_01.dot')
+        self.afw_nfa_to_afw_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_nfa_to_afw_test_01.json')
         self.nfa_nfa_to_afw_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -135,10 +136,10 @@ class TestNfaToAfwConversion(TestCase):
 class TestAfwToNfaConversion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_afw_to_nfa_test_01 = automata_IO.nfa_dot_importer('./dot/afw/nfa_afw_to_nfa_test_01.dot')
-        self.afw_afw_to_nfa_test_01 = automata_IO.afw_json_importer('./json/afw/afw_afw_to_nfa_test_01.json')
+        self.nfa_afw_to_nfa_test_01 = automata_IO.nfa_dot_importer('./tests/dot/afw/nfa_afw_to_nfa_test_01.dot')
+        self.afw_afw_to_nfa_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_afw_to_nfa_test_01.json')
         self.afw_nonemptiness_check_test_2 = automata_IO.afw_json_importer(
-            './json/afw/afw_nonemptiness_check_test_2.json')
+            './tests/json/afw/afw_nonemptiness_check_test_2.json')
         self.nfa_empty = {
             'alphabet': set(),
             'states': set(),
@@ -259,7 +260,7 @@ class TestAfwToNfaConversion(TestCase):
 class TestAfwCompletion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.afw_completion_test_01 = automata_IO.afw_json_importer('./json/afw/afw_completion_test_01.json')
+        self.afw_completion_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_completion_test_01.json')
         self.afw_completion_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -329,7 +330,7 @@ class TestAfwCompletion(TestCase):
 class TestAfwComplementation(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.afw_complementation_test_01 = automata_IO.afw_json_importer('./json/afw/afw_complementation_test_01.json')
+        self.afw_complementation_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_complementation_test_01.json')
         self.afw_complementation_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -393,9 +394,9 @@ class TestAfwComplementation(TestCase):
 class TestAfwUnion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.afw_union_1_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_1_test_01.json')
-        self.afw_union_2_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_2_test_01.json')
-        self.afw_union_3_test_01 = automata_IO.afw_json_importer('./json/afw/afw_union_3_test_01.json')
+        self.afw_union_1_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_union_1_test_01.json')
+        self.afw_union_2_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_union_2_test_01.json')
+        self.afw_union_3_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_union_3_test_01.json')
         self.afw_union_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -537,9 +538,9 @@ class TestAfwUnion(TestCase):
 class TestAfwIntersection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.afw_intersection_1_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_1_test_01.json')
-        self.afw_intersection_2_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_2_test_01.json')
-        self.afw_intersection_3_test_01 = automata_IO.afw_json_importer('./json/afw/afw_intersection_3_test_01.json')
+        self.afw_intersection_1_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_intersection_1_test_01.json')
+        self.afw_intersection_2_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_intersection_2_test_01.json')
+        self.afw_intersection_3_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_intersection_3_test_01.json')
         self.afw_intersection_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -682,9 +683,9 @@ class TestAfwNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.afw_nonemptiness_check_test_1 = automata_IO.afw_json_importer(
-            './json/afw/afw_nonemptiness_check_test_1.json')
+            './tests/json/afw/afw_nonemptiness_check_test_1.json')
         self.afw_nonemptiness_check_test_2 = automata_IO.afw_json_importer(
-            './json/afw/afw_nonemptiness_check_test_2.json')
+            './tests/json/afw/afw_nonemptiness_check_test_2.json')
         self.afw_nonemptiness_check_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -726,9 +727,9 @@ class TestAfwNonuniversalityCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.afw_nonuniversality_check_test_1 = automata_IO.afw_json_importer(
-            './json/afw/afw_nonuniversality_check_test_1.json')
+            './tests/json/afw/afw_nonuniversality_check_test_1.json')
         self.afw_nonuniversality_check_test_2 = automata_IO.afw_json_importer(
-            './json/afw/afw_nonuniversality_check_test_2.json')
+            './tests/json/afw/afw_nonuniversality_check_test_2.json')
         self.afw_nonuniversality_check_test_empty = {
             'alphabet': set(),
             'states': set(),

@@ -1,5 +1,6 @@
 from unittest import TestCase
 import unittest
+from .context import PySimpleAutomata
 import NFA
 import automata_IO
 import copy
@@ -8,8 +9,8 @@ import copy
 class TestNfaIntersection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_intersection_1_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_intersection_1_test_01.dot')
-        self.nfa_intersection_2_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_intersection_2_test_01.dot')
+        self.nfa_intersection_1_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_intersection_1_test_01.dot')
+        self.nfa_intersection_2_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_intersection_2_test_01.dot')
         self.nfa_intersection_test_01_solution = {
             'alphabet': {'a', 'b'},
             'states': {
@@ -116,9 +117,9 @@ class TestNfaIntersection(TestCase):
 class TestNfaUnion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_union_1_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_union_1_test_01.dot')
-        self.nfa_union_2_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_union_2_test_01.dot')
-        self.nfa_union_3_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_union_3_test_01.dot')
+        self.nfa_union_1_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_1_test_01.dot')
+        self.nfa_union_2_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_2_test_01.dot')
+        self.nfa_union_3_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_3_test_01.dot')
         self.nfa_union_test_01_solution = {
             'alphabet': {'a', 'b', 'c'},
             'states': {'s0', 's1', 's2', 's3', 's4', 't0', 't1', 't2', 't3', 't4'},
@@ -224,8 +225,8 @@ class TestNfaUnion(TestCase):
 class TestNfaDeterminization(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_determinization_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_01.dot')
-        self.nfa_determinization_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_determinization_test_02.dot')
+        self.nfa_determinization_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_determinization_test_01.dot')
+        self.nfa_determinization_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_determinization_test_02.dot')
         self.nfa_determinization_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -301,7 +302,7 @@ class TestNfaDeterminization(TestCase):
 class TestNfaComplementation(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_complementation_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_complementation_test_01.dot')
+        self.nfa_complementation_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_complementation_test_01.dot')
         self.nfa_complementation_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -375,8 +376,8 @@ class TestNfaComplementation(TestCase):
 class TestNfaNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_nonemptiness_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonemptiness_test_01.dot')
-        self.nfa_nonemptiness_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonemptiness_test_02.dot')
+        self.nfa_nonemptiness_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonemptiness_test_01.dot')
+        self.nfa_nonemptiness_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonemptiness_test_02.dot')
         self.nfa_nonemptiness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -417,8 +418,8 @@ class TestNfaNonemptinessCheck(TestCase):
 class TestNfaNonuniversalityCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_nonuniversality_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonuniversality_test_01.dot')
-        self.nfa_nonuniversality_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_nonuniversality_test_02.dot')
+        self.nfa_nonuniversality_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonuniversality_test_01.dot')
+        self.nfa_nonuniversality_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonuniversality_test_02.dot')
         self.nfa_nonuniversality_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -459,8 +460,8 @@ class TestNfaNonuniversalityCheck(TestCase):
 class TestNfaInterestingnessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_interestingness_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_interestingness_test_01.dot')
-        self.nfa_interestingness_test_02 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_interestingness_test_02.dot')
+        self.nfa_interestingness_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_interestingness_test_01.dot')
+        self.nfa_interestingness_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_interestingness_test_02.dot')
         self.nfa_interestingness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -501,7 +502,7 @@ class TestNfaInterestingnessCheck(TestCase):
 class TestRunAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_run_acceptance_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_run_acceptance_test_01.dot')
+        self.nfa_run_acceptance_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_run_acceptance_test_01.dot')
         self.nfa_run_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -571,7 +572,7 @@ class TestRunAcceptance(TestCase):
 class TestWordAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_word_acceptance_test_01 = automata_IO.nfa_dot_importer('./dot/nfa/nfa_word_acceptance_test_01.dot')
+        self.nfa_word_acceptance_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_word_acceptance_test_01.dot')
         self.nfa_word_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),

@@ -27,6 +27,7 @@ from copy import copy
 # TO-DO
 # TODO lambda functions
 # TODO solve empty dfa with "None" node
+# TODO automata states intersection
 
 
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
