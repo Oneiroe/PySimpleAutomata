@@ -1,9 +1,9 @@
 from unittest import TestCase
 import unittest
-from .context import PySimpleAutomata
-import NFA
-import automata_IO
 import copy
+from .context import PySimpleAutomata
+from PySimpleAutomata import NFA
+from PySimpleAutomata import automata_IO
 
 
 class TestNfaIntersection(TestCase):

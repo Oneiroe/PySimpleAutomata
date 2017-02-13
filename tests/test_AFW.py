@@ -1,11 +1,11 @@
 from unittest import TestCase
 import unittest
 from .context import PySimpleAutomata
-import AFW
-import automata_IO
 import copy
-import NFA
 import itertools
+from PySimpleAutomata import NFA
+from PySimpleAutomata import AFW
+from PySimpleAutomata import automata_IO
 
 
 class TestWordAcceptance(TestCase):

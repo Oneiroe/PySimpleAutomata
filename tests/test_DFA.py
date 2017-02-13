@@ -1,9 +1,9 @@
 from unittest import TestCase
 import unittest
 from .context import PySimpleAutomata
-import DFA
-import automata_IO
 import copy
+from PySimpleAutomata import DFA
+from PySimpleAutomata import automata_IO
 
 
 class TestRunAcceptance(TestCase):

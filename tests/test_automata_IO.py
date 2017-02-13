@@ -1,10 +1,10 @@
 from unittest import TestCase
 import unittest
 from .context import PySimpleAutomata
-import DFA
-import NFA
-import AFW
-import automata_IO
+from PySimpleAutomata import DFA
+from PySimpleAutomata import NFA
+from PySimpleAutomata import AFW
+from PySimpleAutomata import automata_IO
 
 
 class TestDfaDotImporter(TestCase):

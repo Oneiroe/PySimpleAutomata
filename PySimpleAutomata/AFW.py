@@ -19,7 +19,7 @@ In this module a AFW is defined as follows
                                  expression over states; where we also allow the formulas True and False]
 """
 
-import NFA
+from PySimpleAutomata import NFA
 import itertools
 import re
 import copy

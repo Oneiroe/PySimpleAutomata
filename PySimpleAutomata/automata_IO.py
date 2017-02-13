@@ -1,4 +1,3 @@
-import DFA, NFA, AFW
 import json
 import graphviz
 import pydot

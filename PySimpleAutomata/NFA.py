@@ -20,7 +20,7 @@ In this module a NFA is defined as follows
 """
 
 from itertools import product as cartesian_product
-import DFA
+from PySimpleAutomata import DFA
 
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
