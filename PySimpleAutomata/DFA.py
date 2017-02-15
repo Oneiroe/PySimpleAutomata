@@ -1,16 +1,20 @@
 """
+Module to manage DFA (Deterministic Finite Automaton).
+
 Formally a DFA, Deterministic Finite Automaton, is a tuple
-:math:`A=(Σ,S,s_0,ρ,F)`, where
- • Σ is a finite nonempty alphabet;
- • S is a finite nonempty set of states;
- • :math:`s_0 ∈ S` is the initial state;
- • F ⊆ S is the set of accepting states;
- • :math:`ρ: S × Σ → S` is a transition function, which can be a
- partial function.
-   Intuitively, :math:`s_0 = ρ(s, a)` is the state that A can
-   move into when it is in state s and it reads the symbol a.
-   (If :math:`ρ(s, a)` is undefined then reading a leads to
-   rejection.)
+:math:`A=(Σ,S,s_0,ρ,F)`, where:
+
+    • Σ is a finite nonempty alphabet;
+    • S is a finite nonempty set of states;
+    • :math:`s_0 ∈ S` is the initial state;
+    • F ⊆ S is the set of accepting states;
+    • :math:`ρ: S × Σ → S` is a transition function, which can be a
+      partial function.
+
+Intuitively, :math:`s_0 = ρ(s, a)` is the state that A can
+move into when it is in state s and it reads the symbol a.
+(If :math:`ρ(s, a)` is undefined then reading a leads to
+rejection.)
 
 In this module a DFA is defined as follows
 
@@ -20,7 +24,7 @@ In this module a DFA is defined as follows
   • initial_state    => 'state_0' ;
   • accepting_states => set() ;
   • transitions      => dict()  #key (state in states, action in
-  alphabet) #value (arriving state in states) ;
+                        alphabet) #value (arriving state in states);
 """
 
 from itertools import product as cartesian_product
@@ -51,7 +55,7 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     :param run: list() of states ∈ dfa['states']
     :param word: list() of actions ∈ dfa['alphabet']
     :return: bool, True if the word is accepted, False in the
-    other case
+             other case
     """
 
     if len(run) > 0:
@@ -91,7 +95,7 @@ def word_acceptance(dfa: dict, word: list) -> bool:
     :param dfa: dict() representing a dfa
     :param word: list() of actions ∈ dfa['alphabet']
     :return: bool, True if the word is accepted, False in the
-    other case
+             other case
     """
     current_state = dfa['initial_state']
     for action in word:
@@ -178,7 +182,7 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
         'states': set(
             cartesian_product(dfa_1['states'], dfa_2['states'])),
         'initial_state': (
-        dfa_1['initial_state'], dfa_2['initial_state']),
+            dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states': set(
             cartesian_product(dfa_1['accepting_states'],
                               dfa_2['accepting_states'])),
@@ -188,12 +192,12 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     for (state_dfa_1, state_dfa_2) in intersection['states']:
         for a in intersection['alphabet']:
             if (state_dfa_1, a) in dfa_1['transitions'] and (
-            state_dfa_2, a) in dfa_2['transitions']:
+                    state_dfa_2, a) in dfa_2['transitions']:
                 destination_1 = dfa_1['transitions'][state_dfa_1, a]
                 destination_2 = dfa_2['transitions'][state_dfa_2, a]
                 intersection['transitions'][
                     (state_dfa_1, state_dfa_2), a] = (
-                destination_1, destination_2)
+                    destination_1, destination_2)
     return intersection
 
 
@@ -229,7 +233,7 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
         'states': set(
             cartesian_product(dfa_1['states'], dfa_2['states'])),
         'initial_state': (
-        dfa_1['initial_state'], dfa_2['initial_state']),
+            dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states': set(
             cartesian_product(dfa_1['accepting_states'],
                               dfa_2['states'])).union(
@@ -243,7 +247,7 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
             destination_1 = dfa_1['transitions'][state_dfa_1, a]
             destination_2 = dfa_2['transitions'][state_dfa_2, a]
             union['transitions'][(state_dfa_1, state_dfa_2), a] = (
-            destination_1, destination_2)
+                destination_1, destination_2)
     return union
 
 
@@ -261,12 +265,13 @@ def dfa_minimization(dfa: dict) -> dict:
     A bisimulation relation :math:`E ∈ S × S` is a relation
     between states that satisfies the following condition:
     if :math:`(s, t) ∈ E` then:
+
      • s ∈ F iff t ∈ F;
      • For all :math:`(s_X,a)` such that :math:`ρ(s, a) = s_X`,
-     there exists :math:`t_X` such that :math:`ρ(t, a) = t_X`
+       there exists :math:`t_X` such that :math:`ρ(t, a) = t_X`
        and :math:`(s_X , t_X ) ∈ E`;
      • For all :math:`(t_X,a)` such that :math:`ρ(t, a) = t_X` ,
-     there exists :math:`s_X` such that :math:`ρ(s, a) = s_X`
+       there exists :math:`s_X` such that :math:`ρ(s, a) = s_X`
        and :math:`(s_X , t_X ) ∈ E`.
 
     :param dfa: dict() representing a dfa
@@ -301,7 +306,7 @@ def dfa_minimization(dfa: dict) -> dict:
             # s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
             for a in dfa['alphabet']:
                 if (element[0], a) in dfa['transitions'] and (
-                element[1], a) in dfa['transitions']:
+                        element[1], a) in dfa['transitions']:
                     if (dfa['transitions'][element[0], a],
                         dfa['transitions'][
                             element[1], a]) not in z_current:
@@ -474,7 +479,7 @@ def dfa_trimming(dfa: dict) -> dict:
     • :math:`S_R` set of reachable states from the initial state
     • :math:`S_F` set of states that reaches a final state
     • :math:`ρ|S_R∩S_F` is the restriction on :math:`(S_R ∩ S_F )
-    × Σ` of ρ.
+      × Σ` of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the trimmed input dfa
@@ -509,7 +514,7 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
     :param dfa: dict() representing a dfa
     :param symbols_to_project: set() containing symbols ∈ dfa[
-    'alphabet'] to be projected out from dfa
+           'alphabet'] to be projected out from dfa
     :return: dict() representing a NFA
     """
     nfa = dfa.copy()

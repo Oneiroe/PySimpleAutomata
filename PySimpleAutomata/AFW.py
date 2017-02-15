@@ -1,28 +1,32 @@
 """
+Module to manage AFW (Alternating Finite automaton on Words).
+
 Formally a AFW (Alternating Finite automaton on Words) is a tuple
 :math:`(Σ, S, s0, ρ, F )`, where:
+
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
  • :math:`s0 ∈ S` is the initial state (notice that, as in dfas,
- we have a unique initial state);
+   we have a unique initial state);
  • F ⊆ S is the set of accepting states;
  • :math:`ρ : S × Σ → B+(S)` is a transition function.
-           :math:`B+(X)` be the set of positive Boolean formulas
-           over a given set X
-           ex. of :math:`ρ: ρ(s, a) = (s1 ∧ s2) ∨ (s3 ∧ s4)`
+   :math:`B+(X)` be the set of positive Boolean formulas
+   over a given set X
+   ex. of :math:`ρ: ρ(s, a) = (s1 ∧ s2) ∨ (s3 ∧ s4)`
 
 In this module a AFW is defined as follows
 
  AFW = dict() with the following keys-values:
-    alphabet         => set()
-    states           => set()
-    initial_state    => 'state_0'
-    accepting_states => set()
-    transitions      => dict() # key (state ∈ states, action ∈
-    alphabet) value [string representing a PYTHON boolean
-                                 expression over states; where we
-                                 also allow the formulas True and
-                                 False]
+
+ • alphabet         => set()
+ • states           => set()
+ • initial_state    => 'state_0'
+ • accepting_states => set()
+ • transitions      => dict() # key (state ∈ states, action ∈
+                       alphabet) value [string representing a
+                       PYTHON boolean expression over states;
+                       where we also allow the formulas True and
+                       False]
 """
 
 from PySimpleAutomata import NFA
@@ -146,9 +150,9 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     is a new state and :math:`ρ_A` is defined as follows:
 
      • :math:`ρ_A(s, a)= ⋁_{(s,a,s')∈ρ}s'`, for all :math:`a ∈ Σ`
-     and :math:`s ∈ S`
+       and :math:`s ∈ S`
      • :math:`ρ_A(s^0, a)= ⋁_{s∈S^0,(s,a,s')∈ρ}s'`, for all
-     :math:`a ∈ Σ`
+       :math:`a ∈ Σ`
 
     We take an empty disjunction in the definition of AA to be
     equivalent to false. Essentially,
@@ -195,7 +199,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
      • :math:`S^0_N= \{\{s^0 \}\}`
      • :math:`F_N=2^F`
      • :math:`(Q,a,Q') ∈ ρ_N` iff :math:`Q'` satisfies :math:`⋀_{
-     s∈Q} ρ(s, a)`
+       s∈Q} ρ(s, a)`
 
      We take an empty conjunction in the definition of
      :math:`ρ_N` to be equivalent to true; thus, :math:`(∅, a,
@@ -264,8 +268,8 @@ def __replace_all(repls, str):
     keys element of the dictionary repls with their relative value.
 
     :param repls: dict(), dictionary containing the mapping
-    between the values to be changed and their appropriate
-    substitution
+                  between the values to be changed and their
+                  appropriate substitution
     :param str: str(), original string
     :return: str(), string with the appropriate values replaced
     """
@@ -322,7 +326,7 @@ def renaming_afw_states(afw, suffix):
 
     :param afw: dict() representing a AFW
     :param suffix: str() string representing the suffix to be
-    added at each state name
+                   added at each state name
     """
     conversion_dict = {}
     new_states = set()
@@ -457,12 +461,12 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
                                                            transition] + ')'
         else:
             intersection['transitions'][transition] = \
-            afw_2['transitions'][transition]
+                afw_2['transitions'][transition]
 
     for action in intersection['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
             intersection['transitions']['s_root', action] = \
-            afw_1['transitions'][afw_1['initial_state'], action]
+                afw_1['transitions'][afw_1['initial_state'], action]
             if (afw_2['initial_state'], action) in afw_2[
                 'transitions']:
                 intersection['transitions'][
@@ -479,15 +483,18 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
                 's_root', action] = 'False and (' + \
                                     afw_2['transitions'][
                                         afw_2[
-                                            'initial_state'], action] + ')'
+                                            'initial_state'],
+                                        action] + ')'
 
     return intersection
 
 
 def afw_nonemptiness_check(afw: dict) -> bool:
-    """ Checks if the input afw reads any language other than the empty one, returning True/False.
+    """ Checks if the input afw reads any language other than the
+    empty one, returning True/False.
 
-    The afw is translated into a nfa and then its nonemptiness is checked.
+    The afw is translated into a nfa and then its nonemptiness is
+    checked.
 
     :param afw: dict() representing a afw
     :return: bool, True if input afw is nonempty, False otherwise
@@ -497,12 +504,15 @@ def afw_nonemptiness_check(afw: dict) -> bool:
 
 
 def afw_nonuniversality_check(afw: dict) -> bool:
-    """ Checks if the language read by the input afw is different from Σ∗, returning True/False.
+    """ Checks if the language read by the input afw is different
+    from Σ∗, returning True/False.
 
-    The afw is translated into a nfa and then its nonuniversality is checked.
+    The afw is translated into a nfa and then its nonuniversality
+    is checked.
 
     :param afw: dict() representing a afw
-    :return: bool, True if input afw is nonuniversal, False otherwise
+    :return: bool, True if input afw is nonuniversal, False
+             otherwise
     """
     nfa = afw_to_nfa_conversion(afw)
     return NFA.nfa_nonuniversality_check(nfa)

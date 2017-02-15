@@ -1,3 +1,7 @@
+"""
+Module to mange IO
+"""
+
 import json
 import graphviz
 import pydot
@@ -70,15 +74,17 @@ def dfa_dot_importer(input_file: str) -> dict:
       • nodeX   root=true -> initial node
       • edgeX   label="a" -> action in alphabet
       • fake    [style=invisible] -> skip this node,
-      fake invisible one to initial state arrow
+        fake invisible one to initial state arrow
       • fake -> S [style=bold] -> skip this transition,
-      just initial state arrow for graphical purpose
+        just initial state arrow for graphical purpose
 
     Forbidden names:
+
       • 'fake'  used for graphical purpose to drawn the arrow of
-      the initial state
+        the initial state
       • 'sink'  used as additional state when completing a DFA
       • 'None'  used when no initial state is present
+
     Forbidden characters:
         '"' "'" '(' ')' ' '
 
@@ -283,17 +289,17 @@ def nfa_dot_importer(input_file):
       • nodeX   root=true -> initial node
       • edgeX   label="a" -> action in alphabet
       • fakeX   style=invisible -> skip this node, fake invisible
-      one to initial state arrow
+        one to initial state arrow
       • fakeX -> S [style=bold] -> skip this transition,
-      just initial state arrow for graphical purpose
+        just initial state arrow for graphical purpose
 
     All invisible nodes are skipped.
 
     Forbidden names:
       • 'fake'  used for graphical purpose to drawn the arrow of
-      the initial state
+        the initial state
       • 'sink'  used as additional state when completing a DFA
-    Forbidden characters:
+        Forbidden characters:
         '"' "'" '(' ')' ' '
 
     :param input_file: Path to input .dot file

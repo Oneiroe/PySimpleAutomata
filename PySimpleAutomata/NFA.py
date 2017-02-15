@@ -1,12 +1,15 @@
 """
+Module to manage NFA (Nondeterministic Finite Automaton).
+
 Formally a NFA, Nondeterministic Finite Automaton, is a tuple
 :math:`(Σ, S, S^0 , ρ, F )`, where
+
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
  • :math:`S^0` is the nonempty set of initial states;
  • F is the set of accepting states;
  • :math:`ρ: S × Σ × S` is a transition relation. Intuitively,
- :math:`(s, a, s' ) ∈ ρ` states that A can move from s
+   :math:`(s, a, s' ) ∈ ρ` states that A can move from s
    into s' when it reads the symbol a. It is allowed that
    :math:`(s, a, s' ) ∈ ρ` and :math:`(s, a, s'' ) ∈ ρ`
    with :math:`S' ≠ S''` .
@@ -14,12 +17,13 @@ Formally a NFA, Nondeterministic Finite Automaton, is a tuple
 In this module a NFA is defined as follows
 
  NFA = dict() with the following keys-values:
+
   • alphabet         => set()
   • states           => set()
   • initial_states   => set()
   • accepting_states => set()
   • transitions      => dict()  # key (state in states, action in
-  alphabet) value {set of arriving states in states}
+    alphabet) value {set of arriving states in states}
 
 """
 
@@ -45,8 +49,8 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     • :math:`S = S_1 × S_2`
     • :math:`S_0 = S_1^0 × S_2^0`
     • :math:`F = F_1 × F_2`
-    • :math:`((s,t), a, (s_X , t_X)) ∈ ρ` iff :math:`(s, a,
-    s_X ) ∈ ρ_1` and :math:`(t, a, t_X ) ∈ ρ_2`
+    • :math:`((s,t), a, (s_X , t_X)) ∈ ρ` iff :math:`(s, a,s_X )
+      ∈ ρ_1` and :math:`(t, a, t_X ) ∈ ρ_2`
 
     :param nfa_1: dict() representing a nfa
     :param nfa_2: dict() representing a nfa
@@ -69,7 +73,7 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     for (state_nfa_1, state_nfa_2) in intersection['states']:
         for a in intersection['alphabet']:
             if (state_nfa_1, a) not in nfa_1['transitions'] or (
-            state_nfa_2, a) not in nfa_2['transitions']:
+                    state_nfa_2, a) not in nfa_2['transitions']:
                 continue
             s1 = nfa_1['transitions'][state_nfa_1, a]
             s2 = nfa_2['transitions'][state_nfa_2, a]
@@ -139,13 +143,12 @@ def nfa_determinization(nfa: dict) -> dict:
     where:
 
     • :math:`2^S` , i.e., the state set of :math:`A_d` , consists
-    of all sets of states S in A;
+      of all sets of states S in A;
     • :math:`s_0 = S^0` , i.e., the single initial state of
-    :math:`A_d` is the set :math:`S_0` of initial states of A;
+      :math:`A_d` is the set :math:`S_0` of initial states of A;
     • :math:`F_d = \{Q | Q ∩ F ≠ ∅\}`, i.e., the collection of
-    sets of states that intersect F nontrivially;
-    • :math:`ρ_d(Q, a) = \{s' | (s, a, s' ) ∈ ρ\ for\ some\ s ∈
-    Q\}`.
+      sets of states that intersect F nontrivially;
+    • :math:`ρ_d(Q, a) = \{s' | (s,a, s' ) ∈ ρ\ for\ some\ s ∈ Q\}`.
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
@@ -198,11 +201,9 @@ def nfa_complementation(nfa: dict) -> dict:
     Complement a nondeterministic automaton is possible
     complementing the determinization of it.
     The construction is effective, but it involves an exponential
-    blow-up,
-    since determinization involves an unavoidable exponential
-    blow-up
-    (i.e., if NFA has n states, then the DFA has :math:`2^n`
-    states).
+    blow-up, since determinization involves an unavoidable
+    exponential blow-up (i.e., if NFA has n states,
+    then the DFA has :math:`2^n` states).
 
     :param nfa: dict() representing a nfa
     :return: dict() representing a dfa
@@ -226,7 +227,7 @@ def nfa_nonemptiness_check(nfa: dict) -> dict:
 
     :param nfa: dict() representing a nfa
     :return: bool, True if the input nfa is nonempty, False
-    otherwise
+             otherwise
     """
     # BFS
     stack = []
@@ -256,8 +257,8 @@ def nfa_nonuniversality_check(nfa: dict) -> bool:
     complementary automaton of A) for nonemptiness
 
     :param nfa: dict() representing a nfa
-    :return: bool, True if input nfa is nonuniversal, False
-    otherwise
+    :return: bool, True if input nfa is nonuniversal,
+             False otherwise
     """
     # NAIVE Very inefficient (exponential space) : simply
     # construct Ā and then test it for nonemptiness
@@ -283,7 +284,7 @@ def nfa_interestingness_check(nfa: dict) -> bool:
 
     :param nfa: dict() representing a nfa
     :return: bool, True if the input nfa is interesting, False
-    otherwise
+             otherwise
     """
     return nfa_nonemptiness_check(
         nfa) and nfa_nonuniversality_check(nfa)
@@ -325,8 +326,7 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     current_level.add(run[0])
     for i in range(len(word) - 1):
         if (run[i], word[i]) in nfa['transitions']:
-            if run[i + 1] not in nfa['transitions'][
-                run[i], word[i]]:
+            if run[i+1] not in nfa['transitions'][run[i], word[i]]:
                 return False
         else:
             return False

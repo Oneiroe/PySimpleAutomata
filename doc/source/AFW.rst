@@ -2,4 +2,23 @@ AFW
 ===
 
 .. automodule:: PySimpleAutomata.AFW
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+    .. rubric:: List
+
+    .. autosummary::
+
+      afw_complementation
+      afw_completion
+      afw_intersection
+      afw_nonemptiness_check
+      afw_nonuniversality_check
+      afw_to_nfa_conversion
+      afw_union
+      nfa_to_afw_conversion
+      renaming_afw_states
+      word_acceptance
+
+    .. rubric:: Functions

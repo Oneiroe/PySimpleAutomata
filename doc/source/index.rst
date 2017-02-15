@@ -6,16 +6,17 @@
 Welcome to PySimpleAutomata's documentation!
 ============================================
 
+lorem ipsum dolor
+
+Contents
+________
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: -1
+   :includehidden:
 
-   DFA
-   NFA
-   AFW
-   automata_IO
-
-
+   modules
+   tutorial
 
 Indices and tables
 ==================
