@@ -27,13 +27,15 @@ setup(
         'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
-        'Intended Audience :: Students',
-        'Topic :: Software Development :: Library',
+        'Intended Audience :: Education',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Software Development :: Libraries :: Python Modules',
 
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: MIT License',
 
         # Specify the Python versions you support here. In particular, ensure
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
     ],
     keywords='automata DFA NFA AFW',

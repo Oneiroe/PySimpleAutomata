@@ -8,18 +8,24 @@ import re
 # TO-DO
 # TODO documentation
 # TODO correctness check of json & DOT imported automata
-# TODO automata conformance check (eg. all transition uses word in alphabet,all transition involved states in States,..)
+# TODO automata conformance check (eg. all transition uses word
+# in alphabet,all transition involved states in States,..)
 # TODO ignore node "None" if present
-# TODO check correctness importing a .dot where no explicit state, but just transitions are present
+# TODO check correctness importing a .dot where no explicit
+# state, but just transitions are present
+# TODO make output file directory parametric
 
 
 def __replace_all(repls, str):
-    """ Replaces from a string str all the occurrences some symbols according to mapping repls
-    :param repls: dict() where #key is the old character and #value is the one to substitute with
+    """ Replaces from a string str all the occurrences some
+    symbols according to mapping repls
+    :param repls: dict() where #key is the old character and
+    #value is the one to substitute with
     :param str: original string where to apply the replacements
     :return: the string with the desired characters replaced
     """
-    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], str)
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()),
+                  lambda k: repls[k.group(0)], str)
 
 
 def dfa_json_importer(input_file):
@@ -35,12 +41,14 @@ def dfa_json_importer(input_file):
     states = set(json_file['states'])
     initial_state = json_file['initial_state']
     accepting_states = set(json_file['accepting_states'])
-    transitions = {}  # key [state ∈ states, action ∈ alphabet] value [arriving state ∈ states]
+    transitions = {}  # key [state ∈ states, action ∈ alphabet]
+    # value [arriving state ∈ states]
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
     # return list
-    # return [alphabet, states, initial_state, accepting_states, transitions]
+    # return [alphabet, states, initial_state, accepting_states,
+    # transitions]
 
     # return map
     dfa = {
@@ -61,11 +69,14 @@ def dfa_dot_importer(input_file: str) -> dict:
       • nodeX   shape=doublecircle -> accepting node
       • nodeX   root=true -> initial node
       • edgeX   label="a" -> action in alphabet
-      • fake    [style=invisible] -> skip this node, fake invisible one to initial state arrow
-      • fake -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+      • fake    [style=invisible] -> skip this node,
+      fake invisible one to initial state arrow
+      • fake -> S [style=bold] -> skip this transition,
+      just initial state arrow for graphical purpose
 
     Forbidden names:
-      • 'fake'  used for graphical purpose to drawn the arrow of the initial state
+      • 'fake'  used for graphical purpose to drawn the arrow of
+      the initial state
       • 'sink'  used as additional state when completing a DFA
       • 'None'  used when no initial state is present
     Forbidden characters:
@@ -84,10 +95,12 @@ def dfa_dot_importer(input_file: str) -> dict:
 
     replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
     for node in g.get_nodes():
-        if node.get_name() == 'fake' or node.get_name() == 'graph' or node.get_name() == 'node':
+        if node.get_name() == 'fake' or node.get_name() == \
+                'graph' or node.get_name() == 'node':
             continue
 
-        node_reference = __replace_all(replacements, node.get_name()).split(',')
+        node_reference = __replace_all(replacements,
+                                       node.get_name()).split(',')
         if len(node_reference) > 1:
             node_reference = tuple(node_reference)
         else:
@@ -96,9 +109,11 @@ def dfa_dot_importer(input_file: str) -> dict:
         for attribute in node.get_attributes():
             if attribute == 'root':
                 # if initial_state!=0:
-                #   TODO raise exception for wrong formatted dfa: dfa accepts only one initial state
+                #   TODO raise exception for wrong formatted dfa:
+                #  dfa accepts only one initial state
                 initial_state = node_reference
-            if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
+            if attribute == 'shape' and node.get_attributes()[
+                'shape'] == 'doublecircle':
                 accepting_states.add(node_reference)
 
     alphabet = set()
@@ -108,25 +123,32 @@ def dfa_dot_importer(input_file: str) -> dict:
             continue
         label = __replace_all(replacements, edge.get_label())
         alphabet.add(label)
-        source = __replace_all(replacements, edge.get_source()).split(',')
+        source = __replace_all(replacements,
+                               edge.get_source()).split(',')
         if len(source) > 1:
             source = tuple(source)
         else:
             source = source[0]
-        destination = __replace_all(replacements, edge.get_destination()).split(',')
+        destination = __replace_all(replacements,
+                                    edge.get_destination()).split(
+            ',')
         if len(destination) > 1:
             destination = tuple(destination)
         else:
             destination = destination[0]
-        # if (edge.get_source(), edge.get_label().replace('"', '')) in transitions:
-        #   TODO raise exception for wrong formatted dfa: dfa accepts only one transition from a state given a letter
+        # if (edge.get_source(), edge.get_label().replace('"',
+        # '')) in transitions:
+        #   TODO raise exception for wrong formatted dfa: dfa
+        # accepts only one transition from a state given a letter
         transitions[source, label] = destination
 
     # if len(initial_state) == 0:
-    #   TODO raise exception for wrong formatted dfa: there must be an initial state
+    #   TODO raise exception for wrong formatted dfa: there must
+    # be an initial state
 
     # if len(accepting_states)==0:
-    #     TODO raise exception for wrong formatted dfa: there must be at least an accepting state
+    #     TODO raise exception for wrong formatted dfa: there
+    # must be at least an accepting state
 
     # return map
     dfa = {
@@ -139,7 +161,8 @@ def dfa_dot_importer(input_file: str) -> dict:
 
 
 def dfa_pydot_render(dfa, name):
-    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using pydot library
+    """ Generates a .dot file and a relative .svg image in ./img/
+    folder of the input dfa using pydot library
 
     :param dfa: dict() representing a dfa
     :param name: str() string with the name of the output file
@@ -160,14 +183,17 @@ def dfa_pydot_render(dfa, name):
         g.add_node(node)
 
     for transition in dfa['transitions']:
-        g.add_edge(pydot.Edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1]))
+        g.add_edge(pydot.Edge(str(transition[0]),
+                              str(dfa['transitions'][transition]),
+                              label=transition[1]))
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
 
 
 def dfa_graphviz_render(dfa, name):
-    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input dfa using graphviz library
+    """ Generates a .dot file and a relative .svg image in ./img/
+    folder of the input dfa using graphviz library
     :param dfa: dict() representing a dfa
     :param name: str() string with the name of the output file
     """
@@ -176,7 +202,8 @@ def dfa_graphviz_render(dfa, name):
     for state in dfa['states']:
         if state == dfa['initial_state']:
             if state in dfa['accepting_states']:
-                g.node(str(state), root='true', shape='doublecircle')
+                g.node(str(state), root='true',
+                       shape='doublecircle')
             else:
                 g.node(str(state), root='true')
         elif state in dfa['accepting_states']:
@@ -186,7 +213,9 @@ def dfa_graphviz_render(dfa, name):
 
     g.edge('fake', str(dfa['initial_state']), style='bold')
     for transition in dfa['transitions']:
-        g.edge(str(transition[0]), str(dfa['transitions'][transition]), label=transition[1])
+        g.edge(str(transition[0]),
+               str(dfa['transitions'][transition]),
+               label=transition[1])
 
     g.render(filename='img/' + name + '.dot')
 
@@ -226,12 +255,14 @@ def nfa_json_importer(input_file):
     states = set(json_file['states'])
     initial_states = set(json_file['initial_states'])
     accepting_states = set(json_file['accepting_states'])
-    transitions = {}  # key [state in states, action in alphabet] value [et of arriving states in states]
+    transitions = {}  # key [state in states, action in alphabet]
+    #  value [et of arriving states in states]
     for p in json_file['transitions']:
         transitions.setdefault((p[0], p[1]), set()).add(p[2])
 
     # return list
-    # return [alphabet, states, initial_states, accepting_states, transitions]
+    # return [alphabet, states, initial_states, accepting_states,
+    #  transitions]
 
     # return map
     nfa = {}
@@ -244,19 +275,23 @@ def nfa_json_importer(input_file):
 
 
 def nfa_dot_importer(input_file):
-    """ Returns a nfa dict() object from a .dot file representing a dfa
+    """ Returns a nfa dict() object from a .dot file representing
+    a dfa
 
     Of .dot files are recognized the following attributes
       • nodeX   shape=doublecircle -> accepting node
       • nodeX   root=true -> initial node
       • edgeX   label="a" -> action in alphabet
-      • fakeX   style=invisible -> skip this node, fake invisible one to initial state arrow
-      • fakeX -> S [style=bold] -> skip this transition, just initial state arrow for graphical purpose
+      • fakeX   style=invisible -> skip this node, fake invisible
+      one to initial state arrow
+      • fakeX -> S [style=bold] -> skip this transition,
+      just initial state arrow for graphical purpose
 
     All invisible nodes are skipped.
 
     Forbidden names:
-      • 'fake'  used for graphical purpose to drawn the arrow of the initial state
+      • 'fake'  used for graphical purpose to drawn the arrow of
+      the initial state
       • 'sink'  used as additional state when completing a DFA
     Forbidden characters:
         '"' "'" '(' ')' ' '
@@ -275,12 +310,16 @@ def nfa_dot_importer(input_file):
     replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
 
     for node in g.get_nodes():
-        if node.get_name() == 'fake' or node.get_name() == 'graph' or node.get_name() == 'node':
+        if node.get_name() == 'fake' or node.get_name() == \
+                'graph' or node.get_name() == 'node':
             continue
-        if 'style' in node.get_attributes() and node.get_attributes()['style'] == 'invisible':
+        if 'style' in node.get_attributes() and \
+                        node.get_attributes()[
+                            'style'] == 'invisible':
             continue
 
-        node_reference = __replace_all(replacements, node.get_name()).split(',')
+        node_reference = __replace_all(replacements,
+                                       node.get_name()).split(',')
         if len(node_reference) > 1:
             node_reference = tuple(node_reference)
         else:
@@ -289,18 +328,22 @@ def nfa_dot_importer(input_file):
         for attribute in node.get_attributes():
             if attribute == 'root':
                 initial_states.add(node_reference)
-            if attribute == 'shape' and node.get_attributes()['shape'] == 'doublecircle':
+            if attribute == 'shape' and node.get_attributes()[
+                'shape'] == 'doublecircle':
                 accepting_states.add(node_reference)
 
     alphabet = set()
     transitions = {}
     for edge in g.get_edges():
-        source = __replace_all(replacements, edge.get_source()).split(',')
+        source = __replace_all(replacements,
+                               edge.get_source()).split(',')
         if len(source) > 1:
             source = tuple(source)
         else:
             source = source[0]
-        destination = __replace_all(replacements, edge.get_destination()).split(',')
+        destination = __replace_all(replacements,
+                                    edge.get_destination()).split(
+            ',')
         if len(destination) > 1:
             destination = tuple(destination)
         else:
@@ -312,7 +355,8 @@ def nfa_dot_importer(input_file):
         label = __replace_all(replacements, edge.get_label())
         alphabet.add(label)
 
-        transitions.setdefault((source, label), set()).add(destination)
+        transitions.setdefault((source, label), set()).add(
+            destination)
 
     nfa = {
         'alphabet': alphabet,
@@ -326,7 +370,8 @@ def nfa_dot_importer(input_file):
 
 
 def nfa_pydot_render(nfa, name):
-    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using pydot library
+    """ Generates a .dot file and a relative .svg image in ./img/
+    folder of the input nfa using pydot library
 
     :param nfa: dict() representing a nfa
     :param name: str() string with the name of the output file
@@ -350,14 +395,17 @@ def nfa_pydot_render(nfa, name):
 
     for transition in nfa['transitions']:
         for destination in nfa['transitions'][transition]:
-            g.add_edge(pydot.Edge(str(transition[0]), str(destination), label=transition[1]))
+            g.add_edge(
+                pydot.Edge(str(transition[0]), str(destination),
+                           label=transition[1]))
 
     g.write_svg('img/' + name + '.svg')
     g.write_dot('img/' + name + '.dot')
 
 
 def nfa_graphviz_render(nfa, name):
-    """ Generates a .dot file and a relative .svg image in ./img/ folder of the input nfa using graphviz library
+    """ Generates a .dot file and a relative .svg image in ./img/
+    folder of the input nfa using graphviz library
 
     :param nfa: dict() representing a nfa
     :param name: str() string with the name of the output file
@@ -372,7 +420,8 @@ def nfa_graphviz_render(nfa, name):
     for state in nfa['states']:
         if state in nfa['initial_states']:
             if state in nfa['accepting_states']:
-                g.node(str(state), root='true', shape='doublecircle')
+                g.node(str(state), root='true',
+                       shape='doublecircle')
             else:
                 g.node(str(state), root='true')
         elif state in nfa['accepting_states']:
@@ -384,7 +433,8 @@ def nfa_graphviz_render(nfa, name):
         g.edge(fakes.pop(), str(initial_state), style='bold')
     for transition in nfa['transitions']:
         for destination in nfa['transitions'][transition]:
-            g.edge(str(transition[0]), str(destination), label=transition[1])
+            g.edge(str(transition[0]), str(destination),
+                   label=transition[1])
 
     g.render(filename='img/' + name + '.dot')
 

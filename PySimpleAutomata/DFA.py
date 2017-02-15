@@ -1,12 +1,16 @@
 """
-Formally a DFA, Deterministic Finite Automaton, is a tuple :math:`A=(Σ,S,s_0,ρ,F)`, where
+Formally a DFA, Deterministic Finite Automaton, is a tuple
+:math:`A=(Σ,S,s_0,ρ,F)`, where
  • Σ is a finite nonempty alphabet;
  • S is a finite nonempty set of states;
  • :math:`s_0 ∈ S` is the initial state;
  • F ⊆ S is the set of accepting states;
- • :math:`ρ: S × Σ → S` is a transition function, which can be a partial function.
-   Intuitively, :math:`s_0 = ρ(s, a)` is the state that A can move into when it is in state s and it reads the symbol a.
-   (If :math:`ρ(s, a)` is undefined then reading a leads to rejection.)
+ • :math:`ρ: S × Σ → S` is a transition function, which can be a
+ partial function.
+   Intuitively, :math:`s_0 = ρ(s, a)` is the state that A can
+   move into when it is in state s and it reads the symbol a.
+   (If :math:`ρ(s, a)` is undefined then reading a leads to
+   rejection.)
 
 In this module a DFA is defined as follows
 
@@ -15,7 +19,8 @@ In this module a DFA is defined as follows
   • states           => set() ;
   • initial_state    => 'state_0' ;
   • accepting_states => set() ;
-  • transitions      => dict()  #key (state in states, action in alphabet) #value (arriving state in states) ;
+  • transitions      => dict()  #key (state in states, action in
+  alphabet) #value (arriving state in states) ;
 """
 
 from itertools import product as cartesian_product
@@ -31,16 +36,22 @@ from copy import copy
 
 
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
-    """ Checks if the given 'run' of states in 'dfa' accepts the given 'word', returning True/False.
+    """ Checks if the given 'run' of states in 'dfa' accepts the
+    given 'word', returning True/False.
 
-    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗` is a sequence :math:`s_0 · · · s_n` of n+1 states in S
-    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i , a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic automaton
-    can have at most one run on a given input word. The run r is accepting if :math:`s_n ∈ F` .
+    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1}
+    ∈ Σ∗` is a sequence :math:`s_0 · · · s_n` of n+1 states in S
+    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i ,
+    a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic
+    automaton
+    can have at most one run on a given input word. The run r is
+    accepting if :math:`s_n ∈ F` .
 
     :param dfa: dict() representing a dfa
     :param run: list() of states ∈ dfa['states']
     :param word: list() of actions ∈ dfa['alphabet']
-    :return: bool, True if the word is accepted, False in the other case
+    :return: bool, True if the word is accepted, False in the
+    other case
     """
 
     if len(run) > 0:
@@ -51,7 +62,8 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
         if run[-1] not in dfa['accepting_states']:
             return False
     else:
-        # If empty input check if the initial state is also accepting
+        # If empty input check if the initial state is also
+        # accepting
         if dfa['initial_state'] in dfa['accepting_states']:
             return True
         else:
@@ -69,19 +81,23 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
 
 
 def word_acceptance(dfa: dict, word: list) -> bool:
-    """ Checks if a given 'word' is accepted by a 'dfa', returning True/false.
+    """ Checks if a given 'word' is accepted by a 'dfa',
+    returning True/false.
 
-    The word w is accepted by a DFA if DFA has an accepting run on w. Since A is deterministic,
+    The word w is accepted by a DFA if DFA has an accepting run
+    on w. Since A is deterministic,
     :math:`w ∈ L(A)` if and only if :math:`ρ(s_0 , w) ∈ F` .
 
     :param dfa: dict() representing a dfa
     :param word: list() of actions ∈ dfa['alphabet']
-    :return: bool, True if the word is accepted, False in the other case
+    :return: bool, True if the word is accepted, False in the
+    other case
     """
     current_state = dfa['initial_state']
     for action in word:
         if (current_state, action) in dfa['transitions']:
-            current_state = dfa['transitions'][current_state, action]
+            current_state = dfa['transitions'][
+                current_state, action]
         else:
             return False
     if current_state in dfa['accepting_states']:
@@ -92,13 +108,20 @@ def word_acceptance(dfa: dict, word: list) -> bool:
 
 # Side effect on input dfa
 def dfa_completion(dfa: dict) -> dict:
-    """ [Side effect on input] It completes the dfa assigning to each state a transition for each letter in the alphabet (if not already defined).
+    """ [Side effect on input] It completes the dfa assigning to
+    each state a transition for each letter in the alphabet (if
+    not already defined).
 
-    We say that a DFA is complete if its transition function :math:`ρ:S×Σ→S` is a total function, that is,
-    for all :math:`s ∈ S` and all :math:`a ∈ Σ` we have that exists a :math:`ρ(s,a)=s_x` for some :math:`s_x ∈ S`.
-    Given an arbitrary DFA A, its completed version :math:`A_T` is obtained as follows:
-    :math:`A_T = (Σ, S ∪ \{sink\}, s_0 , ρ_T , F )` with :math:`ρ_T(s,a)=sink`
-    when :math:`ρ(s,a)` is not defined in A and :math:`ρ_T=ρ` in the other cases.
+    We say that a DFA is complete if its transition function
+    :math:`ρ:S×Σ→S` is a total function, that is,
+    for all :math:`s ∈ S` and all :math:`a ∈ Σ` we have that
+    exists a :math:`ρ(s,a)=s_x` for some :math:`s_x ∈ S`.
+    Given an arbitrary DFA A, its completed version :math:`A_T`
+    is obtained as follows:
+    :math:`A_T = (Σ, S ∪ \{sink\}, s_0 , ρ_T , F )` with
+    :math:`ρ_T(s,a)=sink`
+    when :math:`ρ(s,a)` is not defined in A and :math:`ρ_T=ρ` in
+    the other cases.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the completed dfa
@@ -112,24 +135,30 @@ def dfa_completion(dfa: dict) -> dict:
 
 
 def dfa_complementation(dfa: dict) -> dict:
-    """ Generates a dfa that accepts any word but he one accepted by input 'dfa'.
+    """ Generates a dfa that accepts any word but he one accepted
+    by input 'dfa'.
 
-    Let A be a completed DFA, :math:`Ā = (Σ, S, s_0 , ρ, S − F )` is the DFA that runs A
+    Let A be a completed DFA, :math:`Ā = (Σ, S, s_0 , ρ, S − F )`
+    is the DFA that runs A
     but accepts whatever word A does not.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the complement of the input dfa
     """
     dfa_complemented = deepcopy(dfa_completion(dfa))
-    dfa_complemented['accepting_states'] = dfa['states'].difference(dfa['accepting_states'])
+    dfa_complemented['accepting_states'] = dfa['states'].difference(
+        dfa['accepting_states'])
     return dfa_complemented
 
 
 def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
-    """ Returns a dfa accepting the intersection of the DFAs in input.
+    """ Returns a dfa accepting the intersection of the DFAs in
+    input.
 
-    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two DFAs.
-    Then there is a DFA :math:`A_∧` that runs simultaneously both :math:`A_1` and :math:`A_2` on the input word and
+    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and
+    :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two DFAs.
+    Then there is a DFA :math:`A_∧` that runs simultaneously both
+    :math:`A_1` and :math:`A_2` on the input word and
     accepts when both accept.
     It is defined as:
 
@@ -137,7 +166,8 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
 
     where
 
-    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2}= ρ_2 (s_2 , a)`
+    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff
+    :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2}= ρ_2 (s_2 , a)`
 
     :param dfa_1: dict() representing a dfa
     :param dfa_2: dict() representing a dfa
@@ -145,34 +175,46 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     """
     intersection = {
         'alphabet': copy(dfa_1['alphabet']),
-        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
-        'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
-        'accepting_states': set(cartesian_product(dfa_1['accepting_states'], dfa_2['accepting_states'])),
+        'states': set(
+            cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'initial_state': (
+        dfa_1['initial_state'], dfa_2['initial_state']),
+        'accepting_states': set(
+            cartesian_product(dfa_1['accepting_states'],
+                              dfa_2['accepting_states'])),
         'transitions': dict()
     }
 
     for (state_dfa_1, state_dfa_2) in intersection['states']:
         for a in intersection['alphabet']:
-            if (state_dfa_1, a) in dfa_1['transitions'] and (state_dfa_2, a) in dfa_2['transitions']:
+            if (state_dfa_1, a) in dfa_1['transitions'] and (
+            state_dfa_2, a) in dfa_2['transitions']:
                 destination_1 = dfa_1['transitions'][state_dfa_1, a]
                 destination_2 = dfa_2['transitions'][state_dfa_2, a]
-                intersection['transitions'][(state_dfa_1, state_dfa_2), a] = (destination_1, destination_2)
+                intersection['transitions'][
+                    (state_dfa_1, state_dfa_2), a] = (
+                destination_1, destination_2)
     return intersection
 
 
 def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
     """ Returns a dfa accepting the union of the dfas in input.
 
-    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two completed DFAs.
-    Then there is a DFA :math:`A_∨` that runs simultaneously both :math:`A_1` and :math:`A_2` on the input word
+    Let :math:`A_1 = (Σ, S_1 , s_{01} , ρ_1 , F_1 )` and
+    :math:`A_2 = (Σ, S_2 , s_{02} , ρ_2 , F_2 )` be two completed
+    DFAs.
+    Then there is a DFA :math:`A_∨` that runs simultaneously both
+    :math:`A_1` and :math:`A_2` on the input word
     and accepts when one of them accepts.
     It is defined as:
 
-    :math:`A_∨ = (Σ, S_1 × S_2 , (s_{01} , s_{02} ), ρ, (F_1 × S_2 ) ∪ (S_1 × F_2 ))`
+    :math:`A_∨ = (Σ, S_1 × S_2 , (s_{01} , s_{02} ), ρ, (F_1 ×
+    S_2 ) ∪ (S_1 × F_2 ))`
 
     where
 
-    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2} = ρ(s_2 , a)`
+    :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff
+    :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2} = ρ(s_2 , a)`
 
 
     :param dfa_1: dict() representing a dfa
@@ -184,10 +226,15 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
 
     union = {
         'alphabet': dfa_1['alphabet'],
-        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
-        'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
-        'accepting_states': set(cartesian_product(dfa_1['accepting_states'], dfa_2['states'])).union(
-            set(cartesian_product(dfa_1['states'], dfa_2['accepting_states']))),
+        'states': set(
+            cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'initial_state': (
+        dfa_1['initial_state'], dfa_2['initial_state']),
+        'accepting_states': set(
+            cartesian_product(dfa_1['accepting_states'],
+                              dfa_2['states'])).union(
+            set(cartesian_product(dfa_1['states'],
+                                  dfa_2['accepting_states']))),
         'transitions': dict()
     }
 
@@ -195,23 +242,31 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
         for a in union['alphabet']:
             destination_1 = dfa_1['transitions'][state_dfa_1, a]
             destination_2 = dfa_2['transitions'][state_dfa_2, a]
-            union['transitions'][(state_dfa_1, state_dfa_2), a] = (destination_1, destination_2)
+            union['transitions'][(state_dfa_1, state_dfa_2), a] = (
+            destination_1, destination_2)
     return union
 
 
 def dfa_minimization(dfa: dict) -> dict:
-    """ Returns the minimization of the dfa in input through a greatest fix-point method.
+    """ Returns the minimization of the dfa in input through a
+    greatest fix-point method.
 
-    Given a completed DFA :math:`A = (Σ, S, s_0 , ρ, F )` there exists a single minimal DFA :math:`A_m`
-    which is equivalent to A, i.e. reads the same language :math:`L(A) = L(A_m)` and with a minimal number of states.
-    To construct such a DFA we exploit bisimulation as a suitable equivalence relation between states.
+    Given a completed DFA :math:`A = (Σ, S, s_0 , ρ, F )` there
+    exists a single minimal DFA :math:`A_m`
+    which is equivalent to A, i.e. reads the same language
+    :math:`L(A) = L(A_m)` and with a minimal number of states.
+    To construct such a DFA we exploit bisimulation as a suitable
+    equivalence relation between states.
 
-    A bisimulation relation :math:`E ∈ S × S` is a relation between states that satisfies the following condition:
+    A bisimulation relation :math:`E ∈ S × S` is a relation
+    between states that satisfies the following condition:
     if :math:`(s, t) ∈ E` then:
      • s ∈ F iff t ∈ F;
-     • For all :math:`(s_X,a)` such that :math:`ρ(s, a) = s_X`, there exists :math:`t_X` such that :math:`ρ(t, a) = t_X`
+     • For all :math:`(s_X,a)` such that :math:`ρ(s, a) = s_X`,
+     there exists :math:`t_X` such that :math:`ρ(t, a) = t_X`
        and :math:`(s_X , t_X ) ∈ E`;
-     • For all :math:`(t_X,a)` such that :math:`ρ(t, a) = t_X` , there exists :math:`s_X` such that :math:`ρ(s, a) = s_X`
+     • For all :math:`(t_X,a)` such that :math:`ρ(t, a) = t_X` ,
+     there exists :math:`s_X` such that :math:`ρ(s, a) = s_X`
        and :math:`(s_X , t_X ) ∈ E`.
 
     :param dfa: dict() representing a dfa
@@ -229,23 +284,32 @@ def dfa_minimization(dfa: dict) -> dict:
     # First bisimulation condition check (can be done just once)
     # s ∈ F iff t ∈ F
     for element in z_current:
-        if (element[0] in dfa['accepting_states'] and element[1] not in dfa['accepting_states']) or (
-                        element[0] not in dfa['accepting_states'] and element[1] in dfa['accepting_states']):
+        if (element[0] in dfa['accepting_states'] and element[
+            1] not in dfa['accepting_states']) or (
+                        element[0] not in dfa[
+                        'accepting_states'] and element[1] in dfa[
+                    'accepting_states']):
             z_next.remove(element)
     z_current = z_next
 
-    # Second and third condition of bisimularity check, while succeed or fail
+    # Second and third condition of bisimularity check, while
+    # succeed or fail
     while z_current:
         z_next = z_current.copy()
         for element in z_current:
-            # for all s0,a s.t. ρ(s, a) = s_0 , there exists t 0 s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
+            # for all s0,a s.t. ρ(s, a) = s_0 , there exists t 0
+            # s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
             for a in dfa['alphabet']:
-                if (element[0], a) in dfa['transitions'] and (element[1], a) in dfa['transitions']:
-                    if (dfa['transitions'][element[0], a], dfa['transitions'][element[1], a]) not in z_current:
+                if (element[0], a) in dfa['transitions'] and (
+                element[1], a) in dfa['transitions']:
+                    if (dfa['transitions'][element[0], a],
+                        dfa['transitions'][
+                            element[1], a]) not in z_current:
                         z_next.remove(element)
                         break
                 else:
-                    # action a not possible in state element[0] or element[1]
+                    # action a not possible in state element[0]
+                    # or element[1]
                     z_next.remove(element)
 
         if z_next == z_current:
@@ -271,23 +335,28 @@ def dfa_minimization(dfa: dict) -> dict:
             equivalence_set.add(e)
 
     dfa_min['initial_state'] = dfa['initial_state']
-    dfa_min['accepting_states'] = dfa_min['states'].intersection(dfa['accepting_states'])
+    dfa_min['accepting_states'] = dfa_min['states'].intersection(
+        dfa['accepting_states'])
 
     dfa_min['transitions'] = dfa['transitions'].copy()
     for p in dfa['transitions']:
         if p[0] not in dfa_min['states']:
             dfa_min['transitions'].pop(p)
         if dfa['transitions'][p] not in dfa_min['states']:
-            dfa_min['transitions'][p] = equivalence[dfa['transitions'][p]].intersection(dfa_min['states']).pop()
+            dfa_min['transitions'][p] = equivalence[
+                dfa['transitions'][p]].intersection(
+                dfa_min['states']).pop()
 
     return dfa_min
 
 
 # Side effects on input variable
 def dfa_reachable(dfa: dict) -> dict:
-    """ [Side effects on input] Removes unreachable states of a dfa and returns the pruned dfa.
+    """ [Side effects on input] Removes unreachable states of a
+    dfa and returns the pruned dfa.
 
-    It is possible to remove from a DFA A all unreachable states from the initial state without altering the language.
+    It is possible to remove from a DFA A all unreachable states
+    from the initial state without altering the language.
     The reachable DFA :math:`A_R` corresponding to A is defined as:
 
     :math:`A_R = (Σ, S_R , s_0 , ρ|S_R , F ∩ S_R )`
@@ -300,7 +369,8 @@ def dfa_reachable(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
     """
-    reachable_states = set()  # set of reachable states from initial states
+    reachable_states = set()  # set of reachable states from
+    # initial states
     reachable_states.add(dfa['initial_state'])
     reachable_state_stack = reachable_states.copy()
     while reachable_state_stack:
@@ -308,12 +378,14 @@ def dfa_reachable(dfa: dict) -> dict:
         for a in dfa['alphabet']:
             if (s, a) in dfa['transitions']:
                 if dfa['transitions'][s, a] not in reachable_states:
-                    reachable_state_stack.add(dfa['transitions'][s, a])
+                    reachable_state_stack.add(
+                        dfa['transitions'][s, a])
                     reachable_states.add(dfa['transitions'][s, a])
             else:
                 pass
     dfa['states'] = reachable_states
-    dfa['accepting_states'] = dfa['accepting_states'].intersection(dfa['states'])
+    dfa['accepting_states'] = dfa['accepting_states'].intersection(
+        dfa['states'])
 
     transitions = dfa['transitions'].copy()
     for p in transitions:
@@ -327,10 +399,13 @@ def dfa_reachable(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_co_reachable(dfa: dict) -> dict:
-    """ [Side effects on input] Removes states that do not reach a final state and returns the pruned dfa.
+    """ [Side effects on input] Removes states that do not reach
+    a final state and returns the pruned dfa.
 
-    It is possible to remove from a DFA A all states that do not reach a final state without altering the language.
-    The co-reachable dfa :math:`A_F` corresponding to A is defined as:
+    It is possible to remove from a DFA A all states that do not
+    reach a final state without altering the language.
+    The co-reachable dfa :math:`A_F` corresponding to A is
+    defined as:
 
     :math:`A_F = (Σ, S_F , s_0 , ρ|S_F , F )`
 
@@ -342,7 +417,9 @@ def dfa_co_reachable(dfa: dict) -> dict:
     :param dfa: dict() representing a dfa
     :return: dict() representing the pruned dfa
     """
-    co_reachable_states = dfa['accepting_states'].copy()  # set of states reaching final states
+    co_reachable_states = dfa[
+        'accepting_states'].copy()  # set of states reaching
+    # final states
     co_reachable_states_stack = co_reachable_states.copy()
 
     # inverse transition function
@@ -382,9 +459,11 @@ def dfa_co_reachable(dfa: dict) -> dict:
 
 # Side effects on input variable
 def dfa_trimming(dfa: dict) -> dict:
-    """ [Side effects on input] Returns the dfa in input trimmed, so both reachable and co-reachable.
+    """ [Side effects on input] Returns the dfa in input trimmed,
+    so both reachable and co-reachable.
 
-    Given a DFA A, the corresponding trimmed DFA contains only those states that are reachable from the initial state
+    Given a DFA A, the corresponding trimmed DFA contains only
+    those states that are reachable from the initial state
     and that lead to a final state.
     The trimmed dfa :math:`A_{RF}` corresponding to A is defined as
 
@@ -394,7 +473,8 @@ def dfa_trimming(dfa: dict) -> dict:
 
     • :math:`S_R` set of reachable states from the initial state
     • :math:`S_F` set of states that reaches a final state
-    • :math:`ρ|S_R∩S_F` is the restriction on :math:`(S_R ∩ S_F ) × Σ` of ρ.
+    • :math:`ρ|S_R∩S_F` is the restriction on :math:`(S_R ∩ S_F )
+    × Σ` of ρ.
 
     :param dfa: dict() representing a dfa
     :return: dict() representing the trimmed input dfa
@@ -408,11 +488,14 @@ def dfa_trimming(dfa: dict) -> dict:
 
 
 def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
-    """ Returns a NFA that reads the language recognized by the input dfa where all the symbols in symbols_to_project
+    """ Returns a NFA that reads the language recognized by the
+    input dfa where all the symbols in symbols_to_project
     are projected out of the alphabet.
 
-    Projection in a dfa is the operation that existentially removes from a word all occurrence of symbols in a set X.
-    Given a dfa :math:`A = (Σ, S, s_0 , ρ, F )`, we can define an NFA :math:`A_{πX}`
+    Projection in a dfa is the operation that existentially
+    removes from a word all occurrence of symbols in a set X.
+    Given a dfa :math:`A = (Σ, S, s_0 , ρ, F )`, we can define an
+    NFA :math:`A_{πX}`
     that recognizes the language :math:`πX(L(A))` as
 
     :math:`A_{πX}= ( Σ−X, S, S_0 , ρ_X , F )`
@@ -421,26 +504,32 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
     • :math:`S_0 = \{s | (s_0 , s) ∈ ε_X \}`
     • :math:`(s,a,s_y ) ∈ ρ_X` iff there exist :math:`(t, t_y)` s.t.
-      :math:`(s,t) ∈ ε_X , t_y = ρ(t,a)` and :math:`(t_y , s_y ) ∈ ε_X`
+      :math:`(s,t) ∈ ε_X , t_y = ρ(t,a)` and :math:`(t_y , s_y )
+      ∈ ε_X`
 
     :param dfa: dict() representing a dfa
-    :param symbols_to_project: set() containing symbols ∈ dfa['alphabet'] to be projected out from dfa
+    :param symbols_to_project: set() containing symbols ∈ dfa[
+    'alphabet'] to be projected out from dfa
     :return: dict() representing a NFA
     """
     nfa = dfa.copy()
     nfa['alphabet'] = dfa['alphabet'].difference(symbols_to_project)
     nfa['transitions'] = {}
-    # ε_X ⊆ S×S formed by the pairs of states (s, s_Y) such that s_Y is reachable from s through transition symbols ∈ X
+    # ε_X ⊆ S×S formed by the pairs of states (s, s_Y) such that
+    # s_Y is reachable from s through transition symbols ∈ X
     e_x = {}
 
     # mark each transition using symbol a ∈ symbols_to_project
     for transition in dfa['transitions']:
         if transition[1] not in nfa['alphabet']:
-            # nfa['transitions'][transition[0], 'epsilon'] = dfa['transitions'][transition]
-            e_x.setdefault(transition[0], set()).add(dfa['transitions'][transition])
+            # nfa['transitions'][transition[0], 'epsilon'] = dfa[
+            # 'transitions'][transition]
+            e_x.setdefault(transition[0], set()).add(
+                dfa['transitions'][transition])
             # nfa['transitions'].pop(transition)
         else:
-            nfa['transitions'].setdefault(transition, set()).add(dfa['transitions'][transition])
+            nfa['transitions'].setdefault(transition, set()).add(
+                dfa['transitions'][transition])
 
     current = deepcopy(e_x)
     while True:
@@ -470,28 +559,38 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
     # NFA transitions
     for transition in dfa['transitions']:
         if transition[1] in nfa['alphabet']:
-            nfa['transitions'].setdefault(transition, set()).add(dfa['transitions'][transition])
+            nfa['transitions'].setdefault(transition, set()).add(
+                dfa['transitions'][transition])
 
             # add all forward reachable set
             if dfa['transitions'][transition] in e_x:
                 for reached in e_x[dfa['transitions'][transition]]:
-                    nfa['transitions'].setdefault(transition, set()).add(reached)
+                    nfa['transitions'].setdefault(transition,
+                                                  set()).add(
+                        reached)
 
-            # link all states that reach transition[0] to forward reachable set
+            # link all states that reach transition[0] to forward
+            #  reachable set
             for reached in nfa['transitions'][transition]:
                 if transition[0] in inv_e_x:
                     for past in inv_e_x[transition[0]]:
-                        nfa['transitions'].setdefault((past, transition[1]), set()).add(reached)
+                        nfa['transitions'].setdefault(
+                            (past, transition[1]), set()).add(
+                            reached)
 
     return nfa
 
 
 def dfa_nonemptiness_check(dfa: dict) -> bool:
-    """ Checks if the input dfa is nonempty, so if it recognize a language except the empty one
+    """ Checks if the input dfa is nonempty, so if it recognize a
+    language except the empty one
 
-    An automaton A is nonempty if :math:`L(A) ≠ ∅`. L(A) is nonempty iff there are states :math:`s_0 and t ∈ F` such
-    that t is connected to :math:`s_0`. Thus, automata nonemptiness is equivalent to graph reachability, where a
-    breadth-first-search algorithm can construct in linear time the set of all states connected to initial state
+    An automaton A is nonempty if :math:`L(A) ≠ ∅`. L(A) is
+    nonempty iff there are states :math:`s_0 and t ∈ F` such
+    that t is connected to :math:`s_0`. Thus, automata
+    nonemptiness is equivalent to graph reachability, where a
+    breadth-first-search algorithm can construct in linear time
+    the set of all states connected to initial state
     :math:`s_0`.
     A is nonempty iff this set intersects F nontrivially.
 
@@ -507,7 +606,8 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
         visited.add(state)
         for a in dfa['alphabet']:
             if (state, a) in dfa['transitions']:
-                if dfa['transitions'][state, a] in dfa['accepting_states']:
+                if dfa['transitions'][state, a] in dfa[
+                    'accepting_states']:
                     return True
                 if dfa['transitions'][state, a] not in visited:
                     queue.insert(0, dfa['transitions'][state, a])

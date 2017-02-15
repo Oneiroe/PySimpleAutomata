@@ -324,7 +324,7 @@ class TestNfaComplementation(TestCase):
     def test_nfa_complementation_empty_states(self):
         """ Tests a NFA complementation with an empty NFA """
         dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_empty)
-        automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_States')
+        # automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_States')
         self.assertDictEqual(dfa_complemented, {'alphabet': set(),
                                                 'states': {'sink'},
                                                 'initial_state': None,
@@ -337,7 +337,7 @@ class TestNfaComplementation(TestCase):
         """ Tests a NFA complementation with a NFA without transitions """
         self.nfa_complementation_test_01['transitions'] = {}
         dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
-        automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_transition')
+        # automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_transition')
         self.assertDictEqual(dfa_complemented, {'alphabet': self.nfa_complementation_test_01['alphabet'],
                                                 'states': {str(self.nfa_complementation_test_01['initial_states']),
                                                            "sink"},
