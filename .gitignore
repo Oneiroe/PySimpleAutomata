@@ -3,6 +3,7 @@
 
 # Sphynx Documentation
 /doc/_build/
+/doc/build/
 
 # Packaging and distribution
 /PySimpleAutomata.egg-info/
