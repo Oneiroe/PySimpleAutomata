@@ -43,7 +43,7 @@ Structure
 Requirements
 ------------
 
-The project is Python3 only, tested on Python 3.5 and 3.6.
+The project is **Python3 only**, tested on Python 3.5 and 3.6.
 
 `Graphviz - Graph Visualization Software <http://graphviz.org//>`_ is required to be installed and
 present on system path to input/output dot files, while

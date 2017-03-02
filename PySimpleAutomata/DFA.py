@@ -21,10 +21,12 @@ In this module a DFA is defined as follows
  DFA = dict() with the following keys-values:
   • alphabet         => set() ;
   • states           => set() ;
-  • initial_state    => 'state_0' ;
+  • initial_state    => str() ;
   • accepting_states => set() ;
-  • transitions      => dict()  #key (state in states, action in
-                        alphabet) #value (arriving state in states);
+  • transitions      => dict(), where
+        **key**: (*state* ∈ states, *action* ∈ alphabet)
+
+        **value**: (*arriving state* in states);
 """
 
 from itertools import product as cartesian_product
@@ -588,7 +590,7 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
 def dfa_nonemptiness_check(dfa: dict) -> bool:
     """ Checks if the input dfa is nonempty, so if it recognize a
-    language except the empty one
+    language except the empty one.
 
     An automaton A is nonempty if :math:`L(A) ≠ ∅`. L(A) is
     nonempty iff there are states :math:`s_0 and t ∈ F` such
