@@ -26,8 +26,9 @@ Next section will explain the format specification used by the various automaton
 
 .. warning::
 
-    Placing readability over functionality, the library doesn't handle explicitly exception.
-    In that way the library will not give any hint about a possible error.
+    Placing readability over functionality, the library doesn't handle explicitly exceptions.
+    In that way the library will not give any hint about possible errors,
+    but will just rise the low level relative Python exception.
     Pay attention in providing correct automata in input as stated in this documentation.
 
 
@@ -116,11 +117,6 @@ DOT
 DFA
 ***
 
-    INput function :mod:`~PySimpleAutomata.automata_IO.dfa_dot_importer`
-
-    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_graphviz_render`
-
-
     Example::
 
         digraph{
@@ -161,12 +157,12 @@ DFA
 
     **Attention! No conformance checking**
 
+    INput function :mod:`~PySimpleAutomata.automata_IO.dfa_dot_importer`
+
+    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_graphviz_render`
+
 NFA
 ***
-
-    INput function :mod:`PySimpleAutomata.automata_IO.nfa_dot_importer`
-
-    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_graphviz_render`
 
     Example::
 
@@ -219,6 +215,11 @@ NFA
     *sink* node is reserved for NFA completion.
 
     **Attention! No conformance checking**
+
+    INput function :mod:`PySimpleAutomata.automata_IO.nfa_dot_importer`
+
+    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_graphviz_render`
+
 
 .. original dim 978x724
 .. |IMG_dfa_example| image:: /_static/dfa_example.png
@@ -274,10 +275,6 @@ JSON
 DFA
 ***
 
-    INput function :mod:`PySimpleAutomata.automata_IO.dfa_json_importer`
-
-    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_to_json`
-
     Example::
 
         {
@@ -327,12 +324,13 @@ DFA
 
     **Attention! no conformance checking**
 
+    INput function :mod:`PySimpleAutomata.automata_IO.dfa_json_importer`
+
+    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_to_json`
+
+
 NFA
 ***
-
-    INput function :mod:`PySimpleAutomata.automata_IO.nfa_json_importer`
-
-    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_to_json`
 
     Example::
 
@@ -395,12 +393,13 @@ NFA
 
     **Attention! no conformance checking**
 
+    INput function :mod:`PySimpleAutomata.automata_IO.nfa_json_importer`
+
+    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_to_json`
+
+
 AFW
 ***
-
-    INput function :mod:`PySimpleAutomata.automata_IO.afw_json_importer`
-
-    OUTput function :mod:`PySimpleAutomata.automata_IO.afw_to_json`
 
     Example::
 
@@ -449,6 +448,13 @@ AFW
     ∈ "states" and only {'and', 'or', 'True', 'False'} operators are
     permitted. Parenthesis usage is encouraged to avoid naives errors of
     operators evaluation order.
+
+    **Attention! no conformance checking**
+
+    INput function :mod:`PySimpleAutomata.automata_IO.afw_json_importer`
+
+    OUTput function :mod:`PySimpleAutomata.automata_IO.afw_to_json`
+
 
 *************
 Special Notes
