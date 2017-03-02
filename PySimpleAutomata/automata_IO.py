@@ -50,10 +50,6 @@ def dfa_json_importer(input_file):
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
-    # return list
-    # return [alphabet, states, initial_state, accepting_states,
-    # transitions]
-
     # return map
     dfa = {
         'alphabet': alphabet,
@@ -242,12 +238,6 @@ def dfa_to_json(dfa):
     return
 
 
-# Export a dfa "object" to a DOT file
-# TODO dfa_to_dot
-def dfa_to_dot(dfa):
-    return
-
-
 def nfa_json_importer(input_file):
     """ Import a nfa from a json file
 
@@ -282,7 +272,7 @@ def nfa_json_importer(input_file):
 
 def nfa_dot_importer(input_file):
     """ Returns a nfa dict() object from a .dot file representing
-    a dfa
+    a nfa
 
     Of .dot files are recognized the following attributes
       • nodeX   shape=doublecircle -> accepting node
@@ -298,7 +288,7 @@ def nfa_dot_importer(input_file):
     Forbidden names:
       • 'fake'  used for graphical purpose to drawn the arrow of
         the initial state
-      • 'sink'  used as additional state when completing a DFA
+      • 'sink'  used as additional state when completing a NFA
         Forbidden characters:
         '"' "'" '(' ')' ' '
 
@@ -451,18 +441,6 @@ def nfa_to_json(nfa):
     return
 
 
-# Export a nfa "object" to a DOT file
-# TODO dfa_to_dot
-def nfa_to_dot(dfa):
-    return
-
-
-# Export a afw "object" to a json file
-# TODO afw_to_json
-def afw_to_json(afw):
-    return
-
-
 # Import a afw from a json file
 def afw_json_importer(input_file):
     file = open(input_file)
@@ -473,12 +451,10 @@ def afw_json_importer(input_file):
     initial_state = json_file['initial_state']
     accepting_states = set(json_file['accepting_states'])
 
-    transitions = {}  # key [state in states, action in alphabet] value [string representing boolean expression]
+    transitions = {}  # key [state in states, action in alphabet]
+    #  value [string representing boolean expression]
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
-
-    # return list
-    # return [alphabet, states, initial_state, accepting_states, transitions]
 
     # return map
     afw = {
@@ -489,3 +465,9 @@ def afw_json_importer(input_file):
         'transitions': transitions
     }
     return afw
+
+
+# Export a afw "object" to a json file
+# TODO afw_to_json
+def afw_to_json(afw):
+    return
