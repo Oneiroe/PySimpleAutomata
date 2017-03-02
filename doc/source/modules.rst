@@ -8,4 +8,5 @@ Modules
    NFA
    AFW
    automata_IO
+   testing
 

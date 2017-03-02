@@ -37,7 +37,7 @@ DOT
 
         digraph{ ... }
 
-    States are graph Nodes that are represented simply by a string and needs just to be listed.
+    **States** are graph Nodes that are represented simply by a string and needs just to be listed.
     Follow `DOT specification <http://www.graphviz.org/content/dot-language>`_
     for name restrictions.
     ::
@@ -61,7 +61,7 @@ DOT
 
 --------------------------------------------------------------------
 
-    Root nodes are identified by the attribute *root=true*
+    **Root nodes** are identified by the attribute *root=true*
     ::
 
         s0 [root=true]
@@ -83,7 +83,7 @@ DOT
 
 --------------------------------------------------------------------
 
-    Accepting nodes are identified by the attribute *shape=doublecircle*
+    **Accepting nodes** are identified by the attribute *shape=doublecircle*
     ::
 
         t4 [shape=doublecircle]
@@ -92,7 +92,7 @@ DOT
 
 --------------------------------------------------------------------
 
-    Transition between nodes is represented by a directed arrow and an attribute *label*
+    **Transitions** between nodes is represented by a directed arrow and an attribute *label*
     ::
 
         s0 -> s1 [label="5c"]
