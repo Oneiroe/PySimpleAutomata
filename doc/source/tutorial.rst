@@ -7,7 +7,7 @@ Tutorial
 
 .. IO
 
-.. include:: tutorial_IO.rst
+.. include:: IO.rst
 
 .. Automata Representation
 
