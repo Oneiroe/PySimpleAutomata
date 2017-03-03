@@ -18,6 +18,7 @@ import re
 # TODO check correctness importing a .dot where no explicit
 # state, but just transitions are present
 # TODO make output file directory parametric
+# TODO remove pydot output function
 
 
 def __replace_all(repls, str):
@@ -59,6 +60,32 @@ def dfa_json_importer(input_file):
         'transitions': transitions
     }
     return dfa
+
+
+# Export a dfa "object" to a json file
+def dfa_to_json(dfa, name):
+    """ Export the input dfa in a JSON file.
+
+    :param dfa:
+    :param name:
+    :return:
+    """
+    out = {
+        'alphabet': list(dfa['alphabet']),
+        'states': list(dfa['states']),
+        'initial_state': dfa['initial_state'],
+        'accepting_states': list(dfa['accepting_states']),
+        'transitions': list()
+    }
+
+    for t in dfa['transitions']:
+        out['transitions'].append(
+            [t[0], t[1], dfa['transitions'][t]])
+
+    file = open('img/json/' + name + '.json', 'w')
+    json.dump(out, file, sort_keys=True, indent=4)
+    file.close()
+    return
 
 
 def dfa_dot_importer(input_file: str) -> dict:
@@ -162,9 +189,13 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
+@DeprecationWarning
 def dfa_pydot_render(dfa, name):
-    """ Generates a .dot file and a relative .svg image in ./img/
+    """ DEPRECATED Generates a .dot file and a relative .svg
+    image in ./img/
     folder of the input dfa using pydot library
+
+    DEPRECATED use dfa_dot_render instead.
 
     :param dfa: dict() representing a dfa
     :param name: str() string with the name of the output file
@@ -229,12 +260,6 @@ def dfa_conformance_check(dfa):
     # checks all transition words are in alphabet and viceversa
     # checks all transition states are in states and viceversa
     # checks for forbidden symbols, words, names, etc
-    return
-
-
-# Export a dfa "object" to a json file
-# TODO dfa_to_json
-def dfa_to_json(dfa):
     return
 
 
