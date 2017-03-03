@@ -32,10 +32,19 @@ DOT
     but for a complete understanding see the `Graphviz documentation <http://www.graphviz.org/Documentation.php>`_
     **Different usages of DOT may lead to unexpected results and behaviours so attain to the rules exposed in this documentation**.
 
+    DOT file is managed in input through `Pydot <https://pypi.python.org/pypi/pydot/>`_ package
+    because of its file handling flexibility,
+    while `graphviz <https://pypi.python.org/pypi/graphviz>`_ is used to
+    output because returns a cleaner file, without tons of useless metadata.
+
+--------------------------------------------------------------------
+
     The automata definition is wrapped in a *digraph* statement (i.e. directed graph)
     ::
 
         digraph{ ... }
+
+--------------------------------------------------------------------
 
     **States** are graph Nodes that are represented simply by a string and needs just to be listed.
     Follow `DOT specification <http://www.graphviz.org/content/dot-language>`_
@@ -50,6 +59,8 @@ DOT
         }
 
     |IMG_nodes|
+
+.. Note::
 
     Following names are prohibited as are used by PySimpleAutomata for
     specific task (covered in following sections):
@@ -441,13 +452,3 @@ AFW
     INput function :mod:`PySimpleAutomata.automata_IO.afw_json_importer`
 
     OUTput function :mod:`PySimpleAutomata.automata_IO.afw_to_json`
-
-
-*************
-Special Notes
-*************
-
-*Automata determinization* TALK ABOUT WHY THEY'LL FOUND ENORMOUS GRAPH
-IN OUTPUT IF THEY DON'T MINIMIZE
-
-*nodes with the same name from different automata* should not be considered the same entity
