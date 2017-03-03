@@ -23,6 +23,12 @@ but for academic purposes:
 This project has been developed for "Process and Service Modelling and Analysis" class
 of Master of Science in Engineering in Computer Science from Sapienza University of Rome.
 
+.. Contacts
+
+.. Report any bug through github issue section
+
+.. References
+
 ------------
 Installation
 ------------
