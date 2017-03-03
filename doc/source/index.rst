@@ -6,17 +6,6 @@
 Welcome to PySimpleAutomata's documentation!
 ============================================
 
-Contents
-________
-
-.. toctree::
-   :maxdepth: -1
-   :includehidden:
-
-   modules
-   tutorial
-
-
 PySimpleAutomata
 ________________
 
@@ -35,35 +24,24 @@ This project has been developed for "Process and Service Modelling and Analysis"
 of Master of Science in Engineering in Computer Science from Sapienza University of Rome.
 
 ------------
-Requirements
+Installation
 ------------
 
 The project is **Python3 only**, tested on Python 3.5 and 3.6.
 
-`Graphviz - Graph Visualization Software <http://graphviz.org//>`_ is required to be installed and
-present on system path to input/output dot files, while
-Python packages `pydot <https://pypi.python.org/pypi/pydot/>`_ and
-`graphviz <https://pypi.python.org/pypi/graphviz>`_ are used to handle them (respectively input and output).
+`Graphviz - Graph Visualization Software <http://graphviz.org//>`_
+is required to be installed and present on system path to input/output DOT files.
 
-`Sphinx <http://www.sphinx-doc.org//>`_ is used to generate the documentation.
+From `PyPi <https://pypi.python.org/pypi>`_ using pip::
 
-`Unittest <https://docs.python.org/3/library/unittest.html>`_ for Unit testing.
-
-
-------------
-Installation
-------------
-
-From `PyPi <https://pypi.python.org/pypi>`_ using pip:
-
-SOON
+    SOON
 
 .. `pip install PySimpleAutomata`
 
-From source:
+From source::
 
-`python setup.py install`
-`pip install -r requirements`
+    python setup.py install
+    pip install -r requirements
 
 It is advised in any case to use a `Python Virtual environment <https://docs.python.org/3/tutorial/venv.html>`_ instead of a global installation.
 
@@ -74,10 +52,19 @@ Licence
 This code is provided under `MIT Licence <link to license file>`_.
 
 
+Contents
+========
+
+.. toctree::
+   :maxdepth: -1
+   :includehidden:
+
+   modules
+   tutorial
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
+* :ref:`Complete Index <genindex>`
 * :ref:`modindex`
 * :ref:`search`

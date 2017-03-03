@@ -20,3 +20,13 @@ Tutorial
 .. Examples
 
 .. Testing
+
+Testing
+-------
+
+If in one hand the library doesn't handle exceptions or perform any
+conformance checking on input, it has been widely tested through
+`unit testing methodology <https://en.wikipedia.org/wiki/Unit_testing>`_,
+firmly decreasing possibilities of unexpected behaviours.
+
+Around 250 tests are provided and are listed in :doc:`unittest`.
