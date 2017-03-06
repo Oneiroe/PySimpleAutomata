@@ -65,13 +65,11 @@ def dfa_json_importer(input_file):
     return dfa
 
 
-# Export a dfa "object" to a json file
 def dfa_to_json(dfa, name):
     """ Export the input dfa in a JSON file.
 
     :param dfa: dict(), representing a dfa;
     :param name: str, name of the output file
-    :return:
     """
     out = {
         'alphabet': list(dfa['alphabet']),
@@ -294,10 +292,28 @@ def nfa_json_importer(input_file):
     return nfa
 
 
-# Export a nfa "object" to a json file
-# TODO nfa_to_json
-def nfa_to_json(nfa):
-    return
+def nfa_to_json(nfa, name):
+    """ Exports a nfa to a JSON file
+    :param nfa: dict() representing a NFA;
+    :param name: str name of the output file
+    """
+    transitions = list()  # key[state in states, action in alphabet]
+    #                       value [Set of arriving states in states]
+    for p in nfa['transitions']:
+        for dest in nfa['transitions'][p]:
+            transitions.append([p[0], p[1], dest])
+
+    out = {
+        'alphabet': list(nfa['alphabet']),
+        'states': list(nfa['states']),
+        'initial_states': list(nfa['initial_states']),
+        'accepting_states': list(nfa['accepting_states']),
+        'transitions': transitions
+    }
+
+    file = open('img/json/' + name + '.json', 'w')
+    json.dump(out, file, sort_keys=True, indent=4)
+    file.close()
 
 
 def nfa_dot_importer(input_file):
