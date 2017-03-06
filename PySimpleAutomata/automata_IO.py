@@ -6,6 +6,7 @@ import json
 import graphviz
 import pydot
 import re
+import os
 
 
 # ###
@@ -64,11 +65,15 @@ def dfa_json_importer(input_file: str) -> dict:
     return dfa
 
 
-def dfa_to_json(dfa: dict, name: str):
+def dfa_to_json(dfa: dict, name: str, path: str = './'):
     """ Export the input dfa in a JSON file.
+
+    If path do not exists it will be created.
 
     :param dict dfa: representing a dfa;
     :param str name: name of the output file
+    :param str path: path where to save the JSON file (default:
+                     working directory)
     """
     out = {
         'alphabet': list(dfa['alphabet']),
@@ -82,7 +87,9 @@ def dfa_to_json(dfa: dict, name: str):
         out['transitions'].append(
             [t[0], t[1], dfa['transitions'][t]])
 
-    file = open('img/json/' + name + '.json', 'w')
+    if not os.path.exists(path):
+        os.makedirs(path)
+    file = open(os.path.join(path, name + '.json'), 'w')
     json.dump(out, file, sort_keys=True, indent=4)
     file.close()
 
@@ -172,12 +179,14 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-def dfa_to_dot(dfa: dict, name: str):
+def dfa_to_dot(dfa: dict, name: str, path: str = './'):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input dfa using graphviz library.
 
     :param dict dfa: representing a dfa
     :param str name: string with the name of the output file
+    :param str path: path where to save the JSON file (default:
+                     working directory)
     """
     g = graphviz.Digraph(format='svg')
     g.node('fake', style='invisible')
@@ -199,7 +208,10 @@ def dfa_to_dot(dfa: dict, name: str):
                str(dfa['transitions'][transition]),
                label=transition[1])
 
-    g.render(filename='img/' + name + '.dot')
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    g.render(filename=os.path.join(path, name + '.dot'))
 
 
 @NotImplementedError
@@ -245,11 +257,13 @@ def nfa_json_importer(input_file: str) -> dict:
     return nfa
 
 
-def nfa_to_json(nfa: dict, name: str):
+def nfa_to_json(nfa: dict, name: str, path: str = './'):
     """ Exports a nfa to a JSON file
 
     :param dict nfa: representing a NFA;
-    :param str name: Nname of the output file
+    :param str name: Name of the output file
+    :param str path: path where to save the JSON file (default:
+                     working directory)
     """
     transitions = list()  # key[state in states, action in alphabet]
     #                       value [Set of arriving states in states]
@@ -265,7 +279,9 @@ def nfa_to_json(nfa: dict, name: str):
         'transitions': transitions
     }
 
-    file = open('img/json/' + name + '.json', 'w')
+    if not os.path.exists(path):
+        os.makedirs(path)
+    file = open(os.path.join(path, name + '.json'), 'w')
     json.dump(out, file, sort_keys=True, indent=4)
     file.close()
 
@@ -364,12 +380,14 @@ def nfa_dot_importer(input_file: str) -> dict:
     return nfa
 
 
-def nfa_to_dot(nfa: dict, name: str):
+def nfa_to_dot(nfa: dict, name: str, path: str = './'):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input nfa using graphviz library
 
     :param dict nfa: representing a nfa
     :param str name: string with the name of the output file
+    :param str path: path where to save the JSON file (default:
+                     working directory)
     """
     g = graphviz.Digraph(format='svg')
 
@@ -397,7 +415,7 @@ def nfa_to_dot(nfa: dict, name: str):
             g.edge(str(transition[0]), str(destination),
                    label=transition[1])
 
-    g.render(filename='img/' + name + '.dot')
+    g.render(filename=os.path.join(path, name + '.dot'))
 
 
 ####################################################################
@@ -428,11 +446,13 @@ def afw_json_importer(input_file: str) -> dict:
     return afw
 
 
-def afw_to_json(afw: dict, name: str):
+def afw_to_json(afw: dict, name: str, path: str = './'):
     """ Export a afw "object" to a json file.
 
     :param dict afw: representing a AFW;
     :param str name: output file name.
+    :param str path: path where to save the JSON file (default:
+                     working directory)
     """
 
     out = {
@@ -447,6 +467,8 @@ def afw_to_json(afw: dict, name: str):
         out['transitions'].append(
             [t[0], t[1], afw['transitions'][t]])
 
-    file = open('img/json/' + name + '.json', 'w')
+    if not os.path.exists(path):
+        os.makedirs(path)
+    file = open(os.path.join(path, name + '.json'), 'w')
     json.dump(out, file, sort_keys=True, indent=4)
     file.close()
