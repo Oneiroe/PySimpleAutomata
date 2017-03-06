@@ -202,9 +202,13 @@ def dfa_to_dot(dfa: dict, name: str):
     g.render(filename='img/' + name + '.dot')
 
 
-# Checks if the dfa is well formatted
-# TODO dfa_conformance_check
+@NotImplementedError
 def dfa_conformance_check(dfa):
+    """ Checks if the dfa is conformant to the specifications.
+
+    :param dict dfa:
+    :return: *(Bool)*
+    """
     # check if there are just the right keys
     # checks all transition words are in alphabet and viceversa
     # checks all transition states are in states and viceversa
