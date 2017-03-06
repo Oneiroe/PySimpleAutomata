@@ -90,6 +90,18 @@ class TestDfaDotImporter(TestCase):
             '/automata_io_dfa_importing_intersection.dot')
         self.assertDictEqual(dfa_02, self.dfa_test_02)
 
+    def test_dfa_dot_importer_no_state_only_transitions(self):
+        """ WARNING! importing a .dot where no explicit state,
+        but just transitions are present.
+
+        This will NOT FAIL, but will recognize only transitions:
+        states, initial states, accepting states will remain empty.
+        """
+
+        automata_IO.dfa_dot_importer(
+            './tests/dot/automata_io'
+            '/automata_io_dfa_importing_no_state.dot')
+
 
 class TestDfaToDot(TestCase):
     def setUp(self):
@@ -435,7 +447,8 @@ class TestNfaToDot(TestCase):
         """ Tests a simple nfa rendering thorough graphviz
         library"""
         automata_IO.nfa_to_dot(self.nfa_test_01,
-                               'graphviz_nfa_simple', 'tests/outputs')
+                               'graphviz_nfa_simple',
+                               'tests/outputs')
 
     def test_nfa_graphviz_intersection_render(self):
         """ Tests rendering through graphviz library a nfa
@@ -615,7 +628,8 @@ class TestAfwToJson(TestCase):
     def test_afw_to_json(self):
         """ Tests a correct afw export to JSON file """
         name = 'JSON_afw_export'
-        automata_IO.afw_to_json(self.afw_test_01, name, 'tests/outputs')
+        automata_IO.afw_to_json(self.afw_test_01, name,
+                                'tests/outputs')
         re_imported_afw = automata_IO.afw_json_importer(
             'tests/outputs/' + name + '.json')
         self.assertDictEqual(self.afw_test_01, re_imported_afw)

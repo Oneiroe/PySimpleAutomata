@@ -16,9 +16,6 @@ import os
 #      all transition uses word in alphabet,
 #      all transition involved states in States,..)
 # TODO ignore node "None" or other specials if present
-# TODO check correctness importing a .dot where no explicit
-#      state, but just transitions are present
-# TODO make output file directory parametric
 
 
 def __replace_all(repls: dict, str: str) -> str:
