@@ -330,7 +330,7 @@ class TestNfaDotImporter(TestCase):
         pass
 
 
-class TestNfaGraphvizRender(TestCase):
+class TestNfaToDot(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.nfa_test_01 = {
@@ -427,16 +427,16 @@ class TestNfaGraphvizRender(TestCase):
             }
         }
 
-    def test_nfa_graphviz_render(self):
+    def test_nfa_to_dot(self):
         """ Tests a simple nfa rendering thorough graphviz
         library"""
-        automata_IO.nfa_graphviz_render(self.nfa_test_01,
+        automata_IO.nfa_to_dot(self.nfa_test_01,
                                         'graphviz_nfa_simple')
 
     def test_nfa_graphviz_intersection_render(self):
         """ Tests rendering through graphviz library a nfa
         derived from an intersection """
-        automata_IO.nfa_graphviz_render(self.nfa_test_02,
+        automata_IO.nfa_to_dot(self.nfa_test_02,
                                         'graphviz_nfa_intersection')
 
 

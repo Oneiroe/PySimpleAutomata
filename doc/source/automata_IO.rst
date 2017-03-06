@@ -18,7 +18,7 @@ automata_IO
         nfa_json_importer
         nfa_to_json
         nfa_dot_importer
-        nfa_graphviz_render
+        nfa_to_dot
         afw_json_importer
         afw_to_json
 

@@ -11,11 +11,11 @@ Tests automata_IO
     .. autosummary::
 
         TestDfaDotImporter
-        TestDfaGraphvizRender
+        TestDfaToDot
         TestDfaJsonImporter
         TestDfaToJson
         TestNfaDotImporter
-        TestNfaGraphvizRender
+        TestNfaToDot
         TestNfaJsonImporter
         TestNfaToJson
         TestAfwJsonImporter

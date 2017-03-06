@@ -360,7 +360,7 @@ def nfa_dot_importer(input_file: str) -> dict:
     return nfa
 
 
-def nfa_graphviz_render(nfa: dict, name: str):
+def nfa_to_dot(nfa: dict, name: str):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input nfa using graphviz library
 

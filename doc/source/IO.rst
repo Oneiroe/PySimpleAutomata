@@ -216,7 +216,7 @@ NFA
 
     INput function :mod:`PySimpleAutomata.automata_IO.nfa_dot_importer`
 
-    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_graphviz_render`
+    OUTput function :mod:`PySimpleAutomata.automata_IO.nfa_to_dot`
 
 
 .. original dim 978x724

@@ -77,7 +77,7 @@ class TestNfaIntersection(TestCase):
     def test_nfa_intersection(self):
         """ Tests a correct NFAs intersection """
         intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
-        automata_IO.nfa_graphviz_render(intersection, 'nfa_intersection')
+        automata_IO.nfa_to_dot(intersection, 'nfa_intersection')
         self.assertDictEqual(intersection, self.nfa_intersection_test_01_solution)
 
     def test_nfa_intersection_empty(self):
@@ -173,19 +173,19 @@ class TestNfaUnion(TestCase):
     def test_nfa_union_djsoint(self):
         """ Tests a nfa union between NFAs with no state in common """
         union = NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_2_test_01)
-        # automata_IO.nfa_graphviz_render(union, 'nfa_union')
+        # automata_IO.nfa_to_dot(union, 'nfa_union')
         self.assertDictEqual(union, self.nfa_union_test_01_solution)
 
     def test_nfa_union_same(self):
         """ Tests a nfa union bewtween the same nfa """
         union = NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_1_test_01)
-        # automata_IO.nfa_graphviz_render(union, 'nfa_union_same')
+        # automata_IO.nfa_to_dot(union, 'nfa_union_same')
         self.assertDictEqual(union, self.nfa_union_1_test_01)
 
     def test_nfa_union_intersecting(self):
         """ Tests a nfa union between NFAs with some state in common """
         union = NFA.nfa_union(self.nfa_union_2_test_01, self.nfa_union_3_test_01)
-        # automata_IO.nfa_graphviz_render(union, 'nfa_union_intersecting')
+        # automata_IO.nfa_to_dot(union, 'nfa_union_intersecting')
         self.assertDictEqual(union, self.nfa_union_test_02_solution)
 
     def test_nfa_union_empty(self):

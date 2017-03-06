@@ -158,7 +158,7 @@ class TestAfwToNfaConversion(TestCase):
     def test_afw_to_nfa_conversion_language(self):
         """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_afw_to_nfa_test_01)
-        # automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_01')
+        # automata_IO.nfa_to_dot(nfa_01, 'afw_to_nfa_01')
         i = 0
         last = 7
         while i <= last:
@@ -177,7 +177,7 @@ class TestAfwToNfaConversion(TestCase):
     def test_afw_to_nfa_conversion_language_bis_bis(self):
         """ Test a correct afw conversion to nfa comparing the language read by the two automaton """
         nfa_01 = AFW.afw_to_nfa_conversion(self.afw_nonemptiness_check_test_2)
-        # automata_IO.nfa_graphviz_render(nfa_01, 'afw_to_nfa_strange')
+        # automata_IO.nfa_to_dot(nfa_01, 'afw_to_nfa_strange')
         i = 0
         last = 7
         while i <= last:
