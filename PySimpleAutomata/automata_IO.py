@@ -15,7 +15,6 @@ import os
 # TODO automata conformance check (eg.:
 #      all transition uses word in alphabet,
 #      all transition involved states in States,..)
-# TODO ignore node "None" or other specials if present
 
 
 def __replace_all(repls: dict, str: str) -> str:
@@ -112,7 +111,11 @@ def dfa_dot_importer(input_file: str) -> dict:
       • 'None'  used when no initial state is present
 
     Forbidden characters:
-        '"' "'" '(' ')' ' '
+      • "
+      • '
+      • (
+      • )
+      • spaces
 
     :param str input_file: path to the .dot file
     :return: *(dict)* representing a dfa
@@ -127,10 +130,14 @@ def dfa_dot_importer(input_file: str) -> dict:
 
     replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
     for node in g.get_nodes():
-        if node.get_name() == 'fake' or node.get_name() == \
-                'graph' or node.get_name() == 'node':
+        if node.get_name() == 'fake' \
+                or node.get_name() == 'None' \
+                or node.get_name() == 'graph' \
+                or node.get_name() == 'node':
             continue
-
+        if 'style' in node.get_attributes() \
+                and node.get_attributes()['style'] == 'invisible':
+            continue
         node_reference = __replace_all(replacements,
                                        node.get_name()).split(',')
         if len(node_reference) > 1:
@@ -301,8 +308,13 @@ def nfa_dot_importer(input_file: str) -> dict:
       • 'fake'  used for graphical purpose to drawn the arrow of
         the initial state
       • 'sink'  used as additional state when completing a NFA
-        Forbidden characters:
-        '"' "'" '(' ')' ' '
+
+    Forbidden characters:
+      • "
+      • '
+      • (
+      • )
+      • spaces
 
     :param str input_file: Path to input .dot file
     :return: *(dict)* representing a NFA
@@ -318,12 +330,13 @@ def nfa_dot_importer(input_file: str) -> dict:
     replacements = {'"': '', "'": '', '(': '', ')': '', ' ': ''}
 
     for node in g.get_nodes():
-        if node.get_name() == 'fake' or node.get_name() == \
-                'graph' or node.get_name() == 'node':
+        if node.get_name() == 'fake' \
+                or node.get_name() == 'None' \
+                or node.get_name() == 'graph' \
+                or node.get_name() == 'node':
             continue
-        if 'style' in node.get_attributes() and \
-                        node.get_attributes()[
-                            'style'] == 'invisible':
+        if 'style' in node.get_attributes() \
+                and node.get_attributes()['style'] == 'invisible':
             continue
 
         node_reference = __replace_all(replacements,
