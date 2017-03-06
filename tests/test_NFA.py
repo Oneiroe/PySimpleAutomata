@@ -9,16 +9,25 @@ from PySimpleAutomata import automata_IO
 class TestNfaIntersection(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_intersection_1_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_intersection_1_test_01.dot')
-        self.nfa_intersection_2_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_intersection_2_test_01.dot')
+        self.nfa_intersection_1_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_intersection_1_test_01.dot')
+        self.nfa_intersection_2_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_intersection_2_test_01.dot')
         self.nfa_intersection_test_01_solution = {
             'alphabet': {'a', 'b'},
             'states': {
-                ('s0', 't0'), ('s0', 't1'), ('s0', 't2'), ('s0', 't3'), ('s0', 't4'),
-                ('s1', 't0'), ('s1', 't1'), ('s1', 't2'), ('s1', 't3'), ('s1', 't4'),
-                ('s2', 't0'), ('s2', 't1'), ('s2', 't2'), ('s2', 't3'), ('s2', 't4'),
-                ('s3', 't0'), ('s3', 't1'), ('s3', 't2'), ('s3', 't3'), ('s3', 't4'),
-                ('s4', 't0'), ('s4', 't1'), ('s4', 't2'), ('s4', 't3'), ('s4', 't4')
+                ('s0', 't0'), ('s0', 't1'), ('s0', 't2'),
+            ('s0', 't3'), ('s0', 't4'),
+                ('s1', 't0'), ('s1', 't1'), ('s1', 't2'),
+            ('s1', 't3'), ('s1', 't4'),
+                ('s2', 't0'), ('s2', 't1'), ('s2', 't2'),
+            ('s2', 't3'), ('s2', 't4'),
+                ('s3', 't0'), ('s3', 't1'), ('s3', 't2'),
+            ('s3', 't3'), ('s3', 't4'),
+                ('s4', 't0'), ('s4', 't1'), ('s4', 't2'),
+            ('s4', 't3'), ('s4', 't4')
             },
             'initial_states': {('s0', 't0')},
             'accepting_states': {('s2', 't0'), ('s2', 't4')},
@@ -44,7 +53,8 @@ class TestNfaIntersection(TestCase):
                 (('s2', 't0'), 'b'): {('s2', 't1'), ('s0', 't1')},
                 (('s2', 't1'), 'b'): {('s2', 't4'), ('s0', 't4')},
                 (('s2', 't2'), 'b'): {('s2', 't1'), ('s0', 't1')},
-                (('s2', 't3'), 'b'): {('s2', 't3'), ('s0', 't3'), ('s2', 't0'), ('s0', 't0')},
+                (('s2', 't3'), 'b'): {('s2', 't3'), ('s0', 't3'),
+                                      ('s2', 't0'), ('s0', 't0')},
                 (('s2', 't4'), 'b'): {('s2', 't0'), ('s0', 't0')},
                 (('s3', 't0'), 'a'): {('s2', 't2')},
                 (('s3', 't0'), 'b'): {('s4', 't1')},
@@ -76,69 +86,98 @@ class TestNfaIntersection(TestCase):
 
     def test_nfa_intersection(self):
         """ Tests a correct NFAs intersection """
-        intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
-        automata_IO.nfa_to_dot(intersection, 'nfa_intersection')
-        self.assertDictEqual(intersection, self.nfa_intersection_test_01_solution)
+        intersection = NFA.nfa_intersection(
+            self.nfa_intersection_1_test_01,
+            self.nfa_intersection_2_test_01)
+        automata_IO.nfa_to_dot(intersection, 'nfa_intersection',
+                               'tests/outputs')
+        self.assertDictEqual(intersection,
+                             self.nfa_intersection_test_01_solution)
 
     def test_nfa_intersection_empty(self):
         """ Tests a NFAs intersection where one of them is empty """
-        intersection = NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_test_02_empty)
-        self.assertDictEqual(intersection, self.nfa_intersection_test_02_empty)
+        intersection = NFA.nfa_intersection(
+            self.nfa_intersection_1_test_01,
+            self.nfa_intersection_test_02_empty)
+        self.assertDictEqual(intersection,
+                             self.nfa_intersection_test_02_empty)
 
     @unittest.expectedFailure
     def test_nfa_intersection_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        """ Tests an input different from a dict() object. [
+        EXPECTED FAILURE] """
         NFA.nfa_intersection(0, self.nfa_intersection_2_test_01)
 
     @unittest.expectedFailure
     def test_nfa_intersection_wrong_input_2(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        """ Tests an input different from a dict() object. [
+        EXPECTED FAILURE] """
         NFA.nfa_intersection(self.nfa_intersection_1_test_01, 0)
 
     @unittest.expectedFailure
     def test_nfa_intersection_wrong_dict_1(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
-        NFA.nfa_intersection({'goofy': 'donald'}, self.nfa_intersection_2_test_01)
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.nfa_intersection({'goofy': 'donald'},
+                             self.nfa_intersection_2_test_01)
 
     @unittest.expectedFailure
     def test_nfa_intersection_wrong_dict_2(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
-        NFA.nfa_intersection(self.nfa_intersection_1_test_01, {'goofy': 'donald'})
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.nfa_intersection(self.nfa_intersection_1_test_01,
+                             {'goofy': 'donald'})
 
     def test_nfa_intersection_side_effects(self):
-        """ Tests that the intersection function doesn't make side effects on input DFAs"""
+        """ Tests that the intersection function doesn't make
+        side effects on input DFAs"""
         before_1 = copy.deepcopy(self.nfa_intersection_1_test_01)
         before_2 = copy.deepcopy(self.nfa_intersection_2_test_01)
-        NFA.nfa_intersection(self.nfa_intersection_1_test_01, self.nfa_intersection_2_test_01)
-        self.assertDictEqual(before_1, self.nfa_intersection_1_test_01)
-        self.assertDictEqual(before_2, self.nfa_intersection_2_test_01)
+        NFA.nfa_intersection(self.nfa_intersection_1_test_01,
+                             self.nfa_intersection_2_test_01)
+        self.assertDictEqual(before_1,
+                             self.nfa_intersection_1_test_01)
+        self.assertDictEqual(before_2,
+                             self.nfa_intersection_2_test_01)
 
 
 class TestNfaUnion(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_union_1_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_1_test_01.dot')
-        self.nfa_union_2_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_2_test_01.dot')
-        self.nfa_union_3_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_union_3_test_01.dot')
+        self.nfa_union_1_test_01 = automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_union_1_test_01.dot')
+        self.nfa_union_2_test_01 = automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_union_2_test_01.dot')
+        self.nfa_union_3_test_01 = automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_union_3_test_01.dot')
         self.nfa_union_test_01_solution = {
             'alphabet': {'a', 'b', 'c'},
-            'states': {'s0', 's1', 's2', 's3', 's4', 't0', 't1', 't2', 't3', 't4'},
+            'states': {'s0', 's1', 's2', 's3', 's4', 't0', 't1',
+                       't2', 't3', 't4'},
             'initial_states': {'s0', 't0'},
             'accepting_states': {'s2', 't0', 't4'},
             'transitions': {
-                ('s3', 'b'): {'s4'}, ('s0', 'a'): {'s1'}, ('s4', 'a'): {'s4'},
-                ('s2', 'b'): {'s0', 's2'}, ('s3', 'a'): {'s2'}, ('s1', 'b'): {'s2'},
-                ('s4', 'b'): {'s0'}, ('s0', 'b'): {'s3'}, ('s1', 'a'): {'s4'},
+                ('s3', 'b'): {'s4'}, ('s0', 'a'): {'s1'},
+                ('s4', 'a'): {'s4'},
+                ('s2', 'b'): {'s0', 's2'}, ('s3', 'a'): {'s2'},
+                ('s1', 'b'): {'s2'},
+                ('s4', 'b'): {'s0'}, ('s0', 'b'): {'s3'},
+                ('s1', 'a'): {'s4'},
 
-                ('t3', 'c'): {'t0'}, ('t1', 'c'): {'t2', 't3'}, ('t4', 'c'): {'t0'},
-                ('t0', 'a'): {'t2'}, ('t4', 'b'): {'t0'}, ('t0', 'b'): {'t1'},
-                ('t3', 'a'): {'t1', 't4'}, ('t4', 'a'): {'t4'}, ('t2', 'a'): {'t4', 't2'},
-                ('t3', 'b'): {'t0', 't3'}, ('t1', 'b'): {'t4'}, ('t2', 'b'): {'t1'}
+                ('t3', 'c'): {'t0'}, ('t1', 'c'): {'t2', 't3'},
+                ('t4', 'c'): {'t0'},
+                ('t0', 'a'): {'t2'}, ('t4', 'b'): {'t0'},
+                ('t0', 'b'): {'t1'},
+                ('t3', 'a'): {'t1', 't4'}, ('t4', 'a'): {'t4'},
+                ('t2', 'a'): {'t4', 't2'},
+                ('t3', 'b'): {'t0', 't3'}, ('t1', 'b'): {'t4'},
+                ('t2', 'b'): {'t1'}
             }
         }
         self.nfa_union_test_02_solution = {
             'alphabet': {'a', 'b', 'c'},
-            'states': {'t0', 't1', 't2', 't3', 't4', 'c0', 'c4', 'c1', 'c2', 'c3'},
+            'states': {'t0', 't1', 't2', 't3', 't4', 'c0', 'c4',
+                       'c1', 'c2', 'c3'},
             'initial_states': {'t0', 'c0'},
             'accepting_states': {'t0', 't4', 'c4'},
             'transitions': {
@@ -171,53 +210,66 @@ class TestNfaUnion(TestCase):
         }
 
     def test_nfa_union_djsoint(self):
-        """ Tests a nfa union between NFAs with no state in common """
-        union = NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_2_test_01)
+        """ Tests a nfa union between NFAs with no state in
+        common """
+        union = NFA.nfa_union(self.nfa_union_1_test_01,
+                              self.nfa_union_2_test_01)
         # automata_IO.nfa_to_dot(union, 'nfa_union')
         self.assertDictEqual(union, self.nfa_union_test_01_solution)
 
     def test_nfa_union_same(self):
         """ Tests a nfa union bewtween the same nfa """
-        union = NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_1_test_01)
+        union = NFA.nfa_union(self.nfa_union_1_test_01,
+                              self.nfa_union_1_test_01)
         # automata_IO.nfa_to_dot(union, 'nfa_union_same')
         self.assertDictEqual(union, self.nfa_union_1_test_01)
 
     def test_nfa_union_intersecting(self):
-        """ Tests a nfa union between NFAs with some state in common """
-        union = NFA.nfa_union(self.nfa_union_2_test_01, self.nfa_union_3_test_01)
+        """ Tests a nfa union between NFAs with some state in
+        common """
+        union = NFA.nfa_union(self.nfa_union_2_test_01,
+                              self.nfa_union_3_test_01)
         # automata_IO.nfa_to_dot(union, 'nfa_union_intersecting')
         self.assertDictEqual(union, self.nfa_union_test_02_solution)
 
     def test_nfa_union_empty(self):
-        """ Tests a nfa union where one of the input is an empty nfa """
-        union = NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_test_03_empty)
+        """ Tests a nfa union where one of the input is an empty
+        nfa """
+        union = NFA.nfa_union(self.nfa_union_1_test_01,
+                              self.nfa_union_test_03_empty)
         self.assertDictEqual(union, self.nfa_union_1_test_01)
 
     @unittest.expectedFailure
     def test_nfa_union_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        """ Tests an input different from a dict() object. [
+        EXPECTED FAILURE] """
         NFA.nfa_union(1, self.nfa_union_2_test_01)
 
     @unittest.expectedFailure
     def test_nfa_union_wrong_input_2(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE] """
+        """ Tests an input different from a dict() object. [
+        EXPECTED FAILURE] """
         NFA.nfa_union(self.nfa_union_2_test_01, 1)
 
     @unittest.expectedFailure
     def test_nfa_union_wrong_dict_1(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a NFA. [EXPECTED FAILURE]"""
         NFA.nfa_union({'goofy': 'donald'}, self.nfa_union_1_test_01)
 
     @unittest.expectedFailure
     def test_nfa_union_wrong_dict_2(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a NFA. [EXPECTED FAILURE]"""
         NFA.nfa_union(self.nfa_union_1_test_01, {'goofy': 'donald'})
 
     def test_dfa_union_side_effects(self):
-        """ Tests that the union function doesn't make side effects on input NFAs """
+        """ Tests that the union function doesn't make side
+        effects on input NFAs """
         before_1 = copy.deepcopy(self.nfa_union_1_test_01)
         before_2 = copy.deepcopy(self.nfa_union_2_test_01)
-        NFA.nfa_union(self.nfa_union_1_test_01, self.nfa_union_2_test_01)
+        NFA.nfa_union(self.nfa_union_1_test_01,
+                      self.nfa_union_2_test_01)
         self.assertDictEqual(before_1, self.nfa_union_1_test_01)
         self.assertDictEqual(before_2, self.nfa_union_2_test_01)
 
@@ -225,8 +277,12 @@ class TestNfaUnion(TestCase):
 class TestNfaDeterminization(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_determinization_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_determinization_test_01.dot')
-        self.nfa_determinization_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_determinization_test_02.dot')
+        self.nfa_determinization_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_determinization_test_01.dot')
+        self.nfa_determinization_test_02 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_determinization_test_02.dot')
         self.nfa_determinization_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -237,72 +293,96 @@ class TestNfaDeterminization(TestCase):
 
     def test_nfa_determinization(self):
         """ Tests a correct nfa determinization """
-        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
+        dfa_determined = NFA.nfa_determinization(
+            self.nfa_determinization_test_01)
         # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined')
         self.assertEqual(len(dfa_determined['alphabet']), 2)
         self.assertEqual(len(dfa_determined['states']), 10)
         self.assertEqual(len(dfa_determined['accepting_states']), 6)
         self.assertEqual(len(dfa_determined['transitions']), 19)
-        # due to set-to-string serialization undecidability of items order, it is not possible to match the result
-        # of the operation to a predetermined result without enlist all the possible combination of S^2
+        # due to set-to-string serialization undecidability of
+        # items order, it is not possible to match the result
+        # of the operation to a predetermined result without
+        # enlist all the possible combination of S^2
 
     def test_nfa_determinization_bis(self):
         """ Tests an other correct nfa determinization """
-        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_02)
+        dfa_determined = NFA.nfa_determinization(
+            self.nfa_determinization_test_02)
         # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_2')
         self.assertEqual(len(dfa_determined['alphabet']), 3)
         self.assertEqual(len(dfa_determined['states']), 14)
-        self.assertEqual(len(dfa_determined['accepting_states']), 11)
+        self.assertEqual(len(dfa_determined['accepting_states']),
+                         11)
         self.assertEqual(len(dfa_determined['transitions']), 39)
-        # due to set to string serialization undecidability of items order, it is not possible to match the result
-        # of the operation to a predetermined result without enlist all the possible combination of S^2
+        # due to set to string serialization undecidability of
+        # items order, it is not possible to match the result
+        # of the operation to a predetermined result without
+        # enlist all the possible combination of S^2
 
     def test_nfa_determinization_empty_states(self):
         """ Tests a NFA determinization with an empty NFA """
-        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_empty)
-        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_empty_States')
+        dfa_determined = NFA.nfa_determinization(
+            self.nfa_determinization_test_empty)
+        # automata_IO.dfa_to_dot(dfa_determined,
+        # 'nfa_determined_empty_States')
         self.assertDictEqual(dfa_determined, {'alphabet': set(),
                                               'states': set(),
                                               'initial_state': None,
-                                              'accepting_states': set(),
+                                              'accepting_states':
+                                                  set(),
                                               'transitions': {}
                                               }
                              )
 
     def test_nfa_determinization_empty_transitions(self):
-        """ Tests a NFA determinization with a NFA without transitions """
+        """ Tests a NFA determinization with a NFA without
+        transitions """
         self.nfa_determinization_test_01['transitions'] = {}
-        dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
-        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_empty_transition')
-        self.assertDictEqual(dfa_determined, {'alphabet': self.nfa_determinization_test_01['alphabet'],
-                                              'states': {str(self.nfa_determinization_test_01['initial_states'])},
-                                              'initial_state': str(self.nfa_determinization_test_01['initial_states']),
-                                              'accepting_states': set(),
-                                              'transitions': {}
-                                              }
+        dfa_determined = NFA.nfa_determinization(
+            self.nfa_determinization_test_01)
+        # automata_IO.dfa_to_dot(dfa_determined,
+        # 'nfa_determined_empty_transition')
+        self.assertDictEqual(dfa_determined, {
+            'alphabet': self.nfa_determinization_test_01[
+                'alphabet'],
+            'states': {str(self.nfa_determinization_test_01[
+                               'initial_states'])},
+            'initial_state': str(
+                self.nfa_determinization_test_01['initial_states']),
+            'accepting_states': set(),
+            'transitions': {}
+            }
                              )
 
     @unittest.expectedFailure
     def test_nfa_determinization_wrong_input(self):
-        """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the function using an input different from a
+        dict object. [EXPECTED FAILURE] """
         NFA.nfa_determinization(0)
 
     @unittest.expectedFailure
     def test_nfa_determinization_wrong_dict(self):
-        """ Tests the function using an input different from a well formatted dict representing a nfa. [EXPECTED FAILURE] """
+        """ Tests the function using an input different from a
+        well formatted dict representing a nfa. [EXPECTED
+        FAILURE] """
         NFA.nfa_determinization({'goofy': 'donald'})
 
     def test_nfa_determinization_side_effects(self):
-        """ Tests the function doesn't make any side effect on the input """
+        """ Tests the function doesn't make any side effect on
+        the input """
         before = copy.deepcopy(self.nfa_determinization_test_01)
         NFA.nfa_determinization(self.nfa_determinization_test_01)
-        self.assertDictEqual(before, self.nfa_determinization_test_01)
+        self.assertDictEqual(before,
+                             self.nfa_determinization_test_01)
 
 
 class TestNfaComplementation(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_complementation_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_complementation_test_01.dot')
+        self.nfa_complementation_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_complementation_test_01.dot')
         self.nfa_complementation_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -313,71 +393,97 @@ class TestNfaComplementation(TestCase):
 
     def test_nfa_complementation(self):
         """ Tests a correct nfa complementation """
-        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
+        dfa_complemented = NFA.nfa_complementation(
+            self.nfa_complementation_test_01)
         self.assertEqual(len(dfa_complemented['alphabet']), 2)
         self.assertEqual(len(dfa_complemented['states']), 10 + 1)
-        self.assertEqual(len(dfa_complemented['accepting_states']), 4 + 1)
+        self.assertEqual(len(dfa_complemented['accepting_states']),
+                         4 + 1)
         self.assertEqual(len(dfa_complemented['transitions']), 22)
-        # due to set-to-string serialization undecidability of items order, it is not possible to match the result
-        # of the operation to a predetermined result without enlist all the possible combination of S^2
+        # due to set-to-string serialization undecidability of
+        # items order, it is not possible to match the result
+        # of the operation to a predetermined result without
+        # enlist all the possible combination of S^2
 
     def test_nfa_complementation_empty_states(self):
         """ Tests a NFA complementation with an empty NFA """
-        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_empty)
-        # automata_IO.dfa_to_dot(dfa_complemented, 'nfa_complemented_empty_States')
+        dfa_complemented = NFA.nfa_complementation(
+            self.nfa_complementation_test_empty)
+        # automata_IO.dfa_to_dot(dfa_complemented,
+        # 'nfa_complemented_empty_States')
         self.assertDictEqual(dfa_complemented, {'alphabet': set(),
                                                 'states': {'sink'},
-                                                'initial_state': None,
-                                                'accepting_states': {'sink'},
+                                                'initial_state':
+                                                    None,
+                                                'accepting_states': {
+                                                'sink'},
                                                 'transitions': {}
                                                 }
                              )
 
     def test_nfa_complementation_empty_transitions(self):
-        """ Tests a NFA complementation with a NFA without transitions """
+        """ Tests a NFA complementation with a NFA without
+        transitions """
         self.nfa_complementation_test_01['transitions'] = {}
-        dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
-        # automata_IO.dfa_to_dot(dfa_complemented, 'nfa_complemented_empty_transition')
-        self.assertDictEqual(dfa_complemented, {'alphabet': self.nfa_complementation_test_01['alphabet'],
-                                                'states': {str(self.nfa_complementation_test_01['initial_states']),
-                                                           "sink"},
-                                                'initial_state': str(
-                                                    self.nfa_complementation_test_01['initial_states']),
-                                                'accepting_states': {
-                                                    str(self.nfa_complementation_test_01['initial_states']), "sink"},
-                                                'transitions': {
-                                                    ('sink', 'a'): 'sink',
-                                                    ('sink', 'b'): 'sink',
-                                                    (str(self.nfa_complementation_test_01['initial_states']),
-                                                     'b'): 'sink',
-                                                    (str(self.nfa_complementation_test_01['initial_states']),
-                                                     'a'): 'sink'
-                                                }
-                                                }
+        dfa_complemented = NFA.nfa_complementation(
+            self.nfa_complementation_test_01)
+        # automata_IO.dfa_to_dot(dfa_complemented,
+        # 'nfa_complemented_empty_transition')
+        self.assertDictEqual(dfa_complemented, {
+            'alphabet': self.nfa_complementation_test_01[
+                'alphabet'],
+            'states': {
+            str(self.nfa_complementation_test_01['initial_states']),
+            "sink"},
+            'initial_state': str(
+                self.nfa_complementation_test_01['initial_states']),
+            'accepting_states': {
+                str(self.nfa_complementation_test_01[
+                        'initial_states']), "sink"},
+            'transitions': {
+                ('sink', 'a'): 'sink',
+                ('sink', 'b'): 'sink',
+                (str(self.nfa_complementation_test_01[
+                         'initial_states']),
+                 'b'): 'sink',
+                (str(self.nfa_complementation_test_01[
+                         'initial_states']),
+                 'a'): 'sink'
+            }
+            }
                              )
 
     @unittest.expectedFailure
     def test_nfa_complementation_wrong_input(self):
-        """ Tests the function using an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the function using an input different from a
+        dict object. [EXPECTED FAILURE] """
         NFA.nfa_complementation(0)
 
     @unittest.expectedFailure
     def test_nfa_complementation_wrong_dict(self):
-        """ Tests the function using an input different from a well formatted dict representing a nfa. [EXPECTED FAILURE] """
+        """ Tests the function using an input different from a
+        well formatted dict representing a nfa. [EXPECTED
+        FAILURE] """
         NFA.nfa_complementation({'goofy': 'donald'})
 
     def test_nfa_complementation_side_effects(self):
-        """ Tests the function doesn't make any side effect on the input """
+        """ Tests the function doesn't make any side effect on
+        the input """
         before = copy.deepcopy(self.nfa_complementation_test_01)
         NFA.nfa_complementation(self.nfa_complementation_test_01)
-        self.assertDictEqual(before, self.nfa_complementation_test_01)
+        self.assertDictEqual(before,
+                             self.nfa_complementation_test_01)
 
 
 class TestNfaNonemptinessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_nonemptiness_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonemptiness_test_01.dot')
-        self.nfa_nonemptiness_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonemptiness_test_02.dot')
+        self.nfa_nonemptiness_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_nonemptiness_test_01.dot')
+        self.nfa_nonemptiness_test_02 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_nonemptiness_test_02.dot')
         self.nfa_nonemptiness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -388,28 +494,35 @@ class TestNfaNonemptinessCheck(TestCase):
 
     def test_nfa_nonemptiness_check(self):
         """ Tests a correct nfa nonemptiness check"""
-        self.assertTrue(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_01))
+        self.assertTrue(NFA.nfa_nonemptiness_check(
+            self.nfa_nonemptiness_test_01))
 
     def test_nfa_nonemptiness_check_false(self):
-        """ Tests a correct nfa nonemptiness check, where the nfa is empty"""
-        self.assertFalse(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_02))
+        """ Tests a correct nfa nonemptiness check, where the nfa
+        is empty"""
+        self.assertFalse(NFA.nfa_nonemptiness_check(
+            self.nfa_nonemptiness_test_02))
 
     def test_nfa_nonemptiness_check_empty(self):
         """ Tests the nonemptiness of an empty nfa"""
-        self.assertFalse(NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_empty))
+        self.assertFalse(NFA.nfa_nonemptiness_check(
+            self.nfa_nonemptiness_test_empty))
 
     @unittest.expectedFailure
     def test_nfa_nonemptiness_check_wrong_dict(self):
-        """ Tests the nonemptiness of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
+        """ Tests the nonemptiness of an input dict different
+        from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonemptiness_check({}))
 
     @unittest.expectedFailure
     def test_nfa_nonemptiness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the nonemptines of an input different from a
+        dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonemptiness_check(0))
 
     def test_nfa_nonemptiness_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect
+        on the input"""
         before = copy.deepcopy(self.nfa_nonemptiness_test_01)
         NFA.nfa_nonemptiness_check(self.nfa_nonemptiness_test_01)
         self.assertDictEqual(before, self.nfa_nonemptiness_test_01)
@@ -418,8 +531,12 @@ class TestNfaNonemptinessCheck(TestCase):
 class TestNfaNonuniversalityCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_nonuniversality_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonuniversality_test_01.dot')
-        self.nfa_nonuniversality_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_nonuniversality_test_02.dot')
+        self.nfa_nonuniversality_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_nonuniversality_test_01.dot')
+        self.nfa_nonuniversality_test_02 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_nonuniversality_test_02.dot')
         self.nfa_nonuniversality_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -430,38 +547,51 @@ class TestNfaNonuniversalityCheck(TestCase):
 
     def test_nfa_nonuniversality_check(self):
         """ Tests a correct nfa nonuniversality check """
-        self.assertTrue(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_01))
+        self.assertTrue(NFA.nfa_nonuniversality_check(
+            self.nfa_nonuniversality_test_01))
 
     def test_nfa_nonuniversality_check_false(self):
-        """ Tests a correct nfa nonuniversality check, where the nfa is universal """
-        self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_02))
+        """ Tests a correct nfa nonuniversality check, where the
+        nfa is universal """
+        self.assertFalse(NFA.nfa_nonuniversality_check(
+            self.nfa_nonuniversality_test_02))
 
     def test_nfa_nonuniversality_check_empty(self):
         """ Tests the nonuniversality of an empty nfa """
-        self.assertFalse(NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_empty))
+        self.assertFalse(NFA.nfa_nonuniversality_check(
+            self.nfa_nonuniversality_test_empty))
 
     @unittest.expectedFailure
     def test_nfa_nonuniversality_check_wrong_dict(self):
-        """ Tests the nonuniversality of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
+        """ Tests the nonuniversality of an input dict different
+        from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonuniversality_check({}))
 
     @unittest.expectedFailure
     def test_nfa_nonuniversality_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the nonemptines of an input different from a
+        dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_nonuniversality_check(0))
 
     def test_nfa_nonuniversality_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect
+        on the input"""
         before = copy.deepcopy(self.nfa_nonuniversality_test_01)
-        NFA.nfa_nonuniversality_check(self.nfa_nonuniversality_test_01)
-        self.assertDictEqual(before, self.nfa_nonuniversality_test_01)
+        NFA.nfa_nonuniversality_check(
+            self.nfa_nonuniversality_test_01)
+        self.assertDictEqual(before,
+                             self.nfa_nonuniversality_test_01)
 
 
 class TestNfaInterestingnessCheck(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_interestingness_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_interestingness_test_01.dot')
-        self.nfa_interestingness_test_02 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_interestingness_test_02.dot')
+        self.nfa_interestingness_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_interestingness_test_01.dot')
+        self.nfa_interestingness_test_02 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_interestingness_test_02.dot')
         self.nfa_interestingness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -472,37 +602,48 @@ class TestNfaInterestingnessCheck(TestCase):
 
     def test_nfa_interestingness_check(self):
         """ Tests a correct nfa interestingness check """
-        self.assertTrue(NFA.nfa_interestingness_check(self.nfa_interestingness_test_01))
+        self.assertTrue(NFA.nfa_interestingness_check(
+            self.nfa_interestingness_test_01))
 
     def test_nfa_interestingness_check_false(self):
-        """ Tests a correct nfa interestingness check, where the nfa is universal """
-        self.assertFalse(NFA.nfa_interestingness_check(self.nfa_interestingness_test_02))
+        """ Tests a correct nfa interestingness check, where the
+        nfa is universal """
+        self.assertFalse(NFA.nfa_interestingness_check(
+            self.nfa_interestingness_test_02))
 
     def test_nfa_interestingness_check_empty(self):
         """ Tests the interestingness of an empty nfa """
-        self.assertFalse(NFA.nfa_interestingness_check(self.nfa_interestingness_test_empty))
+        self.assertFalse(NFA.nfa_interestingness_check(
+            self.nfa_interestingness_test_empty))
 
     @unittest.expectedFailure
     def test_nfa_interestingness_check_wrong_dict(self):
-        """ Tests the interestingness of an input dict different from a dict representing a nfa. [EXPECTED FAILURE] """
+        """ Tests the interestingness of an input dict different
+        from a dict representing a nfa. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_interestingness_check({}))
 
     @unittest.expectedFailure
     def test_nfa_interestingness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the nonemptines of an input different from a
+        dict object. [EXPECTED FAILURE] """
         self.assertFalse(NFA.nfa_interestingness_check(0))
 
     def test_nfa_interestingness_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect
+        on the input"""
         before = copy.deepcopy(self.nfa_interestingness_test_01)
-        NFA.nfa_interestingness_check(self.nfa_interestingness_test_01)
-        self.assertDictEqual(before, self.nfa_interestingness_test_01)
+        NFA.nfa_interestingness_check(
+            self.nfa_interestingness_test_01)
+        self.assertDictEqual(before,
+                             self.nfa_interestingness_test_01)
 
 
 class TestRunAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_run_acceptance_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_run_acceptance_test_01.dot')
+        self.nfa_run_acceptance_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_run_acceptance_test_01.dot')
         self.nfa_run_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -514,65 +655,89 @@ class TestRunAcceptance(TestCase):
     def test_run_acceptance(self):
         """ Tests a correct run """
         self.assertTrue(
-            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's4', 's0', 's3', 's2'],
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                               ['s0', 's1', 's4', 's0', 's3', 's2'],
                                ['a', 'a', 'b', 'b', 'a']))
 
     def test_run_acceptance_false(self):
         """ Tests a non correct run, good alphabet"""
-        self.assertFalse(NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's2'], ['b', 'a']))
+        self.assertFalse(
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                               ['s0', 's1', 's2'], ['b', 'a']))
 
     def test_run_acceptance_wrong_alphabet(self):
-        """ Tests a non correct run with letters not present in the alphabet"""
+        """ Tests a non correct run with letters not present in
+        the alphabet"""
         self.assertFalse(
-            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'wrong']))
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                               ['s0', 's1', 's3', 's0'],
+                               ['5c', '10c', 'wrong']))
 
     def test_run_acceptance_wrong_states(self):
-        """ Tests a non correct run with states not present in the nfa"""
+        """ Tests a non correct run with states not present in
+        the nfa"""
         self.assertFalse(
-            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 'fake', 's0'], ['5c', '10c', 'gum']))
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                               ['s0', 's1', 'fake', 's0'],
+                               ['5c', '10c', 'gum']))
 
     def test_run_acceptance_empty_run(self):
         """ Tests an empty run """
         self.assertFalse(
-            NFA.run_acceptance(self.nfa_run_acceptance_test_01, [], []))
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01, [],
+                               []))
 
     def test_run_acceptance_wrong_sizes(self):
         """ Tests run and word with wrong sizes """
         self.assertFalse(
-            NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's3'], ['a']))
+            NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                               ['s0', 's1', 's3'], ['a']))
 
     @unittest.expectedFailure
     def test_run_acceptance_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
-        NFA.run_acceptance(1, ['s0', 's1', 's3', 's0'], ['5c', '10c', 'gum'])
+        """ Tests an input different from a dict() object. [
+        EXPECTED FAILURE]"""
+        NFA.run_acceptance(1, ['s0', 's1', 's3', 's0'],
+                           ['5c', '10c', 'gum'])
 
     @unittest.expectedFailure
     def test_run_acceptance_wrong_input_2(self):
-        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
-        NFA.run_acceptance(self.nfa_run_acceptance_test_01, 1, ['5c', '10c', 'gum'])
+        """ Tests an input different from a list() object. [
+        EXPECTED FAILURE]"""
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01, 1,
+                           ['5c', '10c', 'gum'])
 
     @unittest.expectedFailure
     def test_run_acceptance_wrong_input_3(self):
-        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
-        NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's2'], 1)
+        """ Tests an input different from a list() object. [
+        EXPECTED FAILURE]"""
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                           ['s0', 's1', 's2'], 1)
 
     @unittest.expectedFailure
     def test_run_acceptance_wrong_dict(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
-        NFA.run_acceptance({'goofy': 'donald'}, ['s0', 's1', 's2'], ['a', 'b'])
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        NFA.run_acceptance({'goofy': 'donald'}, ['s0', 's1', 's2'],
+                           ['a', 'b'])
 
     def test_run_acceptance_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect
+        on the input"""
         before = copy.deepcopy(self.nfa_run_acceptance_test_01)
-        NFA.run_acceptance(self.nfa_run_acceptance_test_01, ['s0', 's1', 's4', 's0', 's3', 's2'],
+        NFA.run_acceptance(self.nfa_run_acceptance_test_01,
+                           ['s0', 's1', 's4', 's0', 's3', 's2'],
                            ['a', 'a', 'b', 'b', 'a'])
-        self.assertDictEqual(before, self.nfa_run_acceptance_test_01)
+        self.assertDictEqual(before,
+                             self.nfa_run_acceptance_test_01)
 
 
 class TestWordAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.nfa_word_acceptance_test_01 = automata_IO.nfa_dot_importer('./tests/dot/nfa/nfa_word_acceptance_test_01.dot')
+        self.nfa_word_acceptance_test_01 = \
+            automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_word_acceptance_test_01.dot')
         self.nfa_word_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -583,19 +748,28 @@ class TestWordAcceptance(TestCase):
 
     def test_word_acceptance(self):
         """ Tests a correct word """
-        self.assertTrue(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'b']))
+        self.assertTrue(
+            NFA.word_acceptance(self.nfa_word_acceptance_test_01,
+                                ['a', 'b', 'b', 'a', 'b']))
 
     def test_word_acceptance_false(self):
         """ Tests a non correct word, with good alphabet"""
-        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'a', 'a']))
+        self.assertFalse(
+            NFA.word_acceptance(self.nfa_word_acceptance_test_01,
+                                ['a', 'a', 'a']))
 
     def test_word_acceptance_wrong_alphabet(self):
-        """ Tests a non correct word, with letters not form the nfa alphabet """
-        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'b', 'wrong']))
+        """ Tests a non correct word, with letters not form the
+        nfa alphabet """
+        self.assertFalse(
+            NFA.word_acceptance(self.nfa_word_acceptance_test_01,
+                                ['a', 'b', 'wrong']))
 
     def test_word_acceptance_empty_word(self):
         """ Tests an empty word"""
-        self.assertFalse(NFA.word_acceptance(self.nfa_word_acceptance_test_empty, []))
+        self.assertFalse(
+            NFA.word_acceptance(self.nfa_word_acceptance_test_empty,
+                                []))
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_1(self):
@@ -610,10 +784,13 @@ class TestWordAcceptance(TestCase):
     @unittest.expectedFailure
     def test_word_acceptance_wrong_dict(self):
         """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
-        NFA.word_acceptance({'goofy': 'donald'}, ['a', 'b', 'b', 'a', 'b'])
+        NFA.word_acceptance({'goofy': 'donald'},
+                            ['a', 'b', 'b', 'a', 'b'])
 
     def test_word_acceptance_check_side_effects(self):
         """ Tests that the function doesn't make any side effect on the input"""
         before = copy.deepcopy(self.nfa_word_acceptance_test_01)
-        NFA.word_acceptance(self.nfa_word_acceptance_test_01, ['a', 'a', 'b', 'b', 'a'])
-        self.assertDictEqual(before, self.nfa_word_acceptance_test_01)
+        NFA.word_acceptance(self.nfa_word_acceptance_test_01,
+                            ['a', 'a', 'b', 'b', 'a'])
+        self.assertDictEqual(before,
+                             self.nfa_word_acceptance_test_01)
