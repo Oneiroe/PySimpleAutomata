@@ -484,15 +484,15 @@ def nfa_graphviz_render(nfa, name):
 ####################################################################
 # AFW ##############################################################
 
-# Import a afw from a json file
 def afw_json_importer(input_file):
+    """ Import a afw from a json file
+
+    :param input_file:
+    :return: dict() representing a AFW
+    """
     file = open(input_file)
-    json_file = json.load(file)
     # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_state = json_file['initial_state']
-    accepting_states = set(json_file['accepting_states'])
+    json_file = json.load(file)
 
     transitions = {}  # key [state in states, action in alphabet]
     #  value [string representing boolean expression]
@@ -501,16 +501,34 @@ def afw_json_importer(input_file):
 
     # return map
     afw = {
-        'alphabet': alphabet,
-        'states': states,
-        'initial_state': initial_state,
-        'accepting_states': accepting_states,
+        'alphabet': set(json_file['alphabet']),
+        'states': set(json_file['states']),
+        'initial_state': json_file['initial_state'],
+        'accepting_states': set(json_file['accepting_states']),
         'transitions': transitions
     }
     return afw
 
 
-# Export a afw "object" to a json file
-# TODO afw_to_json
-def afw_to_json(afw):
-    return
+def afw_to_json(afw, name):
+    """ Export a afw "object" to a json file.
+
+    :param afw: dict() representing a AFW;
+    :param name: str output file name.
+    """
+
+    out = {
+        'alphabet': list(afw['alphabet']),
+        'states': list(afw['states']),
+        'initial_state': afw['initial_state'],
+        'accepting_states': list(afw['accepting_states']),
+        'transitions': list()
+    }
+
+    for t in afw['transitions']:
+        out['transitions'].append(
+            [t[0], t[1], afw['transitions'][t]])
+
+    file = open('img/json/' + name + '.json', 'w')
+    json.dump(out, file, sort_keys=True, indent=4)
+    file.close()

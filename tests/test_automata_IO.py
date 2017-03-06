@@ -711,3 +711,38 @@ class TestAfwJsonImporter(TestCase):
             './tests/json/automata_io'
             '/automata_io_afw_json_importer_test_01.json')
         self.assertDictEqual(afw_01, self.afw_test_01)
+
+
+class TestAfwToJson(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.afw_test_01 = {
+            'alphabet': {'a', 'b'},
+            'states': {'s', 'q0', 'q1', 'q2'},
+            'initial_state': 's',
+            'accepting_states': {'q0'},
+            'transitions': {
+                ('q0', 'b'): 'q0 or q2',
+                ('q0', 'a'): 'q1',
+                ('q1', 'a'): 'q0',
+                ('q1', 'b'): 'q1 or q2',
+                ('q2', 'a'): 'q2',
+                ('s', 'a'): 's',
+                ('s', 'b'): 's and q0'
+            }
+        }
+        self.afw_test_empty = {
+            'alphabet': set(),
+            'states': set(),
+            'initial_state': 'state_0',
+            'accepting_states': set(),
+            'transitions': {}
+        }
+
+    def test_afw_to_json(self):
+        """ Tests a correct afw export to JSON file """
+        name = 'JSON_afw_export'
+        automata_IO.afw_to_json(self.afw_test_01, name)
+        re_imported_afw = automata_IO.afw_json_importer(
+            'img/json/' + name + '.json')
+        self.assertDictEqual(self.afw_test_01, re_imported_afw)
