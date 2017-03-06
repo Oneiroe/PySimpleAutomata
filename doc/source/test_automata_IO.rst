@@ -11,11 +11,14 @@ Tests automata_IO
     .. autosummary::
 
         TestDfaDotImporter
-        TestDfaPydotRender
         TestDfaGraphvizRender
+        TestDfaJsonImporter
+        TestDfaToJson
         TestNfaDotImporter
-        TestNfaPydotRender
         TestNfaGraphvizRender
+        TestNfaJsonImporter
+        TestNfaToJson
         TestAfwJsonImporter
+        TestAfwToJson
 
     .. rubric:: Functions

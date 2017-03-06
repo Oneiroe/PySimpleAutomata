@@ -10,18 +10,16 @@ automata_IO
 
     .. autosummary::
 
-      afw_json_importer
-      afw_to_json
-      dfa_conformance_check
-      dfa_dot_importer
-      dfa_graphviz_render
-      dfa_json_importer
-      dfa_pydot_render
-      dfa_to_json
-      nfa_dot_importer
-      nfa_graphviz_render
-      nfa_json_importer
-      nfa_pydot_render
-      nfa_to_json
+        dfa_json_importer
+        dfa_to_json
+        dfa_dot_importer
+        dfa_graphviz_render
+        dfa_conformance_check
+        nfa_json_importer
+        nfa_to_json
+        nfa_dot_importer
+        nfa_graphviz_render
+        afw_json_importer
+        afw_to_json
 
     .. rubric:: Functions

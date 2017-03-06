@@ -18,7 +18,6 @@ import re
 # TODO check correctness importing a .dot where no explicit
 #      state, but just transitions are present
 # TODO make output file directory parametric
-# TODO remove pydot output function
 
 
 def __replace_all(repls: dict, str: str) -> str:
@@ -171,40 +170,6 @@ def dfa_dot_importer(input_file: str) -> dict:
         'accepting_states': accepting_states,
         'transitions': transitions}
     return dfa
-
-
-@DeprecationWarning
-def dfa_pydot_render(dfa, name):
-    """ DEPRECATED Generates a .dot file and a relative .svg
-    image in ./img/
-    folder of the input dfa using pydot library
-
-    DEPRECATED use dfa_dot_render instead.
-
-    :param dict dfa: representing a dfa
-    :param str name: string with the name of the output file
-    """
-    g = pydot.Dot(graph_type='digraph')
-
-    fake = pydot.Node('fake', style='invisible')
-    g.add_node(fake)
-    for state in dfa['states']:
-        node = pydot.Node(str(state))
-        if state == dfa['initial_state']:
-            node.set_root(True)
-            g.add_edge(pydot.Edge(fake, node, style='bold'))
-
-        if state in dfa['accepting_states']:
-            node.set_shape('doublecircle')
-        g.add_node(node)
-
-    for transition in dfa['transitions']:
-        g.add_edge(pydot.Edge(str(transition[0]),
-                              str(dfa['transitions'][transition]),
-                              label=transition[1]))
-
-    g.write_svg('img/' + name + '.svg')
-    g.write_dot('img/' + name + '.dot')
 
 
 def dfa_graphviz_render(dfa: dict, name: str):
@@ -393,41 +358,6 @@ def nfa_dot_importer(input_file: str) -> dict:
     }
 
     return nfa
-
-
-@DeprecationWarning
-def nfa_pydot_render(nfa: dict, name: str):
-    """ Generates a .dot file and a relative .svg image in ./img/
-    folder of the input nfa using pydot library
-
-    :param dict nfa: representing a nfa
-    :param str name: string with the name of the output file
-    """
-    g = pydot.Dot(graph_type='digraph')
-
-    fakes = []
-    for i in range(len(nfa['initial_states'])):
-        fakes.append(pydot.Node('fake' + str(i), style='invisible'))
-        g.add_node(fakes[i])
-
-    for state in nfa['states']:
-        node = pydot.Node(str(state))
-        if state in nfa['initial_states']:
-            node.set_root(True)
-            g.add_edge(pydot.Edge(fakes.pop(), node, style='bold'))
-
-        if state in nfa['accepting_states']:
-            node.set_shape('doublecircle')
-        g.add_node(node)
-
-    for transition in nfa['transitions']:
-        for destination in nfa['transitions'][transition]:
-            g.add_edge(
-                pydot.Edge(str(transition[0]), str(destination),
-                           label=transition[1]))
-
-    g.write_svg('img/' + name + '.svg')
-    g.write_dot('img/' + name + '.dot')
 
 
 def nfa_graphviz_render(nfa: dict, name: str):
