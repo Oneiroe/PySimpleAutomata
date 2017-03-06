@@ -13,7 +13,7 @@ automata_IO
         dfa_json_importer
         dfa_to_json
         dfa_dot_importer
-        dfa_graphviz_render
+        dfa_to_dot
         dfa_conformance_check
         nfa_json_importer
         nfa_to_json

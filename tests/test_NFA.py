@@ -238,7 +238,7 @@ class TestNfaDeterminization(TestCase):
     def test_nfa_determinization(self):
         """ Tests a correct nfa determinization """
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
-        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined')
+        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined')
         self.assertEqual(len(dfa_determined['alphabet']), 2)
         self.assertEqual(len(dfa_determined['states']), 10)
         self.assertEqual(len(dfa_determined['accepting_states']), 6)
@@ -249,7 +249,7 @@ class TestNfaDeterminization(TestCase):
     def test_nfa_determinization_bis(self):
         """ Tests an other correct nfa determinization """
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_02)
-        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_2')
+        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_2')
         self.assertEqual(len(dfa_determined['alphabet']), 3)
         self.assertEqual(len(dfa_determined['states']), 14)
         self.assertEqual(len(dfa_determined['accepting_states']), 11)
@@ -260,7 +260,7 @@ class TestNfaDeterminization(TestCase):
     def test_nfa_determinization_empty_states(self):
         """ Tests a NFA determinization with an empty NFA """
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_empty)
-        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_empty_States')
+        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_empty_States')
         self.assertDictEqual(dfa_determined, {'alphabet': set(),
                                               'states': set(),
                                               'initial_state': None,
@@ -273,7 +273,7 @@ class TestNfaDeterminization(TestCase):
         """ Tests a NFA determinization with a NFA without transitions """
         self.nfa_determinization_test_01['transitions'] = {}
         dfa_determined = NFA.nfa_determinization(self.nfa_determinization_test_01)
-        # automata_IO.dfa_graphviz_render(dfa_determined, 'nfa_determined_empty_transition')
+        # automata_IO.dfa_to_dot(dfa_determined, 'nfa_determined_empty_transition')
         self.assertDictEqual(dfa_determined, {'alphabet': self.nfa_determinization_test_01['alphabet'],
                                               'states': {str(self.nfa_determinization_test_01['initial_states'])},
                                               'initial_state': str(self.nfa_determinization_test_01['initial_states']),
@@ -324,7 +324,7 @@ class TestNfaComplementation(TestCase):
     def test_nfa_complementation_empty_states(self):
         """ Tests a NFA complementation with an empty NFA """
         dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_empty)
-        # automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_States')
+        # automata_IO.dfa_to_dot(dfa_complemented, 'nfa_complemented_empty_States')
         self.assertDictEqual(dfa_complemented, {'alphabet': set(),
                                                 'states': {'sink'},
                                                 'initial_state': None,
@@ -337,7 +337,7 @@ class TestNfaComplementation(TestCase):
         """ Tests a NFA complementation with a NFA without transitions """
         self.nfa_complementation_test_01['transitions'] = {}
         dfa_complemented = NFA.nfa_complementation(self.nfa_complementation_test_01)
-        # automata_IO.dfa_graphviz_render(dfa_complemented, 'nfa_complemented_empty_transition')
+        # automata_IO.dfa_to_dot(dfa_complemented, 'nfa_complemented_empty_transition')
         self.assertDictEqual(dfa_complemented, {'alphabet': self.nfa_complementation_test_01['alphabet'],
                                                 'states': {str(self.nfa_complementation_test_01['initial_states']),
                                                            "sink"},

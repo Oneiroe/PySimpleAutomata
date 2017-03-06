@@ -157,7 +157,7 @@ DFA
 
     INput function :mod:`~PySimpleAutomata.automata_IO.dfa_dot_importer`
 
-    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_graphviz_render`
+    OUTput function :mod:`PySimpleAutomata.automata_IO.dfa_to_dot`
 
 NFA
 ***

@@ -90,7 +90,7 @@ class TestDfaDotImporter(TestCase):
         self.assertDictEqual(dfa_02, self.dfa_test_02)
 
 
-class TestDfaGraphvizRender(TestCase):
+class TestDfaToDot(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.dfa_01 = automata_IO.dfa_dot_importer(
@@ -103,15 +103,15 @@ class TestDfaGraphvizRender(TestCase):
         self.dfa_intersected = DFA.dfa_intersection(self.dfa_01,
                                                     self.dfa_02)
 
-    def test_dfa_graphviz_render(self):
+    def test_dfa_to_dot(self):
         """ Tests a simple dfa render thorough graphiz library"""
-        automata_IO.dfa_graphviz_render(self.dfa_01,
+        automata_IO.dfa_to_dot(self.dfa_01,
                                         'graphviz_dfa_render_test')
 
     def test_dfa_graphviz_intersection_render(self):
         """ Tests a rendering of a dfa resulting from an
         intersection, so consisting in more complex nodes"""
-        automata_IO.dfa_graphviz_render(self.dfa_intersected,
+        automata_IO.dfa_to_dot(self.dfa_intersected,
                                         'graphviz_dfa_intersection_render_test')
 
 

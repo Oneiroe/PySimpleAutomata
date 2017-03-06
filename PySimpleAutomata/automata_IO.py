@@ -172,7 +172,7 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-def dfa_graphviz_render(dfa: dict, name: str):
+def dfa_to_dot(dfa: dict, name: str):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input dfa using graphviz library.
 
