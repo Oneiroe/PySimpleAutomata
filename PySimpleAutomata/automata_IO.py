@@ -11,12 +11,12 @@ import re
 # ###
 # TO-DO
 # TODO documentation
-# TODO correctness check of json & DOT imported automata
-# TODO automata conformance check (eg. all transition uses word
-# in alphabet,all transition involved states in States,..)
-# TODO ignore node "None" if present
+# TODO automata conformance check (eg.:
+#      all transition uses word in alphabet,
+#      all transition involved states in States,..)
+# TODO ignore node "None" or other specials if present
 # TODO check correctness importing a .dot where no explicit
-# state, but just transitions are present
+#      state, but just transitions are present
 # TODO make output file directory parametric
 # TODO remove pydot output function
 
@@ -44,13 +44,12 @@ def dfa_json_importer(input_file):
     """
     file = open(input_file)
     json_file = json.load(file)
-    # TODO exception handling while JSON deconding/IO error
     alphabet = set(json_file['alphabet'])
     states = set(json_file['states'])
     initial_state = json_file['initial_state']
     accepting_states = set(json_file['accepting_states'])
     transitions = {}  # key [state ∈ states, action ∈ alphabet]
-    # value [arriving state ∈ states]
+    #                   value [arriving state ∈ states]
     for p in json_file['transitions']:
         transitions[p[0], p[1]] = p[2]
 
@@ -137,9 +136,6 @@ def dfa_dot_importer(input_file: str) -> dict:
         states.add(node_reference)
         for attribute in node.get_attributes():
             if attribute == 'root':
-                # if initial_state!=0:
-                #   TODO raise exception for wrong formatted dfa:
-                #  dfa accepts only one initial state
                 initial_state = node_reference
             if attribute == 'shape' and node.get_attributes()[
                 'shape'] == 'doublecircle':
@@ -165,21 +161,8 @@ def dfa_dot_importer(input_file: str) -> dict:
             destination = tuple(destination)
         else:
             destination = destination[0]
-        # if (edge.get_source(), edge.get_label().replace('"',
-        # '')) in transitions:
-        #   TODO raise exception for wrong formatted dfa: dfa
-        # accepts only one transition from a state given a letter
         transitions[source, label] = destination
 
-    # if len(initial_state) == 0:
-    #   TODO raise exception for wrong formatted dfa: there must
-    # be an initial state
-
-    # if len(accepting_states)==0:
-    #     TODO raise exception for wrong formatted dfa: there
-    # must be at least an accepting state
-
-    # return map
     dfa = {
         'alphabet': alphabet,
         'states': states,
@@ -200,7 +183,6 @@ def dfa_pydot_render(dfa, name):
     :param dfa: dict() representing a dfa
     :param name: str() string with the name of the output file
     """
-    # TODO special view for sink node?
     g = pydot.Dot(graph_type='digraph')
 
     fake = pydot.Node('fake', style='invisible')
@@ -260,6 +242,7 @@ def dfa_conformance_check(dfa):
     # checks all transition words are in alphabet and viceversa
     # checks all transition states are in states and viceversa
     # checks for forbidden symbols, words, names, etc
+    # check iff one and only one initial state
     return
 
 
@@ -273,7 +256,6 @@ def nfa_json_importer(input_file):
     :return: dict() representing a nfa
     """
     file = open(input_file)
-    # TODO exception handling while JSON deconding/IO error
     json_file = json.load(file)
 
     transitions = {}  # key [state in states, action in alphabet]
@@ -491,7 +473,6 @@ def afw_json_importer(input_file):
     :return: dict() representing a AFW
     """
     file = open(input_file)
-    # TODO exception handling while JSON deconding/IO error
     json_file = json.load(file)
 
     transitions = {}  # key [state in states, action in alphabet]
