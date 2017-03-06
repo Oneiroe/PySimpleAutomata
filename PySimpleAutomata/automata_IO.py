@@ -10,7 +10,7 @@ import re
 
 # ###
 # TO-DO
-# TODO documentation
+# TODO documentation (re-check)
 # TODO automata conformance check (eg.:
 #      all transition uses word in alphabet,
 #      all transition involved states in States,..)
@@ -21,13 +21,14 @@ import re
 # TODO remove pydot output function
 
 
-def __replace_all(repls, str):
+def __replace_all(repls: dict, str: str) -> str:
     """ Replaces from a string str all the occurrences some
-    symbols according to mapping repls
-    :param repls: dict() where #key is the old character and
+    symbols according to mapping repls.
+
+    :param dict repls: where #key is the old character and
     #value is the one to substitute with
-    :param str: original string where to apply the replacements
-    :return: the string with the desired characters replaced
+    :param str str: original string where to apply the replacements
+    :return: *(str)* the string with the desired characters replaced
     """
     return re.sub('|'.join(re.escape(key) for key in repls.keys()),
                   lambda k: repls[k.group(0)], str)
@@ -36,11 +37,11 @@ def __replace_all(repls, str):
 ####################################################################
 # DFA ##############################################################
 
-def dfa_json_importer(input_file):
-    """ Import a dfa from a json file
+def dfa_json_importer(input_file: str) -> dict:
+    """ Import a DFA from a JSON file.
 
-    :param input_file: path to json file
-    :return: dict() representing a dfa
+    :param str input_file: path to json file
+    :return: *(dict)* representing a dfa
     """
     file = open(input_file)
     json_file = json.load(file)
@@ -64,11 +65,11 @@ def dfa_json_importer(input_file):
     return dfa
 
 
-def dfa_to_json(dfa, name):
+def dfa_to_json(dfa: dict, name: str):
     """ Export the input dfa in a JSON file.
 
-    :param dfa: dict(), representing a dfa;
-    :param name: str, name of the output file
+    :param dict dfa: representing a dfa;
+    :param str name: name of the output file
     """
     out = {
         'alphabet': list(dfa['alphabet']),
@@ -110,8 +111,8 @@ def dfa_dot_importer(input_file: str) -> dict:
     Forbidden characters:
         '"' "'" '(' ')' ' '
 
-    :param input_file: path to the .dot file
-    :return: dict representing a dfa
+    :param str input_file: path to the .dot file
+    :return: *(dict)* representing a dfa
     """
 
     # pyDot Object
@@ -180,8 +181,8 @@ def dfa_pydot_render(dfa, name):
 
     DEPRECATED use dfa_dot_render instead.
 
-    :param dfa: dict() representing a dfa
-    :param name: str() string with the name of the output file
+    :param dict dfa: representing a dfa
+    :param str name: string with the name of the output file
     """
     g = pydot.Dot(graph_type='digraph')
 
@@ -206,11 +207,12 @@ def dfa_pydot_render(dfa, name):
     g.write_dot('img/' + name + '.dot')
 
 
-def dfa_graphviz_render(dfa, name):
+def dfa_graphviz_render(dfa: dict, name: str):
     """ Generates a .dot file and a relative .svg image in ./img/
-    folder of the input dfa using graphviz library
-    :param dfa: dict() representing a dfa
-    :param name: str() string with the name of the output file
+    folder of the input dfa using graphviz library.
+
+    :param dict dfa: representing a dfa
+    :param str name: string with the name of the output file
     """
     g = graphviz.Digraph(format='svg')
     g.node('fake', style='invisible')
@@ -249,11 +251,11 @@ def dfa_conformance_check(dfa):
 ####################################################################
 # NFA ##############################################################
 
-def nfa_json_importer(input_file):
+def nfa_json_importer(input_file: str) -> dict:
     """ Import a nfa from a json file
 
-    :param input_file: path to json file
-    :return: dict() representing a nfa
+    :param str input_file: path to json file
+    :return: *(dict)* representing a nfa
     """
     file = open(input_file)
     json_file = json.load(file)
@@ -274,10 +276,11 @@ def nfa_json_importer(input_file):
     return nfa
 
 
-def nfa_to_json(nfa, name):
+def nfa_to_json(nfa: dict, name: str):
     """ Exports a nfa to a JSON file
-    :param nfa: dict() representing a NFA;
-    :param name: str name of the output file
+
+    :param dict nfa: representing a NFA;
+    :param str name: Nname of the output file
     """
     transitions = list()  # key[state in states, action in alphabet]
     #                       value [Set of arriving states in states]
@@ -298,9 +301,8 @@ def nfa_to_json(nfa, name):
     file.close()
 
 
-def nfa_dot_importer(input_file):
-    """ Returns a nfa dict() object from a .dot file representing
-    a nfa
+def nfa_dot_importer(input_file: str) -> dict:
+    """ Returns a NFA from a .dot file representing a NFA
 
     Of .dot files are recognized the following attributes
       • nodeX   shape=doublecircle -> accepting node
@@ -320,8 +322,8 @@ def nfa_dot_importer(input_file):
         Forbidden characters:
         '"' "'" '(' ')' ' '
 
-    :param input_file: Path to input .dot file
-    :return: dict() representing a NFA
+    :param str input_file: Path to input .dot file
+    :return: *(dict)* representing a NFA
     """
 
     # pyDot Object
@@ -393,12 +395,13 @@ def nfa_dot_importer(input_file):
     return nfa
 
 
-def nfa_pydot_render(nfa, name):
+@DeprecationWarning
+def nfa_pydot_render(nfa: dict, name: str):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input nfa using pydot library
 
-    :param nfa: dict() representing a nfa
-    :param name: str() string with the name of the output file
+    :param dict nfa: representing a nfa
+    :param str name: string with the name of the output file
     """
     g = pydot.Dot(graph_type='digraph')
 
@@ -427,12 +430,12 @@ def nfa_pydot_render(nfa, name):
     g.write_dot('img/' + name + '.dot')
 
 
-def nfa_graphviz_render(nfa, name):
+def nfa_graphviz_render(nfa: dict, name: str):
     """ Generates a .dot file and a relative .svg image in ./img/
     folder of the input nfa using graphviz library
 
-    :param nfa: dict() representing a nfa
-    :param name: str() string with the name of the output file
+    :param dict nfa: representing a nfa
+    :param str name: string with the name of the output file
     """
     g = graphviz.Digraph(format='svg')
 
@@ -466,11 +469,11 @@ def nfa_graphviz_render(nfa, name):
 ####################################################################
 # AFW ##############################################################
 
-def afw_json_importer(input_file):
+def afw_json_importer(input_file: str) -> dict:
     """ Import a afw from a json file
 
-    :param input_file:
-    :return: dict() representing a AFW
+    :param str input_file: path to input json file
+    :return: *(dict)* representing a AFW
     """
     file = open(input_file)
     json_file = json.load(file)
@@ -491,11 +494,11 @@ def afw_json_importer(input_file):
     return afw
 
 
-def afw_to_json(afw, name):
+def afw_to_json(afw: dict, name: str):
     """ Export a afw "object" to a json file.
 
-    :param afw: dict() representing a AFW;
-    :param name: str output file name.
+    :param dict afw: representing a AFW;
+    :param str name: output file name.
     """
 
     out = {
