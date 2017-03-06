@@ -180,13 +180,46 @@ class TestDfaToJson(TestCase):
         self.maxDiff = None
         self.dfa_01 = automata_IO.dfa_json_importer(
             './tests/json/dfa/dfa_export_to_json_1.json')
+        self.dfa_02 = {
+            "alphabet": {
+                "5c",
+                "10c",
+                "gum"
+            },
+            "states": {
+                "s0",
+                "s1",
+                "s2",
+                "s3",
+                "s4"
+            },
+            "initial_state": "s0",
+            "accepting_states": {
+                "s0",
+                "s2"
+            },
+            "transitions": {
+                "s0": 'a',
+                "s1": 'a',
+                "s2": 'a',
+                "s3": 'a',
+                "s4": 'a'
+            }
+        }
 
     def test_dfa_to_json(self):
-        name = 'test_dfa_1'
+        """ Tests a correct export to JSON file of a dfa. """
+        name = 'JSON_test_dfa_1'
         automata_IO.dfa_to_json(self.dfa_01, name)
         re_imported_dfa = automata_IO.dfa_json_importer(
             'img/json/' + name + '.json')
         self.assertDictEqual(self.dfa_01, re_imported_dfa)
+
+    def test_dfa_to_json_undetected_wrong_transitions(self):
+        """ WARNING! Case where the dfa transitions are wrong but
+        the export ends without problem. """
+        name = 'JSON_test_dfa_2'
+        automata_IO.dfa_to_json(self.dfa_02, name)
 
 
 class TestNfaDotImporter(TestCase):
