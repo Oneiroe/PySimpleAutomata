@@ -33,6 +33,9 @@ def __replace_all(repls, str):
                   lambda k: repls[k.group(0)], str)
 
 
+####################################################################
+# DFA ##############################################################
+
 def dfa_json_importer(input_file):
     """ Import a dfa from a json file
 
@@ -262,6 +265,9 @@ def dfa_conformance_check(dfa):
     return
 
 
+####################################################################
+# NFA ##############################################################
+
 def nfa_json_importer(input_file):
     """ Import a nfa from a json file
 
@@ -269,29 +275,29 @@ def nfa_json_importer(input_file):
     :return: dict() representing a nfa
     """
     file = open(input_file)
-    json_file = json.load(file)
     # TODO exception handling while JSON deconding/IO error
-    alphabet = set(json_file['alphabet'])
-    states = set(json_file['states'])
-    initial_states = set(json_file['initial_states'])
-    accepting_states = set(json_file['accepting_states'])
+    json_file = json.load(file)
+
     transitions = {}  # key [state in states, action in alphabet]
-    #  value [et of arriving states in states]
+    #                   value [Set of arriving states in states]
     for p in json_file['transitions']:
         transitions.setdefault((p[0], p[1]), set()).add(p[2])
 
-    # return list
-    # return [alphabet, states, initial_states, accepting_states,
-    #  transitions]
+    nfa = {
+        'alphabet': set(json_file['alphabet']),
+        'states': set(json_file['states']),
+        'initial_states': set(json_file['initial_states']),
+        'accepting_states': set(json_file['accepting_states']),
+        'transitions': transitions
+    }
 
-    # return map
-    nfa = {}
-    nfa['alphabet'] = alphabet
-    nfa['states'] = states
-    nfa['initial_states'] = initial_states
-    nfa['accepting_states'] = accepting_states
-    nfa['transitions'] = transitions
     return nfa
+
+
+# Export a nfa "object" to a json file
+# TODO nfa_to_json
+def nfa_to_json(nfa):
+    return
 
 
 def nfa_dot_importer(input_file):
@@ -459,11 +465,8 @@ def nfa_graphviz_render(nfa, name):
     g.render(filename='img/' + name + '.dot')
 
 
-# Export a nfa "object" to a json file
-# TODO nfa_to_json
-def nfa_to_json(nfa):
-    return
-
+####################################################################
+# AFW ##############################################################
 
 # Import a afw from a json file
 def afw_json_importer(input_file):

@@ -7,6 +7,10 @@ from PySimpleAutomata import AFW
 from PySimpleAutomata import automata_IO
 
 
+####################################################################
+# DFA ##############################################################
+
+
 class TestDfaDotImporter(TestCase):
     def setUp(self):
         self.maxDiff = None
@@ -221,6 +225,9 @@ class TestDfaToJson(TestCase):
         name = 'JSON_test_dfa_2'
         automata_IO.dfa_to_json(self.dfa_02, name)
 
+
+####################################################################
+# NFA ##############################################################
 
 class TestNfaDotImporter(TestCase):
     def setUp(self):
@@ -563,6 +570,60 @@ class TestNfaGraphvizRender(TestCase):
         derived from an intersection """
         automata_IO.nfa_graphviz_render(self.nfa_test_02,
                                         'graphviz_nfa_intersection')
+
+
+class TestNfaJsonImporter(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_01 = {
+            "alphabet": {
+                "a",
+                "b",
+                "c"
+            },
+            "states": {
+                "a0",
+                "t0",
+                "t1",
+                "t2",
+                "t3",
+                "t4"
+            },
+            "initial_states": {
+                "t0",
+                "a0"
+            },
+            "accepting_states": {
+                "t0",
+                "t4",
+                "a0"
+            },
+            "transitions": {
+                ("t0", "b"): {"t1"},
+                ("t0", "a"): {"t2"},
+                ("t1", "c"): {"t3", "t2"},
+                ("t1", "b"): {"t4"},
+                ("t2", "b"): {"t1"},
+                ("t2", "a"): {"t2", "t4"},
+                ("t3", "c"): {"t0"},
+                ("t3", "b"): {"t0", "t3"},
+                ("t3", "a"): {"t4", "t1"},
+                ("t4", "a"): {"t4"},
+                ("t4", "b"): {"t0"},
+                ("t4", "c"): {"t0"},
+                ("a0", "a"): {"t1"}
+            }
+        }
+
+    def test_nfa_json_importer(self):
+        imported = automata_IO.nfa_json_importer(
+            './tests/json/nfa/nfa_json_importer_1.json')
+        self.assertDictEqual(imported,
+                             self.dfa_01)
+
+
+####################################################################
+# AFW ##############################################################
 
 
 class TestAfwJsonImporter(TestCase):
