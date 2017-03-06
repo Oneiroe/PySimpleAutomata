@@ -66,8 +66,8 @@ def dfa_json_importer(input_file):
 def dfa_to_json(dfa, name):
     """ Export the input dfa in a JSON file.
 
-    :param dfa:
-    :param name:
+    :param dfa: dict(), representing a dfa;
+    :param name: str, name of the output file
     :return:
     """
     out = {
@@ -85,7 +85,6 @@ def dfa_to_json(dfa, name):
     file = open('img/json/' + name + '.json', 'w')
     json.dump(out, file, sort_keys=True, indent=4)
     file.close()
-    return
 
 
 def dfa_dot_importer(input_file: str) -> dict:

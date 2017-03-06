@@ -134,21 +134,59 @@ class TestDfaGraphvizRender(TestCase):
                                         'graphviz_dfa_intersection_render_test')
 
 
+class TestDfaJsonImporter(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_01 = {
+            "alphabet": {
+                "5c",
+                "10c",
+                "gum"
+            },
+            "states": {
+                "s0",
+                "s1",
+                "s2",
+                "s3",
+                "s4"
+            },
+            "initial_state": "s0",
+            "accepting_states": {
+                "s0",
+                "s2"
+            },
+            "transitions": {
+                ("s0", "5c"): "s1",
+                ("s0", "10c"): "s4",
+                ("s1", "5c"): "s2",
+                ("s1", "10c"): "s3",
+                ("s2", "5c"): "s3",
+                ("s2", "10c"): "s3",
+                ("s4", "5c"): "s3",
+                ("s4", "10c"): "s3",
+                ("s3", "gum"): "s0"
+            }
+        }
+
+    def test_dfa_json_importer(self):
+        """ Tests a correct dfa import from json file """
+        self.assertDictEqual(automata_IO.dfa_json_importer(
+            './tests/json/dfa/dfa_json_importer_01.json'),
+            self.dfa_01)
+
+
 class TestDfaToJson(TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.dfa_01 = automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_1_test_01.dot')
-        self.dfa_02 = automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_2_test_01.dot')
-        self.dfa_imported_intersect = automata_IO.dfa_dot_importer(
-            './tests/dot/automata_io'
-            '/automata_io_dfa_imported_intersection.dot')
-        self.dfa_intersected = DFA.dfa_intersection(self.dfa_01,
-                                                    self.dfa_02)
+        self.dfa_01 = automata_IO.dfa_json_importer(
+            './tests/json/dfa/dfa_export_to_json_1.json')
 
     def test_dfa_to_json(self):
-        automata_IO.dfa_to_json(self.dfa_01, 'test_dfa_1')
+        name = 'test_dfa_1'
+        automata_IO.dfa_to_json(self.dfa_01, name)
+        re_imported_dfa = automata_IO.dfa_json_importer(
+            'img/json/' + name + '.json')
+        self.assertDictEqual(self.dfa_01, re_imported_dfa)
 
 
 class TestNfaDotImporter(TestCase):
