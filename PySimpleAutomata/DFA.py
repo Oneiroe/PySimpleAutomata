@@ -142,8 +142,8 @@ def dfa_complementation(dfa: dict) -> dict:
     :return: *(dict)* representing the complement of the input DFA.
     """
     dfa_complemented = deepcopy(dfa_completion(dfa))
-    dfa_complemented['accepting_states'] = dfa['states'].difference(
-        dfa['accepting_states'])
+    dfa_complemented['accepting_states'] = \
+        dfa['states'].difference(dfa['accepting_states'])
     return dfa_complemented
 
 
@@ -171,13 +171,10 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     """
     intersection = {
         'alphabet': copy(dfa_1['alphabet']),
-        'states': set(
-            cartesian_product(dfa_1['states'], dfa_2['states'])),
-        'initial_state': (
-            dfa_1['initial_state'], dfa_2['initial_state']),
-        'accepting_states': set(
-            cartesian_product(dfa_1['accepting_states'],
-                              dfa_2['accepting_states'])),
+        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
+        'accepting_states': set(cartesian_product(dfa_1['accepting_states'],
+                                                  dfa_2['accepting_states'])),
         'transitions': dict()
     }
 
@@ -187,9 +184,8 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
                     and (state_dfa_2, a) in dfa_2['transitions']:
                 destination_1 = dfa_1['transitions'][state_dfa_1, a]
                 destination_2 = dfa_2['transitions'][state_dfa_2, a]
-                intersection['transitions'][
-                    (state_dfa_1, state_dfa_2), a] = (
-                    destination_1, destination_2)
+                intersection['transitions'][(state_dfa_1, state_dfa_2), a] = \
+                    (destination_1, destination_2)
     return intersection
 
 
@@ -222,18 +218,16 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
 
     union = {
         'alphabet': dfa_1['alphabet'].union(dfa_2['alphabet']),
-        'states':
-            set(cartesian_product(dfa_1['states'], dfa_2['states'])),
-        'initial_state':
-            (dfa_1['initial_state'], dfa_2['initial_state']),
+        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states':
             set(
-                cartesian_product(
-                    dfa_1['accepting_states'], dfa_2['states'])
+                cartesian_product(dfa_1['accepting_states'],
+                                  dfa_2['states'])
             ).union(
                 set(
-                    cartesian_product(
-                        dfa_1['states'], dfa_2['accepting_states'])
+                    cartesian_product(dfa_1['states'],
+                                      dfa_2['accepting_states'])
                 )
             ),
         'transitions': dict()
@@ -243,8 +237,8 @@ def dfa_union(dfa_1: dict, dfa_2: dict) -> dict:
         for a in union['alphabet']:
             destination_1 = dfa_1['transitions'][state_dfa_1, a]
             destination_2 = dfa_2['transitions'][state_dfa_2, a]
-            union['transitions'][(state_dfa_1, state_dfa_2), a] = (
-                destination_1, destination_2)
+            union['transitions'][(state_dfa_1, state_dfa_2), a] = \
+                (destination_1, destination_2)
 
     return union
 
@@ -289,11 +283,11 @@ def dfa_minimization(dfa: dict) -> dict:
     # s ∈ F iff t ∈ F
     for element in z_current:
         if (
-            element[0] in dfa['accepting_states'] and
-            element[1] not in dfa['accepting_states']
+                element[0] in dfa['accepting_states']
+                and element[1] not in dfa['accepting_states']
         ) or (
-            element[0] not in dfa['accepting_states'] and
-            element[1] in dfa['accepting_states']
+                element[0] not in dfa['accepting_states']
+                and element[1] in dfa['accepting_states']
         ):
             z_next.remove(element)
     z_current = z_next
@@ -346,15 +340,16 @@ def dfa_minimization(dfa: dict) -> dict:
             equivalence_set.add(e)
 
     dfa_min['initial_state'] = dfa['initial_state']
-    dfa_min['accepting_states'] = dfa_min['states'].intersection(
-        dfa['accepting_states'])
+    dfa_min['accepting_states'] = \
+        dfa_min['states'].intersection(dfa['accepting_states'])
 
     dfa_min['transitions'] = dfa['transitions'].copy()
     for t in dfa['transitions']:
         if t[0] not in dfa_min['states']:
             dfa_min['transitions'].pop(t)
         if dfa['transitions'][t] not in dfa_min['states']:
-            dfa_min['transitions'][t] = equivalence[dfa['transitions'][t]].intersection(dfa_min['states']).pop()
+            dfa_min['transitions'][t] = equivalence[
+                dfa['transitions'][t]].intersection(dfa_min['states']).pop()
 
     return dfa_min
 
@@ -391,8 +386,8 @@ def dfa_reachable(dfa: dict) -> dict:
             else:
                 pass
     dfa['states'] = reachable_states
-    dfa['accepting_states'] = dfa['accepting_states'].intersection(
-        dfa['states'])
+    dfa['accepting_states'] = \
+        dfa['accepting_states'].intersection(dfa['states'])
 
     transitions = dfa['transitions'].copy()
     for t in transitions:

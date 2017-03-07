@@ -61,14 +61,11 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """
     intersection = {
         'alphabet': nfa_1['alphabet'].intersection(nfa_2['alphabet']),
-        'states': set(
-            cartesian_product(nfa_1['states'], nfa_2['states'])),
-        'initial_states': set(
-            cartesian_product(nfa_1['initial_states'],
-                              nfa_2['initial_states'])),
-        'accepting_states': set(
-            cartesian_product(nfa_1['accepting_states'],
-                              nfa_2['accepting_states'])),
+        'states': set(cartesian_product(nfa_1['states'], nfa_2['states'])),
+        'initial_states': set(cartesian_product(nfa_1['initial_states'],
+                                                nfa_2['initial_states'])),
+        'accepting_states': set(cartesian_product(nfa_1['accepting_states'],
+                                                  nfa_2['accepting_states'])),
         'transitions': dict()
     }
 
@@ -316,8 +313,7 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     else:
         # If empty input check if the initial state is also
         # accepting
-        if len(nfa['initial_states'].intersection(
-                nfa['accepting_states'])) > 0:
+        if len(nfa['initial_states'].intersection(nfa['accepting_states'])) > 0:
             return True
         else:
             return False
