@@ -34,14 +34,6 @@ from copy import deepcopy
 from copy import copy
 
 
-# ###
-# TO-DO
-# TODO lambda functions
-# TODO solve empty dfa with "None" node
-# TODO solve "sink" node behaviour (on dfa re-usage)
-# TODO automata states intersection
-
-
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     """ Checks if the given **run** of states in a DFA accepts the
     given **word**, returning True/False.
