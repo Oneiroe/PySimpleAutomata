@@ -341,10 +341,6 @@ class TestNfaDotImporter(TestCase):
             '/automata_io_nfa_importer_pydot_nfa_simple.dot')
         self.assertDictEqual(nfa_01, self.nfa_test_01)
 
-    def test_nfa_dot_importer_from_determinization(self):
-        # TODO
-        pass
-
 
 class TestNfaToDot(TestCase):
     def setUp(self):
