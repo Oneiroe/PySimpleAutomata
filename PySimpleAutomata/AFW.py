@@ -248,8 +248,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
                 if (s, action) not in afw['transitions']:
                     boolean_formula += ' and False'
                 else:
-                    boolean_formula += \
-                        ' and (' + afw['transitions'][s, action] + ')'
+                    boolean_formula += ' and (' + afw['transitions'][s, action] + ')'
 
             mapping = dict.fromkeys(afw['states'], False)
             for evaluation in nfa['states']:
@@ -257,9 +256,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
                     mapping[e] = True
 
                 if eval(boolean_formula, mapping):
-                    nfa['transitions'].setdefault((state, action),
-                                                  set()).add(
-                        evaluation)
+                    nfa['transitions'].setdefault((state, action), set()).add(evaluation)
 
                 for e in evaluation:
                     mapping[e] = False
@@ -278,8 +275,7 @@ def __replace_all(repls: dict, input: str) -> str:
     :param str input: original string.
     :return: *(str)*, string with the appropriate values replaced.
     """
-    return re.sub('|'.join(re.escape(key) for key in repls.keys()),
-                  lambda k: repls[k.group(0)], input)
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], input)
 
 
 # TODO shouldn't an empty afw complementation result in an afw
@@ -308,8 +304,7 @@ def afw_complementation(afw: dict) -> dict:
         'states': completed_input['states'],
         'initial_state': completed_input['initial_state'],
         'accepting_states':
-            completed_input['states'].difference(
-                afw['accepting_states']),
+            completed_input['states'].difference(afw['accepting_states']),
         'transitions': dict()
     }
 
@@ -355,12 +350,10 @@ def renaming_afw_states(afw, suffix):
 
     new_transitions = {}
     for transition in afw['transitions']:
-        new_transition = __replace_all(conversion_dict,
-                                       transition[0])
+        new_transition = __replace_all(conversion_dict, transition[0])
         new_transitions[
-            new_transition, transition[1]] = __replace_all(
-            conversion_dict,
-            afw['transitions'][transition])
+            new_transition, transition[1]] = \
+            __replace_all(conversion_dict, afw['transitions'][transition])
     afw['transitions'] = new_transitions
 
 
@@ -386,12 +379,10 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     # Reference Lecture6a Lemma 6
     union = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states':
-            afw_1['states'].union(afw_2['states']).union({'s_root'}),
+        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
         'initial_state': 's_root',
         'accepting_states':
-            afw_1['accepting_states'].union(
-                afw_2['accepting_states']),
+            afw_1['accepting_states'].union(afw_2['accepting_states']),
         'transitions': copy(afw_1['transitions'])
     }
 
@@ -401,28 +392,20 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
 
     for transition in afw_2['transitions']:
         if transition in union['transitions']:
-            union['transitions'][transition] += ' or (' + afw_2[
-                'transitions'][transition] + ')'
+            union['transitions'][transition] += ' or (' + afw_2['transitions'][transition] + ')'
         else:
-            union['transitions'][transition] = '(' + \
-                                               afw_2['transitions'][
-                                                   transition] + ')'
+            union['transitions'][transition] = '(' + afw_2['transitions'][transition] + ')'
 
     for action in union['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
-            union['transitions']['s_root', action] = '(' + afw_1[
-                'transitions'][afw_1['initial_state'], action] + ')'
-            if (afw_2['initial_state'], action) in afw_2[
-                'transitions']:
-                union['transitions']['s_root', action] += ' or (' \
-                                                          + \
-                                                          afw_2[
-                                                              'transitions'][
-                                                              afw_2[
-                                                                  'initial_state'], action] + ')'
+            union['transitions']['s_root', action] = \
+                '(' + afw_1['transitions'][afw_1['initial_state'], action] + ')'
+            if (afw_2['initial_state'], action) in afw_2['transitions']:
+                union['transitions']['s_root', action] += \
+                    ' or (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            union['transitions']['s_root', action] = '(' + afw_2[
-                'transitions'][afw_2['initial_state'], action] + ')'
+            union['transitions']['s_root', action] = \
+                '(' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
 
     return union
 
@@ -451,12 +434,10 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     """
     intersection = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states':
-            afw_1['states'].union(afw_2['states']).union({'s_root'}),
+        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
         'initial_state': 's_root',
         'accepting_states':
-            afw_1['accepting_states'].union(
-                afw_2['accepting_states']),
+            afw_1['accepting_states'].union(afw_2['accepting_states']),
         'transitions': copy(afw_1['transitions'])
     }
 
@@ -467,10 +448,8 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
 
     for transition in afw_2['transitions']:
         if transition in intersection['transitions']:
-            intersection['transitions'][transition] += ' or (' + \
-                                                       afw_2[
-                                                           'transitions'][
-                                                           transition] + ')'
+            intersection['transitions'][transition] += \
+                ' or (' + afw_2['transitions'][transition] + ')'
         else:
             intersection['transitions'][transition] = \
                 afw_2['transitions'][transition]
@@ -479,24 +458,15 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
             intersection['transitions']['s_root', action] = \
                 afw_1['transitions'][afw_1['initial_state'], action]
-            if (afw_2['initial_state'], action) in afw_2[
-                'transitions']:
-                intersection['transitions'][
-                    's_root', action] += ' and (' + \
-                                         afw_2['transitions'][
-                                             afw_2[
-                                                 'initial_state'],
-                                             action] + ')'
+            if (afw_2['initial_state'], action) in afw_2['transitions']:
+                intersection['transitions']['s_root', action] += \
+                    ' and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
             else:
                 intersection['transitions'][
                     's_root', action] += ' and False'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            intersection['transitions'][
-                's_root', action] = 'False and (' + \
-                                    afw_2['transitions'][
-                                        afw_2[
-                                            'initial_state'],
-                                        action] + ')'
+            intersection['transitions']['s_root', action] = \
+                'False and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
 
     return intersection
 
