@@ -22,34 +22,38 @@ In this module a AFW is defined as follows
  • states           => set()
  • initial_state    => 'state_0'
  • accepting_states => set()
- • transitions      => dict() # key (state ∈ states, action ∈
-                       alphabet) value [string representing a
-                       PYTHON boolean expression over states;
-                       where we also allow the formulas True and
-                       False]
+ • transitions      => dict(), where
+        **key** (state ∈ states, action ∈ alphabet)
+
+        **value** [string representing a PYTHON boolean expression
+                   over states; where we also allow the formulas
+                   *True* and *False*]
 """
 
 from PySimpleAutomata import NFA
 import itertools
 import re
-import copy
+from copy import copy
+from copy import deepcopy
 
 
 # ###
 # TO-DO
 # TODO change name to new initial state when creating AFWs:
-#   CHECK: possibly already existing, expecially if the afw used
-# in the operation is the result of a precedent operation
+#   CHECK: possibly already existing, especially if the afw used
+#          in the operation is the result of a precedent operation
 #   RESPONSE: same problem as the generic one of states with the
-# same name. Actual solution: whole afw renaming
+#             same name. Actual solution: whole afw renaming
 
 def __recursive_acceptance(afw, state, remaining_word):
-    """ recursive call for word acceptance
+    """ Recursive call for word acceptance.
 
-        :param afw: dict() representing a afw
-        :param state: str() current state
-        :param remaining_word: list() containing the remaining word
-        :return: bool, True if the word is accepted, false otherwise
+        :param dict afw: input AFW;
+        :param str state: current state;
+        :param list remaining_word: list containing the remaining
+        words.
+        :return: *(bool)*, True if the word is accepted, false
+        otherwise.
         """
     # the word is accepted only if all the final states are
     # accepting states
@@ -72,12 +76,12 @@ def __recursive_acceptance(afw, state, remaining_word):
     # extract from the boolean formula of the transition the
     # states involved in it
     involved_states = list(
-        set(re.findall(r"[\w']+",
-                       afw['transitions'][transition])).difference(
-            {'and', 'or', 'True', 'False'}))
-    possible_assignments = set(itertools.product([True, False],
-                                                 repeat=len(
-                                                     involved_states)))
+        set(
+            re.findall(r"[\w']+", afw['transitions'][transition])
+        ).difference({'and', 'or', 'True', 'False'})
+    )
+    possible_assignments = set(
+        itertools.product([True, False], repeat=len(involved_states)))
     # For all possible assignment of the the transition (a
     # boolean formula over the states)
     for assignment in possible_assignments:
@@ -85,15 +89,16 @@ def __recursive_acceptance(afw, state, remaining_word):
         # If the assignment evaluation is positive
         if eval(afw['transitions'][transition], mapping):
             ok = True
-            mapping.pop(
-                '__builtins__')  # removes useless entry added by
-            #  the function eval()
+            mapping.pop('__builtins__')  # removes useless entry
+            # added by the function eval()
+
             # Check if the word is accepted in ALL the states
             # mapped to True by the assignment
             for mapped_state in mapping:
                 if mapping[mapped_state] == False:
                     continue
-                if not __recursive_acceptance(afw, mapped_state,
+                if not __recursive_acceptance(afw,
+                                              mapped_state,
                                               remaining_word[1:]):
                     # if one positive state of the assignment
                     # doesn't accepts the word,the whole
@@ -107,12 +112,29 @@ def __recursive_acceptance(afw, state, remaining_word):
     return False
 
 
+def word_acceptance(afw: dict, word: list) -> bool:
+    """ Checks if a **word** is accepted by input AFW, returning
+    True/False.
+
+    The word w is accepted by a AFW if exists at least an
+    accepting run on w. A run for AFWs is a tree and
+    an alternating automaton can have multiple runs on a given
+    input.
+    A run is accepting if all the leaf nodes are accepting states.
+
+    :param dict afw: input AFW;
+    :param list word: list of symbols ∈ afw['alphabet'].
+    :return: *(bool)*, True if the word is accepted, False otherwise.
+    """
+    return __recursive_acceptance(afw, afw['initial_state'], word)
+
+
 # Side effect on input afw
 def afw_completion(afw):
-    """ [Side effect on input] Complete the afw adding not
-    present transitions marking them as False
+    """ Side effect on input! Complete the afw adding not
+    present transitions and marking them as False.
 
-    :param afw: dict() representing an afw
+    :param dict afw: input AFW.
     """
 
     for state in afw['states']:
@@ -122,27 +144,10 @@ def afw_completion(afw):
     return afw
 
 
-def word_acceptance(afw: dict, word: list) -> bool:
-    """ Checks if a word is accepted by input afw, returning
-    True/False.
-
-    The word w is accepted by a AFW if exists at least an
-    accepting run on w. A run for AFWs is a tree and
-    an alternating automaton can have multiple runs on a given
-    input.
-    A run is accepting if all the leaf nodes are accepting states.
-
-    :param afw: dict() representing a afw
-    :param word: list() of symbols ∈ afw['alphabet']
-    :return: bool, True if the word is accepted, False otherwise
-    """
-    return __recursive_acceptance(afw, afw['initial_state'], word)
-
-
 # TODO "We take an empty disjunction in the definition of AFW to
 # be equivalent to False."
 def nfa_to_afw_conversion(nfa: dict) -> dict:
-    """ Returns a afw reading the same language of input nfa.
+    """ Returns a AFW reading the same language of input NFA.
 
     Let :math:`A = (Σ,S,S^0, ρ,F)`  be an nfa. Then we define the
     afw AA such that :math:`L(AA) = L(A)` as follows
@@ -162,15 +167,15 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     nondeterministic automata, but only a
     single initial state in alternating automata.
 
-    :param nfa: dict() representing a nfa
-    :return: dict() representing a afw
+    :param dict nfa: input NFA.
+    :return: *(dict)* representing a AFW.
     """
     afw = {
-        'alphabet': copy.copy(nfa['alphabet']),
-        'states': copy.copy(nfa['states']),
+        'alphabet': copy(nfa['alphabet']),
+        'states': copy(nfa['states']),
         'initial_state': 's_root',
-        'accepting_states': copy.copy(nfa['accepting_states']),
-        'transitions': {}
+        'accepting_states': copy(nfa['accepting_states']),
+        'transitions': dict()
     }
     afw['states'].add('s_root')
 
@@ -189,7 +194,7 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
 # TODO "We take an empty conjunction in the definition of ρ N to
 # be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
 def afw_to_nfa_conversion(afw: dict) -> dict:
-    """ Returns a nfa reading the same language of input afw.
+    """ Returns a NFA reading the same language of input AFW.
 
     Let :math:`A = (Σ, S, s^0 , ρ, F )`  be an afw. Then we
     define the nfa :math:`A_N` such that :math:`L(A_N) = L(A)`
@@ -205,16 +210,16 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
      :math:`ρ_N` to be equivalent to true; thus, :math:`(∅, a,
      ∅) ∈ ρ_N`.
 
-    :param afw: dict() representing a afw
-    :return: dict() representing a nfa
+    :param dict afw: input AFW.
+    :return: *(dict)* representing a NFA.
     """
 
     nfa = {
-        'alphabet': copy.copy(afw['alphabet']),
+        'alphabet': copy(afw['alphabet']),
         'initial_states': {(afw['initial_state'],)},
         'states': set(),
         'accepting_states': set(),
-        'transitions': {}
+        'transitions': dict()
     }
 
     for state in afw['states']:
@@ -243,9 +248,8 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
                 if (s, action) not in afw['transitions']:
                     boolean_formula += ' and False'
                 else:
-                    boolean_formula += ' and (' + \
-                                       afw['transitions'][
-                                           s, action] + ')'
+                    boolean_formula += \
+                        ' and (' + afw['transitions'][s, action] + ')'
 
             mapping = dict.fromkeys(afw['states'], False)
             for evaluation in nfa['states']:
@@ -263,25 +267,26 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     return nfa
 
 
-def __replace_all(repls, str):
-    """ Replace from the string str all the occurrence of the
-    keys element of the dictionary repls with their relative value.
+def __replace_all(repls: dict, input: str) -> str:
+    """ Replaces from the string **input** all the occurrence of the
+    keys element of the dictionary **repls** with their relative
+    value.
 
-    :param repls: dict(), dictionary containing the mapping
+    :param dict repls: dictionary containing the mapping
                   between the values to be changed and their
-                  appropriate substitution
-    :param str: str(), original string
-    :return: str(), string with the appropriate values replaced
+                  appropriate substitution;
+    :param str input: original string.
+    :return: *(str)*, string with the appropriate values replaced.
     """
     return re.sub('|'.join(re.escape(key) for key in repls.keys()),
-                  lambda k: repls[k.group(0)], str)
+                  lambda k: repls[k.group(0)], input)
 
 
 # TODO shouldn't an empty afw complementation result in an afw
 # reading everything?
 def afw_complementation(afw: dict) -> dict:
-    """ returns a afw reading the complemented language read by
-    input afw.
+    """ Returns a AFW reading the complemented language read by
+    input AFW.
 
     Let :math:`A = (Σ, S, s^0 , ρ, F )`. Define :math:`Ā = (Σ, S,
     s^0 , \overline{ρ}, S − F )`,
@@ -291,29 +296,33 @@ def afw_complementation(afw: dict) -> dict:
     function. It can be shown that :math:`L( Ā) = Σ^∗ − L(A)`.
 
     The input afw need to be completed i.e. each non existing
-    transition must be added pointing to False
+    transition must be added pointing to False.
 
-    :param afw: dict() representing a afw
-    :return: dict() representing a afw
+    :param dict afw: input AFW.
+    :return: *(dict)* representing a AFW.
     """
-    completed_input = afw_completion(copy.deepcopy(afw))
+    completed_input = afw_completion(deepcopy(afw))
 
     complemented_afw = {
-        'alphabet': copy.copy(completed_input['alphabet']),
-        'states': copy.copy(completed_input['states']),
-        'initial_state': copy.copy(
-            completed_input['initial_state']),
-        'accepting_states': completed_input['states'].difference(
-            afw['accepting_states']),
-        'transitions': {}
+        'alphabet': completed_input['alphabet'],
+        'states': completed_input['states'],
+        'initial_state': completed_input['initial_state'],
+        'accepting_states':
+            completed_input['states'].difference(
+                afw['accepting_states']),
+        'transitions': dict()
     }
 
-    conversion_dictionary = {'and': 'or', 'or': 'and',
-                             'True': 'False', 'False': 'True'}
+    conversion_dictionary = {
+        'and': 'or',
+        'or': 'and',
+        'True': 'False',
+        'False': 'True'
+    }
     for transition in completed_input['transitions']:
-        complemented_afw['transitions'][transition] = __replace_all(
-            conversion_dictionary,
-            completed_input['transitions'][transition])
+        complemented_afw['transitions'][transition] = \
+            __replace_all(conversion_dictionary,
+                          completed_input['transitions'][transition])
     return complemented_afw
 
 
@@ -321,11 +330,14 @@ def afw_complementation(afw: dict) -> dict:
 # TODO AVOID discriminator that can form special word like "as"
 # etc..
 def renaming_afw_states(afw, suffix):
-    """ [Side effect on input] Rename all the state of the AFW
-    with the suffix contained in "suffix"
+    """ Side effect on input! Rename all the state of the AFW
+    with the suffix contained in "suffix".
 
-    :param afw: dict() representing a AFW
-    :param suffix: str() string representing the suffix to be
+    It is used for testing purposes: to avoid automata to have
+    state in common.
+
+    :param dict afw: input AFW.
+    :param str suffix: string representing the suffix to be
                    added at each state name
     """
     conversion_dict = {}
@@ -355,8 +367,8 @@ def renaming_afw_states(afw, suffix):
 # TODO states with the same name but from different afw should be
 #  considered as distinct state!
 def afw_union(afw_1: dict, afw_2: dict) -> dict:
-    """ Returns a afw that reads the union of the languages read
-    by input afws
+    """ Returns a AFW that reads the union of the languages read
+    by input AFWs.
 
     Let :math:`A_1 = (Σ, S_1 , s^0_1, ρ_1 , F_1 )` and :math:`A_2
     = (Σ, S_2 , s^0_2, ρ_2 , F_2 )`
@@ -367,23 +379,24 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     :math:`ρ_∪ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∨ ρ(s^0_2 ,
     a)]` accepts :math:`L(A_1) ∪ L(A_2)`.
 
-    :param afw_1: dict() representing a afw
-    :param afw_2: dict() representing a afw
-    :return: dict() representing a afw
+    :param dict afw_1: first input AFW;
+    :param dict afw_2: second input AFW;.
+    :return: *(dict)* representing the united AFW.
     """
     # Reference Lecture6a Lemma 6
     union = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states': afw_1['states'].union(afw_2['states']).union(
-            {'s_root'}),
+        'states':
+            afw_1['states'].union(afw_2['states']).union({'s_root'}),
         'initial_state': 's_root',
-        'accepting_states': afw_1['accepting_states'].union(
-            afw_2['accepting_states']),
-        'transitions': afw_1['transitions'].copy()
+        'accepting_states':
+            afw_1['accepting_states'].union(
+                afw_2['accepting_states']),
+        'transitions': copy(afw_1['transitions'])
     }
 
-    if afw_1['initial_state'] in afw_1['accepting_states'] or afw_2[
-        'initial_state'] in afw_2['accepting_states']:
+    if afw_1['initial_state'] in afw_1['accepting_states'] \
+            or afw_2['initial_state'] in afw_2['accepting_states']:
         union['accepting_states'].add(union['initial_state'])
 
     for transition in afw_2['transitions']:
@@ -407,8 +420,7 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
                                                               'transitions'][
                                                               afw_2[
                                                                   'initial_state'], action] + ')'
-        elif (afw_2['initial_state'], action) in afw_2[
-            'transitions']:
+        elif (afw_2['initial_state'], action) in afw_2['transitions']:
             union['transitions']['s_root', action] = '(' + afw_2[
                 'transitions'][afw_2['initial_state'], action] + ')'
 
@@ -421,8 +433,8 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
 # TODO states with the same name but from different afw should be
 #  considered as distinct state!
 def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
-    """ Returns a afw that reads the intersection of the
-    languages read by input afws.
+    """ Returns a AFW that reads the intersection of the
+    languages read by input AFWs.
 
     Let :math:`A_1 = (Σ, S_1 , s^0_1, ρ_1 , F_1 )` and :math:`A_2
     = (Σ, S_2 , s^0_2, ρ_2 , F_2 )`
@@ -433,23 +445,23 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     :math:`ρ_∩ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∧ ρ(s^0_2 ,
     a)]` accepts :math:`L(A_1) ∩ L(A_2)`.
 
-    :param afw_1: dict() representing a afw
-    :param afw_2: dict() representing a afw
-    :return: dict() representing a afw
+    :param dict afw_1: first input AFW;
+    :param dict afw_2: second input AFW.
+    :return: *(dict)* representing a AFW.
     """
     intersection = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states': afw_1['states'].union(afw_2['states']).union(
-            {'s_root'}),
+        'states':
+            afw_1['states'].union(afw_2['states']).union({'s_root'}),
         'initial_state': 's_root',
-        'accepting_states': afw_1['accepting_states'].union(
-            afw_2['accepting_states']),
-        'transitions': afw_1['transitions'].copy()
+        'accepting_states':
+            afw_1['accepting_states'].union(
+                afw_2['accepting_states']),
+        'transitions': copy(afw_1['transitions'])
     }
 
-    if afw_1['initial_state'] in afw_1['accepting_states'] and \
-                    afw_2['initial_state'] in afw_2[
-                'accepting_states']:
+    if afw_1['initial_state'] in afw_1['accepting_states'] \
+            and afw_2['initial_state'] in afw_2['accepting_states']:
         intersection['accepting_states'].add(
             intersection['initial_state'])
 
@@ -473,12 +485,12 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
                     's_root', action] += ' and (' + \
                                          afw_2['transitions'][
                                              afw_2[
-                                                 'initial_state'], action] + ')'
+                                                 'initial_state'],
+                                             action] + ')'
             else:
                 intersection['transitions'][
                     's_root', action] += ' and False'
-        elif (afw_2['initial_state'], action) in afw_2[
-            'transitions']:
+        elif (afw_2['initial_state'], action) in afw_2['transitions']:
             intersection['transitions'][
                 's_root', action] = 'False and (' + \
                                     afw_2['transitions'][
@@ -490,29 +502,29 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
 
 
 def afw_nonemptiness_check(afw: dict) -> bool:
-    """ Checks if the input afw reads any language other than the
+    """ Checks if the input AFW reads any language other than the
     empty one, returning True/False.
 
     The afw is translated into a nfa and then its nonemptiness is
     checked.
 
-    :param afw: dict() representing a afw
-    :return: bool, True if input afw is nonempty, False otherwise
+    :param dict afw: input AFW.
+    :return: *(bool)*, True if input afw is nonempty, False otherwise.
     """
     nfa = afw_to_nfa_conversion(afw)
     return NFA.nfa_nonemptiness_check(nfa)
 
 
 def afw_nonuniversality_check(afw: dict) -> bool:
-    """ Checks if the language read by the input afw is different
+    """ Checks if the language read by the input AFW is different
     from Σ∗, returning True/False.
 
     The afw is translated into a nfa and then its nonuniversality
     is checked.
 
-    :param afw: dict() representing a afw
-    :return: bool, True if input afw is nonuniversal, False
-             otherwise
+    :param dict afw: input AFW.
+    :return: *(bool)*, True if input afw is nonuniversal, False
+             otherwise.
     """
     nfa = afw_to_nfa_conversion(afw)
     return NFA.nfa_nonuniversality_check(nfa)

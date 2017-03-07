@@ -213,7 +213,7 @@ def nfa_complementation(nfa: dict) -> dict:
     return DFA.dfa_complementation(determinized_nfa)
 
 
-def nfa_nonemptiness_check(nfa: dict) -> dict:
+def nfa_nonemptiness_check(nfa: dict) -> bool:
     """ Checks if the input NFA reads any language other than the
     empty one, returning True/False.
 
