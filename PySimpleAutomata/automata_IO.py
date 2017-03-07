@@ -162,8 +162,7 @@ def dfa_dot_importer(input_file: str) -> dict:
         else:
             source = source[0]
         destination = __replace_all(replacements,
-                                    edge.get_destination()).split(
-            ',')
+                                    edge.get_destination()).split(',')
         if len(destination) > 1:
             destination = tuple(destination)
         else:
@@ -360,8 +359,7 @@ def nfa_dot_importer(input_file: str) -> dict:
         else:
             source = source[0]
         destination = __replace_all(replacements,
-                                    edge.get_destination()).split(
-            ',')
+                                    edge.get_destination()).split(',')
         if len(destination) > 1:
             destination = tuple(destination)
         else:
