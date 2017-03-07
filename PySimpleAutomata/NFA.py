@@ -266,7 +266,7 @@ def nfa_nonuniversality_check(nfa: dict) -> bool:
     complemented_nfa = nfa_complementation(nfa)
     return DFA.dfa_nonemptiness_check(complemented_nfa)
 
-    # TODO EFFICIENT:
+    # EFFICIENT:
     # construct Ā “on-the-fly”: whenever the nonemptiness
     # algorithm wants to move from a state t_1 of Ā to a state t_2,
     # the algorithm guesses t_2 and checks that it is directly
