@@ -26,7 +26,7 @@ In this module a DFA is defined as follows
   • transitions      => dict(), where
         **key**: (*state* ∈ states, *action* ∈ alphabet)
 
-        **value**: (*arriving_state* in states);
+        **value**: (*arriving_state* in states).
 """
 
 from itertools import product as cartesian_product
