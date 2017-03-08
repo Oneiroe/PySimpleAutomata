@@ -29,6 +29,10 @@ of Master of Science in Engineering in Computer Science from Sapienza University
 
 .. References
 
+.. Download
+
+Offline versions of this documentation can be found `here <https://readthedocs.org/projects/pysimpleautomata/downloads/>`_
+
 ------------
 Installation
 ------------

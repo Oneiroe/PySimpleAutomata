@@ -76,7 +76,8 @@ It is advised in any case to use a `Python Virtual environment <https://docs.pyt
 Documentation
 -------------
 
-For a detailed explanation of the library API consult the `documentation <http://pysimpleautomata.readthedocs.io/>`_.
+For a detailed explanation of the library API consult the `online documentation <http://pysimpleautomata.readthedocs.io/>`_
+or `download it <https://readthedocs.org/projects/pysimpleautomata/downloads/>`_.
 
 -------
 Licence
