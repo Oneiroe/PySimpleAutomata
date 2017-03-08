@@ -347,8 +347,7 @@ def rename_afw_states(afw: dict, suffix: str):
     new_transitions = {}
     for transition in afw['transitions']:
         new_transition = __replace_all(conversion_dict, transition[0])
-        new_transitions[
-            new_transition, transition[1]] = \
+        new_transitions[new_transition, transition[1]] = \
             __replace_all(conversion_dict, afw['transitions'][transition])
     afw['transitions'] = new_transitions
 

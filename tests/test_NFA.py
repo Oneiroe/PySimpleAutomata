@@ -11,23 +11,23 @@ class TestNfaIntersection(TestCase):
         self.maxDiff = None
         self.nfa_intersection_1_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_intersection_1_test_01.dot')
+                './tests/dot/nfa/nfa_intersection_1_test_01.dot')
         self.nfa_intersection_2_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_intersection_2_test_01.dot')
+                './tests/dot/nfa/nfa_intersection_2_test_01.dot')
         self.nfa_intersection_test_01_solution = {
             'alphabet': {'a', 'b'},
             'states': {
                 ('s0', 't0'), ('s0', 't1'), ('s0', 't2'),
-            ('s0', 't3'), ('s0', 't4'),
+                ('s0', 't3'), ('s0', 't4'),
                 ('s1', 't0'), ('s1', 't1'), ('s1', 't2'),
-            ('s1', 't3'), ('s1', 't4'),
+                ('s1', 't3'), ('s1', 't4'),
                 ('s2', 't0'), ('s2', 't1'), ('s2', 't2'),
-            ('s2', 't3'), ('s2', 't4'),
+                ('s2', 't3'), ('s2', 't4'),
                 ('s3', 't0'), ('s3', 't1'), ('s3', 't2'),
-            ('s3', 't3'), ('s3', 't4'),
+                ('s3', 't3'), ('s3', 't4'),
                 ('s4', 't0'), ('s4', 't1'), ('s4', 't2'),
-            ('s4', 't3'), ('s4', 't4')
+                ('s4', 't3'), ('s4', 't4')
             },
             'initial_states': {('s0', 't0')},
             'accepting_states': {('s2', 't0'), ('s2', 't4')},
@@ -279,10 +279,10 @@ class TestNfaDeterminization(TestCase):
         self.maxDiff = None
         self.nfa_determinization_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_determinization_test_01.dot')
+                './tests/dot/nfa/nfa_determinization_test_01.dot')
         self.nfa_determinization_test_02 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_determinization_test_02.dot')
+                './tests/dot/nfa/nfa_determinization_test_02.dot')
         self.nfa_determinization_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -352,7 +352,7 @@ class TestNfaDeterminization(TestCase):
                 self.nfa_determinization_test_01['initial_states']),
             'accepting_states': set(),
             'transitions': {}
-            }
+        }
                              )
 
     @unittest.expectedFailure
@@ -382,7 +382,7 @@ class TestNfaComplementation(TestCase):
         self.maxDiff = None
         self.nfa_complementation_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_complementation_test_01.dot')
+                './tests/dot/nfa/nfa_complementation_test_01.dot')
         self.nfa_complementation_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -416,7 +416,7 @@ class TestNfaComplementation(TestCase):
                                                 'initial_state':
                                                     None,
                                                 'accepting_states': {
-                                                'sink'},
+                                                    'sink'},
                                                 'transitions': {}
                                                 }
                              )
@@ -433,8 +433,8 @@ class TestNfaComplementation(TestCase):
             'alphabet': self.nfa_complementation_test_01[
                 'alphabet'],
             'states': {
-            str(self.nfa_complementation_test_01['initial_states']),
-            "sink"},
+                str(self.nfa_complementation_test_01['initial_states']),
+                "sink"},
             'initial_state': str(
                 self.nfa_complementation_test_01['initial_states']),
             'accepting_states': {
@@ -450,7 +450,7 @@ class TestNfaComplementation(TestCase):
                          'initial_states']),
                  'a'): 'sink'
             }
-            }
+        }
                              )
 
     @unittest.expectedFailure
@@ -480,10 +480,10 @@ class TestNfaNonemptinessCheck(TestCase):
         self.maxDiff = None
         self.nfa_nonemptiness_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_nonemptiness_test_01.dot')
+                './tests/dot/nfa/nfa_nonemptiness_test_01.dot')
         self.nfa_nonemptiness_test_02 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_nonemptiness_test_02.dot')
+                './tests/dot/nfa/nfa_nonemptiness_test_02.dot')
         self.nfa_nonemptiness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -533,10 +533,10 @@ class TestNfaNonuniversalityCheck(TestCase):
         self.maxDiff = None
         self.nfa_nonuniversality_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_nonuniversality_test_01.dot')
+                './tests/dot/nfa/nfa_nonuniversality_test_01.dot')
         self.nfa_nonuniversality_test_02 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_nonuniversality_test_02.dot')
+                './tests/dot/nfa/nfa_nonuniversality_test_02.dot')
         self.nfa_nonuniversality_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -588,10 +588,10 @@ class TestNfaInterestingnessCheck(TestCase):
         self.maxDiff = None
         self.nfa_interestingness_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_interestingness_test_01.dot')
+                './tests/dot/nfa/nfa_interestingness_test_01.dot')
         self.nfa_interestingness_test_02 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_interestingness_test_02.dot')
+                './tests/dot/nfa/nfa_interestingness_test_02.dot')
         self.nfa_interestingness_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -643,7 +643,7 @@ class TestRunAcceptance(TestCase):
         self.maxDiff = None
         self.nfa_run_acceptance_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_run_acceptance_test_01.dot')
+                './tests/dot/nfa/nfa_run_acceptance_test_01.dot')
         self.nfa_run_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -737,7 +737,7 @@ class TestWordAcceptance(TestCase):
         self.maxDiff = None
         self.nfa_word_acceptance_test_01 = \
             automata_IO.nfa_dot_importer(
-            './tests/dot/nfa/nfa_word_acceptance_test_01.dot')
+                './tests/dot/nfa/nfa_word_acceptance_test_01.dot')
         self.nfa_word_acceptance_test_empty = {
             'alphabet': set(),
             'states': set(),
@@ -773,24 +773,41 @@ class TestWordAcceptance(TestCase):
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
+        """ Tests an input different from a dict() object. [EXPECTED
+        FAILURE]"""
         NFA.word_acceptance(1, ['a', 'b', 'b', 'a', 'b'])
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_2(self):
-        """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
+        """ Tests an input different from a list() object. [EXPECTED
+        FAILURE]"""
         NFA.word_acceptance(self.nfa_word_acceptance_test_01, 1)
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_dict(self):
-        """ Tests a dict() in input different from a well formatted dict() representing a NFA. [EXPECTED FAILURE]"""
+        """ Tests a dict() in input different from a well formatted dict()
+        representing a NFA. [EXPECTED FAILURE]"""
         NFA.word_acceptance({'goofy': 'donald'},
                             ['a', 'b', 'b', 'a', 'b'])
 
     def test_word_acceptance_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect on the
+        input"""
         before = copy.deepcopy(self.nfa_word_acceptance_test_01)
         NFA.word_acceptance(self.nfa_word_acceptance_test_01,
                             ['a', 'a', 'b', 'b', 'a'])
         self.assertDictEqual(before,
                              self.nfa_word_acceptance_test_01)
+
+
+class TestRenameNfaStates(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.nfa_1 = automata_IO.nfa_dot_importer(
+            './tests/dot/nfa/nfa_renaming_test_01.dot')
+
+    def test_rename_nfa_states(self):
+        """ Tests a correct NFA states renaming """
+        automata_IO.nfa_to_dot(NFA.rename_nfa_states(self.nfa_1, 'TOP_'),
+                               'nfa_renamed_1',
+                               'tests/outputs')

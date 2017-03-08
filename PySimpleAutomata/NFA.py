@@ -354,3 +354,42 @@ def word_acceptance(nfa: dict, word: list) -> bool:
         return True
     else:
         return False
+
+
+# SIDE EFFECTS
+def rename_nfa_states(nfa: dict, suffix: str):
+    """ Side effect on input! Renames all the states of the NFA
+    adding a **suffix**.
+
+    It is an utility function to be used to avoid automata to have
+    states with names in common.
+
+    Avoid suffix that can lead to special name like "as", "and",...
+
+    :param dict nfa: input NFA.
+    :param str suffix: string to be added at beginning of each state name.
+    """
+    conversion_dict = {}
+    new_states = set()
+    new_initials = set()
+    new_accepting = set()
+    for state in nfa['states']:
+        conversion_dict[state] = '' + suffix + state
+        new_states.add('' + suffix + state)
+        if state in nfa['initial_states']:
+            new_initials.add('' + suffix + state)
+        if state in nfa['accepting_states']:
+            new_accepting.add('' + suffix + state)
+
+    nfa['states'] = new_states
+    nfa['initial_states'] = new_initials
+    nfa['accepting_states'] = new_accepting
+
+    new_transitions = {}
+    for transition in nfa['transitions']:
+        new_arrival = set()
+        for arrival in nfa['transitions'][transition]:
+            new_arrival.add(conversion_dict[arrival])
+        new_transitions[conversion_dict[transition[0]], transition[1]] = new_arrival
+    nfa['transitions'] = new_transitions
+    return nfa
