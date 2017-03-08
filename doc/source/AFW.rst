@@ -18,7 +18,7 @@ AFW
       afw_to_nfa_conversion
       afw_union
       nfa_to_afw_conversion
-      renaming_afw_states
+      rename_afw_states
       word_acceptance
 
     .. rubric:: Functions

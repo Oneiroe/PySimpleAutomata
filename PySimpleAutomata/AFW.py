@@ -37,14 +37,6 @@ from copy import copy
 from copy import deepcopy
 
 
-# ###
-# TO-DO
-# TODO change name to new initial state when creating AFWs:
-#   CHECK: possibly already existing, especially if the afw used
-#          in the operation is the result of a precedent operation
-#   RESPONSE: same problem as the generic one of states with the
-#             same name. Actual solution: whole afw renaming
-
 def __recursive_acceptance(afw, state, remaining_word):
     """ Recursive call for word acceptance.
 
@@ -173,11 +165,16 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     afw = {
         'alphabet': copy(nfa['alphabet']),
         'states': copy(nfa['states']),
-        'initial_state': 's_root',
+        'initial_state': 'root',
         'accepting_states': copy(nfa['accepting_states']),
         'transitions': dict()
     }
-    afw['states'].add('s_root')
+
+    i = 0
+    while afw['initial_state'] in nfa['states']:
+        afw['initial_state'] = 'root' + str(i)
+        i += 1
+    afw['states'].add(afw['initial_state'])
 
     for t in nfa['transitions']:
         boolean_formula = str()
@@ -186,7 +183,7 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
         boolean_formula = boolean_formula[0:-4]
         afw['transitions'][t] = boolean_formula
         if t[0] in nfa['initial_states']:
-            afw['transitions']['s_root', t[1]] = boolean_formula
+            afw['transitions'][afw['initial_state'], t[1]] = boolean_formula
 
     return afw
 
@@ -279,7 +276,7 @@ def __replace_all(repls: dict, input: str) -> str:
 
 
 # TODO shouldn't an empty afw complementation result in an afw
-# reading everything?
+# reading everything? problem is when alphabet is empty
 def afw_complementation(afw: dict) -> dict:
     """ Returns a AFW reading the complemented language read by
     input AFW.
@@ -322,18 +319,17 @@ def afw_complementation(afw: dict) -> dict:
 
 
 # SIDE EFFECTS
-# TODO AVOID discriminator that can form special word like "as"
-# etc..
-def renaming_afw_states(afw: dict, suffix: str):
-    """ Side effect on input! Rename all the state of the AFW
-    with the suffix contained in "suffix".
+def rename_afw_states(afw: dict, suffix: str):
+    """ Side effect on input! Renames all the states of the AFW
+    adding a **suffix**.
 
     It is an utility function used during testing to avoid automata to have
     states with names in common.
 
+    Avoid suffix that can lead to special name like "as", "and",...
+
     :param dict afw: input AFW.
-    :param str suffix: string representing the suffix to be
-                   added at each state name
+    :param str suffix: string to be added at beginning of each state name.
     """
     conversion_dict = {}
     new_states = set()
@@ -377,10 +373,16 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     :return: *(dict)* representing the united AFW.
     """
     # Reference Lecture6a Lemma 6
+    initial_state = 'root'
+    i = 0
+    while initial_state in afw_1['states'] or initial_state in afw_2['states']:
+        initial_state = 'root' + str(i)
+        i += 1
+
     union = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
-        'initial_state': 's_root',
+        'states': afw_1['states'].union(afw_2['states']).union({initial_state}),
+        'initial_state': initial_state,
         'accepting_states':
             afw_1['accepting_states'].union(afw_2['accepting_states']),
         'transitions': copy(afw_1['transitions'])
@@ -390,21 +392,21 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
             or afw_2['initial_state'] in afw_2['accepting_states']:
         union['accepting_states'].add(union['initial_state'])
 
-    for transition in afw_2['transitions']:
-        if transition in union['transitions']:
-            union['transitions'][transition] += ' or (' + afw_2['transitions'][transition] + ')'
+    for trans in afw_2['transitions']:
+        if trans in union['transitions']:
+            union['transitions'][trans] += ' or (' + afw_2['transitions'][trans] + ')'
         else:
-            union['transitions'][transition] = '(' + afw_2['transitions'][transition] + ')'
+            union['transitions'][trans] = '(' + afw_2['transitions'][trans] + ')'
 
     for action in union['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
-            union['transitions']['s_root', action] = \
+            union['transitions'][initial_state, action] = \
                 '(' + afw_1['transitions'][afw_1['initial_state'], action] + ')'
             if (afw_2['initial_state'], action) in afw_2['transitions']:
-                union['transitions']['s_root', action] += \
+                union['transitions'][initial_state, action] += \
                     ' or (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            union['transitions']['s_root', action] = \
+            union['transitions'][initial_state, action] = \
                 '(' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
 
     return union
@@ -432,10 +434,16 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     :param dict afw_2: second input AFW.
     :return: *(dict)* representing a AFW.
     """
+    initial_state = 'root'
+    i = 0
+    while initial_state in afw_1['states'] or initial_state in afw_2['states']:
+        initial_state = 'root' + str(i)
+        i += 1
+
     intersection = {
         'alphabet': afw_1['alphabet'].union(afw_2['alphabet']),
-        'states': afw_1['states'].union(afw_2['states']).union({'s_root'}),
-        'initial_state': 's_root',
+        'states': afw_1['states'].union(afw_2['states']).union({initial_state}),
+        'initial_state': initial_state,
         'accepting_states':
             afw_1['accepting_states'].union(afw_2['accepting_states']),
         'transitions': copy(afw_1['transitions'])
@@ -456,15 +464,15 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
 
     for action in intersection['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
-            intersection['transitions']['s_root', action] = \
+            intersection['transitions'][initial_state, action] = \
                 afw_1['transitions'][afw_1['initial_state'], action]
             if (afw_2['initial_state'], action) in afw_2['transitions']:
-                intersection['transitions']['s_root', action] += \
+                intersection['transitions'][initial_state, action] += \
                     ' and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
             else:
-                intersection['transitions']['s_root', action] += ' and False'
+                intersection['transitions'][initial_state, action] += ' and False'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
-            intersection['transitions']['s_root', action] = \
+            intersection['transitions'][initial_state, action] = \
                 'False and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
 
     return intersection

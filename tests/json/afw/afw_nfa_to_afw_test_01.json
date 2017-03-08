@@ -4,25 +4,25 @@
     "b"
   ],
   "states": [
-    "s_root",
+    "root",
     "s0",
     "s1",
     "s2",
     "s3",
     "s4"
   ],
-  "initial_state": "s_root",
+  "initial_state": "root",
   "accepting_states": [
     "s2"
   ],
   "transitions": [
     [
-      "s_root",
+      "root",
       "b",
       "s3"
     ],
     [
-      "s_root",
+      "root",
       "a",
       "s1"
     ],

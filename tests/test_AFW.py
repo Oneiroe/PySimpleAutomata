@@ -97,8 +97,8 @@ class TestNfaToAfwConversion(TestCase):
         """ Tests converting an empty nfa """
         expected_solution = {
             'alphabet': set(),
-            'states': {'s_root'},
-            'initial_state': 's_root',
+            'states': {'root'},
+            'initial_state': 'root',
             'accepting_states': set(),
             'transitions': {}
         }
@@ -108,8 +108,8 @@ class TestNfaToAfwConversion(TestCase):
         """ Tests converting an nfa without transition """
         expected_solution = {
             'alphabet': self.nfa_nfa_to_afw_test_01['alphabet'],
-            'states': self.nfa_nfa_to_afw_test_01['states'].union({'s_root'}),
-            'initial_state': 's_root',
+            'states': self.nfa_nfa_to_afw_test_01['states'].union({'root'}),
+            'initial_state': 'root',
             'accepting_states': self.nfa_nfa_to_afw_test_01['accepting_states'],
             'transitions': {}
         }
@@ -407,7 +407,7 @@ class TestAfwUnion(TestCase):
 
     def test_afw_union_disjoint(self):
         """ Tests a correct afw union with completely disjoint afws  """
-        AFW.renaming_afw_states(self.afw_union_2_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_union_2_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_2_test_01)
 
         i = 0
@@ -427,7 +427,7 @@ class TestAfwUnion(TestCase):
 
     def test_afw_union_intersecting(self):
         """ Tests a correct afw union where the afws have some state in common  """
-        AFW.renaming_afw_states(self.afw_union_3_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_union_3_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_3_test_01)
 
         i = 0
@@ -448,7 +448,7 @@ class TestAfwUnion(TestCase):
 
     def test_afw_union_equals(self):
         """ Tests a correct afw union with the same afw """
-        AFW.renaming_afw_states(self.afw_union_1_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_union_1_test_01, 'a_')
         union = AFW.afw_union(self.afw_union_1_test_01, self.afw_union_1_test_01)
 
         i = 0
@@ -551,7 +551,7 @@ class TestAfwIntersection(TestCase):
 
     def test_afw_intersection_disjoint(self):
         """ Tests a correct afw intersection with completely disjoint afws  """
-        AFW.renaming_afw_states(self.afw_intersection_2_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_intersection_2_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_2_test_01)
 
         i = 0
@@ -571,7 +571,7 @@ class TestAfwIntersection(TestCase):
 
     def test_afw_intersection_intersecting(self):
         """ Tests a correct afw intersection where the afws have some state in common  """
-        AFW.renaming_afw_states(self.afw_intersection_3_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_intersection_3_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_3_test_01)
 
         i = 0
@@ -592,7 +592,7 @@ class TestAfwIntersection(TestCase):
 
     def test_afw_intersection_equals(self):
         """ Tests a correct afw intersection with the same afw """
-        AFW.renaming_afw_states(self.afw_intersection_1_test_01, 'a_')
+        AFW.rename_afw_states(self.afw_intersection_1_test_01, 'a_')
         intersection = AFW.afw_intersection(self.afw_intersection_1_test_01, self.afw_intersection_1_test_01)
 
         i = 0
