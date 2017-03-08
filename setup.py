@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='PySimpleAutomata',
-    version='0.1.0',
+    version='0.1.1',
     author='Alessio Cecconi',
     author_email='alessio.cecconi.1991@gmail.com',
     url='https://github.com/Oneiroe/PySimpleAutomata',
@@ -19,6 +19,7 @@ setup(
     long_description=readme,
     packages=find_packages(exclude=['doc', 'tests']),
     requires=['graphviz', 'pydot'],
+    data_files=[("", ["LICENSE"])],
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
