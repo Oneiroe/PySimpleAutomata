@@ -26,9 +26,9 @@ Structure
    |
    +---/PySimpleAutomata : Library sources
    |   |
-   |   +--- AFW.py : Contains the AFW handling functions.
+   |   +--- AFW.py : Functions to handle AFWs automata.
    |   |
-   |   +--- automata_IO.py : Contains the functions of IN/OUTput for all the automata types.
+   |   +--- automata_IO.py : Functions of IN/OUTput for all the automata types.
    |   |
    |   +--- DFA.py : Functions to handle DFAs automata.
    |   |
