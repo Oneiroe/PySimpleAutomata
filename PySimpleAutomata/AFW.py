@@ -324,12 +324,12 @@ def afw_complementation(afw: dict) -> dict:
 # SIDE EFFECTS
 # TODO AVOID discriminator that can form special word like "as"
 # etc..
-def renaming_afw_states(afw, suffix):
+def renaming_afw_states(afw: dict, suffix: str):
     """ Side effect on input! Rename all the state of the AFW
     with the suffix contained in "suffix".
 
-    It is used for testing purposes: to avoid automata to have
-    state in common.
+    It is an utility function used during testing to avoid automata to have
+    states with names in common.
 
     :param dict afw: input AFW.
     :param str suffix: string representing the suffix to be
@@ -462,8 +462,7 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
                 intersection['transitions']['s_root', action] += \
                     ' and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
             else:
-                intersection['transitions'][
-                    's_root', action] += ' and False'
+                intersection['transitions']['s_root', action] += ' and False'
         elif (afw_2['initial_state'], action) in afw_2['transitions']:
             intersection['transitions']['s_root', action] = \
                 'False and (' + afw_2['transitions'][afw_2['initial_state'], action] + ')'
