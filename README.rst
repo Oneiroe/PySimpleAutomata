@@ -82,4 +82,4 @@ For a detailed explanation of the library API consult the documentation [link].
 Licence
 -------
 
-This code is provided under `MIT Licence <link to license file>`_.
+This code is provided under `MIT Licence <https://github.com/Oneiroe/PySimpleAutomata/blob/master/LICENSE>`_.
