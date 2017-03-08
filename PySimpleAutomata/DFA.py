@@ -608,3 +608,37 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
                 if dfa['transitions'][state, a] not in visited:
                     queue.insert(0, dfa['transitions'][state, a])
     return False
+
+
+# SIDE EFFECTS
+def rename_dfa_states(dfa: dict, suffix: str):
+    """ Side effect on input! Renames all the states of the DFA
+    adding a **suffix**.
+
+    It is an utility function to be used to avoid automata to have
+    states with names in common.
+
+    Avoid suffix that can lead to special name like "as", "and",...
+
+    :param dict dfa: input DFA.
+    :param str suffix: string to be added at beginning of each state name.
+    """
+    conversion_dict = {}
+    new_states = set()
+    new_accepting = set()
+    for state in dfa['states']:
+        conversion_dict[state] = '' + suffix + state
+        new_states.add('' + suffix + state)
+        if state in dfa['accepting_states']:
+            new_accepting.add('' + suffix + state)
+
+    dfa['states'] = new_states
+    dfa['initial_state'] = '' + suffix + dfa['initial_state']
+    dfa['accepting_states'] = new_accepting
+
+    new_transitions = {}
+    for transition in dfa['transitions']:
+        new_transitions[conversion_dict[transition[0]], transition[1]] = \
+            conversion_dict[dfa['transitions'][transition]]
+    dfa['transitions'] = new_transitions
+    return dfa

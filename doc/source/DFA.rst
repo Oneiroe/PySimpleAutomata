@@ -22,6 +22,7 @@ DFA
       dfa_union
       run_acceptance
       word_acceptance
+      rename_dfa_states
 
    .. rubric:: Functions
 

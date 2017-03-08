@@ -10,10 +10,10 @@ class TestRunAcceptance(TestCase):
     def setUp(self):
         self.dfa_run_acceptance_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_run_acceptance_test_01.dot')
+                './tests/dot/dfa/dfa_run_acceptance_test_01.dot')
         self.dfa_run_acceptance_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_run_acceptance_test_02.dot')
+                './tests/dot/dfa/dfa_run_acceptance_test_02.dot')
 
     def test_run_acceptance(self):
         """ Tests a correct run """
@@ -100,10 +100,10 @@ class TestWordAcceptance(TestCase):
     def setUp(self):
         self.dfa_word_acceptance_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_word_acceptance_test_01.dot')
+                './tests/dot/dfa/dfa_word_acceptance_test_01.dot')
         self.dfa_word_acceptance_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_word_acceptance_test_02.dot')
+                './tests/dot/dfa/dfa_word_acceptance_test_02.dot')
 
     def test_word_acceptance(self):
         """ Tests a correct word """
@@ -162,13 +162,13 @@ class TestDfaCompletion(TestCase):
             './tests/dot/dfa/dfa_completion_test_03.dot')
         self.dfa_completion_test_01_completed = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_completion_test_01_completed.dot')
+                './tests/dot/dfa/dfa_completion_test_01_completed.dot')
         self.dfa_completion_test_02_completed = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_completion_test_02_completed.dot')
+                './tests/dot/dfa/dfa_completion_test_02_completed.dot')
         self.dfa_completion_test_03_completed = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_completion_test_03_completed.dot')
+                './tests/dot/dfa/dfa_completion_test_03_completed.dot')
 
     def test_dfa_completion(self):
         """ Tests a correct completion """
@@ -222,40 +222,40 @@ class TestDfaComplementation(TestCase):
         self.maxDiff = None
         self.dfa_complementation_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_01.dot')
+                './tests/dot/dfa/dfa_complementation_test_01.dot')
         self.dfa_complementation_test_01_complemented = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_01_complemented.dot')
+                './tests/dot/dfa/dfa_complementation_test_01_complemented.dot')
         self.dfa_complementation_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_02.dot')
+                './tests/dot/dfa/dfa_complementation_test_02.dot')
         self.dfa_complementation_test_02_complemented = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_02_complemented.dot')
+                './tests/dot/dfa/dfa_complementation_test_02_complemented.dot')
         self.dfa_complementation_test_03 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_03.dot')
+                './tests/dot/dfa/dfa_complementation_test_03.dot')
         self.dfa_complementation_test_03_complemented = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_complementation_test_03_complemented.dot')
+                './tests/dot/dfa/dfa_complementation_test_03_complemented.dot')
 
     def test_dfa_complementation(self):
         """ Tests a correct complementation. """
         self.assertDictEqual(DFA.dfa_complementation(
             self.dfa_complementation_test_01),
-                             self.dfa_complementation_test_01_complemented)
+            self.dfa_complementation_test_01_complemented)
 
     def test_dfa_complementation_empty_states(self):
         """ Tests a complementation on a DFA without states. """
         self.assertDictEqual(DFA.dfa_complementation(
             self.dfa_complementation_test_02),
-                             self.dfa_complementation_test_02_complemented)
+            self.dfa_complementation_test_02_complemented)
 
     def test_dfa_complementation_empty_transitions(self):
         """ Tests a complementation on a DFA without transitions. """
         self.assertDictEqual(DFA.dfa_complementation(
             self.dfa_complementation_test_03),
-                             self.dfa_complementation_test_03_complemented)
+            self.dfa_complementation_test_03_complemented)
 
     @unittest.expectedFailure
     def test_dfa_complementation_wrong_input(self):
@@ -284,16 +284,16 @@ class TestDfaIntersection(TestCase):
         self.maxDiff = None
         self.dfa_intersection_1_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_1_test_01.dot')
+                './tests/dot/dfa/dfa_intersection_1_test_01.dot')
         self.dfa_intersection_2_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_2_test_01.dot')
+                './tests/dot/dfa/dfa_intersection_2_test_01.dot')
         self.dfa_intersection_1_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_1_test_02.dot')
+                './tests/dot/dfa/dfa_intersection_1_test_02.dot')
         self.dfa_intersection_2_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_intersection_2_test_02.dot')
+                './tests/dot/dfa/dfa_intersection_2_test_02.dot')
 
         self.dfa_test_disjoint = {
             'alphabet': {'5c', '10c', 'gum'},
@@ -347,19 +347,19 @@ class TestDfaIntersection(TestCase):
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s1', 'c2'), ('c3', 't2'), ('c2', 'c3'),
-            ('c1', 'c1'), ('s1', 't2'), ('c1', 't2'), ('c3', 'c2'),
+                ('c1', 'c1'), ('s1', 't2'), ('c1', 't2'), ('c3', 'c2'),
                 ('s1', 't0'), ('c1', 'c2'), ('c2', 't1'),
-            ('s0', 'c2'), ('c3', 't0'), ('s0', 't2'), ('s0', 'c4'),
+                ('s0', 'c2'), ('c3', 't0'), ('s0', 't2'), ('s0', 'c4'),
                 ('c4', 't2'), ('c3', 't1'), ('c4', 'c2'),
-            ('s1', 't1'), ('c1', 'c3'), ('c2', 'c1'), ('s0', 't3'),
+                ('s1', 't1'), ('c1', 'c3'), ('c2', 'c1'), ('s0', 't3'),
                 ('c2', 'c4'), ('c4', 't0'), ('s0', 'c1'),
-            ('s0', 't0'), ('c1', 't3'), ('c4', 't3'), ('c3', 'c1'),
+                ('s0', 't0'), ('c1', 't3'), ('c4', 't3'), ('c3', 'c1'),
                 ('c4', 'c3'), ('c4', 't1'), ('c3', 'c4'),
-            ('s1', 'c1'), ('s1', 'c4'), ('c1', 'c4'), ('c1', 't0'),
+                ('s1', 'c1'), ('s1', 'c4'), ('c1', 'c4'), ('c1', 't0'),
                 ('s0', 't1'), ('s1', 't3'), ('s1', 'c3'),
-            ('c1', 't1'), ('c3', 't3'), ('c2', 'c2'), ('c4', 'c1'),
+                ('c1', 't1'), ('c3', 't3'), ('c2', 'c2'), ('c4', 'c1'),
                 ('c3', 'c3'), ('c2', 't2'), ('c4', 'c4'),
-            ('c2', 't0'), ('s0', 'c3'), ('c2', 't3')
+                ('c2', 't0'), ('s0', 'c3'), ('c2', 't3')
             },
             'initial_state': ('s0', 't0'),
             'accepting_states': {('s1', 'c4'), ('s1', 't3'),
@@ -391,9 +391,9 @@ class TestDfaIntersection(TestCase):
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s1', 's0'), ('s0', 's1'), ('s3', 's3'),
-            ('s2', 's2'), ('s0', 's0'), ('s1', 's1'), ('s1', 's3'),
+                ('s2', 's2'), ('s0', 's0'), ('s1', 's1'), ('s1', 's3'),
                 ('s0', 's3'), ('s1', 's2'), ('s2', 's3'),
-            ('s0', 's2'), ('s2', 's0'), ('s2', 's1'), ('s3', 's0'),
+                ('s0', 's2'), ('s2', 's0'), ('s2', 's1'), ('s3', 's0'),
                 ('s3', 's1'), ('s3', 's2')
             },
             'initial_state': ('s0', 's0'),
@@ -570,25 +570,25 @@ class TestDfaUnion(TestCase):
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s3', 't4'), ('s2', 't5'), ('s0', 't5'),
-            ('s1', 't0'), ('s0', 't1'), ('sink', 'sink'),
+                ('s1', 't0'), ('s0', 't1'), ('sink', 'sink'),
                 ('s2', 't3'), ('s3', 't0'), ('sink', 't4'),
-            ('sink', 't3'), ('s3', 'sink'), ('s1', 't5'),
+                ('sink', 't3'), ('s3', 'sink'), ('s1', 't5'),
                 ('s3', 't2'), ('s1', 'sink'), ('s3', 't5'),
-            ('s2', 't0'), ('s0', 't4'), ('s1', 't3'),
+                ('s2', 't0'), ('s0', 't4'), ('s1', 't3'),
                 ('s2', 't4'), ('s0', 't2'), ('sink', 't1'),
-            ('sink', 't5'), ('s2', 't2'), ('s0', 'sink'),
+                ('sink', 't5'), ('s2', 't2'), ('s0', 'sink'),
                 ('s2', 'sink'), ('sink', 't2'), ('s2', 't1'),
-            ('s1', 't1'), ('s0', 't0'), ('sink', 't0'),
+                ('s1', 't1'), ('s0', 't0'), ('sink', 't0'),
                 ('s3', 't1'), ('s1', 't2'), ('s3', 't3'),
-            ('s0', 't3'), ('s1', 't4')
+                ('s0', 't3'), ('s1', 't4')
             },
             'initial_state': ('s0', 't0'),
             'accepting_states': {
                 ('s2', 't4'), ('s3', 't4'), ('s0', 't2'),
-            ('s0', 't5'), ('s0', 't1'), ('s2', 't5'),
-            ('s0', 'sink'),
+                ('s0', 't5'), ('s0', 't1'), ('s2', 't5'),
+                ('s0', 'sink'),
                 ('sink', 't5'), ('sink', 't4'), ('s0', 't0'),
-            ('s1', 't5'), ('s3', 't5'), ('s0', 't4'), ('s0', 't3'),
+                ('s1', 't5'), ('s3', 't5'), ('s0', 't4'), ('s0', 't3'),
                 ('s1', 't4')
             },
             'transitions': {
@@ -703,39 +703,39 @@ class TestDfaUnion(TestCase):
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('c4', 'c2'), ('sink', 't0'), ('s0', 'c3'),
-            ('s0', 't1'), ('sink', 'sink'), ('c2', 'c2'),
+                ('s0', 't1'), ('sink', 'sink'), ('c2', 'c2'),
                 ('c3', 'sink'), ('c1', 't2'), ('s0', 'c4'),
-            ('c3', 't2'), ('s0', 't2'), ('s0', 't0'),
+                ('c3', 't2'), ('s0', 't2'), ('s0', 't0'),
                 ('s1', 't2'), ('s1', 'c4'), ('sink', 't3'),
-            ('s1', 't0'), ('c3', 't1'), ('c2', 't1'),
+                ('s1', 't0'), ('c3', 't1'), ('c2', 't1'),
                 ('c1', 'c4'), ('c3', 'c1'), ('c3', 't0'),
-            ('sink', 'c3'), ('c4', 't2'), ('c1', 't0'),
+                ('sink', 'c3'), ('c4', 't2'), ('c1', 't0'),
                 ('c2', 'c1'), ('sink', 'c4'), ('c2', 't2'),
-            ('c2', 't0'), ('c2', 'sink'), ('c3', 'c2'),
+                ('c2', 't0'), ('c2', 'sink'), ('c3', 'c2'),
                 ('c4', 't0'), ('sink', 'c2'), ('s1', 'c2'),
-            ('c4', 't1'), ('c4', 'c4'), ('c4', 't3'),
+                ('c4', 't1'), ('c4', 'c4'), ('c4', 't3'),
                 ('s0', 'c1'), ('c1', 'c2'), ('c1', 'sink'),
-            ('c2', 't3'), ('c4', 'c3'), ('s1', 't3'),
+                ('c2', 't3'), ('c4', 'c3'), ('s1', 't3'),
                 ('s0', 'sink'), ('sink', 't1'), ('s1', 'sink'),
-            ('c2', 'c3'), ('c4', 'sink'), ('c1', 'c1'),
+                ('c2', 'c3'), ('c4', 'sink'), ('c1', 'c1'),
                 ('c3', 'c3'), ('s0', 'c2'), ('c1', 't3'),
-            ('s1', 'c3'), ('c1', 't1'), ('c2', 'c4'), ('c3', 't3'),
+                ('s1', 'c3'), ('c1', 't1'), ('c2', 'c4'), ('c3', 't3'),
                 ('c3', 'c4'), ('s1', 'c1'), ('c4', 'c1'),
-            ('sink', 'c1'), ('s0', 't3'), ('c1', 'c3'),
+                ('sink', 'c1'), ('s0', 't3'), ('c1', 'c3'),
                 ('s1', 't1'), ('sink', 't2')
             },
             'initial_state': ('s0', 't0'),
             'accepting_states': {
                 ('c4', 'c2'), ('c4', 't0'), ('s1', 'c2'),
-            ('c4', 't1'), ('c4', 'c4'), ('c4', 't3'),
+                ('c4', 't1'), ('c4', 'c4'), ('c4', 't3'),
                 ('s0', 'c4'), ('c2', 't3'), ('c4', 'c3'),
-            ('s1', 't2'), ('s1', 'c4'), ('sink', 't3'),
+                ('s1', 't2'), ('s1', 'c4'), ('sink', 't3'),
                 ('s1', 'sink'), ('s1', 't0'), ('c4', 'sink'),
-            ('c1', 'c4'), ('c4', 't2'), ('s1', 'c3'),
+                ('c1', 'c4'), ('c4', 't2'), ('s1', 'c3'),
                 ('c1', 't3'), ('c2', 'c4'), ('s1', 'c1'),
-            ('c3', 't3'), ('c3', 'c4'), ('c4', 'c1'),
+                ('c3', 't3'), ('c3', 'c4'), ('c4', 'c1'),
                 ('sink', 'c4'), ('s0', 't3'), ('s1', 't3'),
-            ('s1', 't1')
+                ('s1', 't1')
             },
             'transitions': {
                 (('s1', 'c2'), 'gum'): ('sink', 'c4'),
@@ -933,20 +933,20 @@ class TestDfaUnion(TestCase):
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s1', 's3'), ('s0', 'sink'), ('s0', 's3'),
-            ('sink', 's0'), ('s0', 's1'), ('s2', 's0'),
-            ('s2', 'sink'),
+                ('sink', 's0'), ('s0', 's1'), ('s2', 's0'),
+                ('s2', 'sink'),
                 ('s1', 'sink'), ('sink', 's1'), ('s2', 's3'),
-            ('s0', 's0'), ('sink', 's3'), ('s3', 'sink'),
+                ('s0', 's0'), ('sink', 's3'), ('s3', 'sink'),
                 ('s2', 's2'), ('s3', 's0'), ('s0', 's2'),
-            ('s1', 's0'), ('sink', 's2'), ('s3', 's2'),
-            ('s1', 's1'),
+                ('s1', 's0'), ('sink', 's2'), ('s3', 's2'),
+                ('s1', 's1'),
                 ('s2', 's1'), ('s1', 's2'), ('s3', 's1'),
-            ('s3', 's3'), ('sink', 'sink')
+                ('s3', 's3'), ('sink', 'sink')
             },
             'initial_state': ('s0', 's0'),
             'accepting_states': {
                 ('s0', 'sink'), ('s0', 's3'), ('sink', 's0'),
-            ('s0', 's1'), ('s0', 's0'), ('s2', 's0'),
+                ('s0', 's1'), ('s0', 's0'), ('s2', 's0'),
                 ('s3', 's0'), ('s0', 's2'), ('s1', 's0')
             },
             'transitions': {
@@ -1148,25 +1148,25 @@ class TestDfaMinimization(TestCase):
         self.maxDiff = None
         self.dfa_minimization_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_01.dot')
+                './tests/dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_01_minimized = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_01.dot')
+                './tests/dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_02.dot')
+                './tests/dot/dfa/dfa_minimization_test_02.dot')
         self.dfa_minimization_test_02_minimized_s2 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_01.dot')
+                './tests/dot/dfa/dfa_minimization_test_01.dot')
         self.dfa_minimization_test_02_minimized_s4 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_01_s4.dot')
+                './tests/dot/dfa/dfa_minimization_test_01_s4.dot')
         self.dfa_minimization_test_03 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_03.dot')
+                './tests/dot/dfa/dfa_minimization_test_03.dot')
         self.dfa_minimization_test_04 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_minimization_test_04.dot')
+                './tests/dot/dfa/dfa_minimization_test_04.dot')
 
     def test_dfa_minimization_already_minimized(self):
         """ Tests the minimization of a DFA already minimal"""
@@ -1247,7 +1247,7 @@ class TestDfaReachable(TestCase):
             './tests/dot/dfa/dfa_reachable_test_02.dot')
         self.dfa_reachable_test_02_reachable = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_reachable_test_02_reachable.dot')
+                './tests/dot/dfa/dfa_reachable_test_02_reachable.dot')
         self.dfa_reachable_test_03 = automata_IO.dfa_dot_importer(
             './tests/dot/dfa/dfa_reachable_test_03.dot')
         self.dfa_reachable_test_04 = automata_IO.dfa_dot_importer(
@@ -1256,8 +1256,8 @@ class TestDfaReachable(TestCase):
             './tests/dot/dfa/dfa_reachable_test_05.dot')
         self.dfa_reachable_test_intersected = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/automata_io'
-            '/automata_io_dfa_imported_intersection.dot')
+                './tests/dot/automata_io'
+                '/automata_io_dfa_imported_intersection.dot')
 
     def test_dfa_reachable_already_reachable(self):
         """ Tests making reachable a DFA even if its already
@@ -1334,25 +1334,25 @@ class TestDfaCoReachable(TestCase):
         self.maxDiff = None
         self.dfa_co_reachable_test_01 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_01.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_01.dot')
         self.dfa_co_reachable_test_02 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_02.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_02.dot')
         self.dfa_co_reachable_test_02_co_reachable = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_02_co_reachable.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_02_co_reachable.dot')
         self.dfa_co_reachable_test_03 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_03.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_03.dot')
         self.dfa_co_reachable_test_04 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_04.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_04.dot')
         self.dfa_co_reachable_test_05 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_05.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_05.dot')
         self.dfa_co_reachable_test_06 = \
             automata_IO.dfa_dot_importer(
-            './tests/dot/dfa/dfa_co_reachable_test_06.dot')
+                './tests/dot/dfa/dfa_co_reachable_test_06.dot')
 
     def test_dfa_co_reachable_already_co_reachable(self):
         """ Tests making co_reachable a DFA even if its already
@@ -1530,14 +1530,16 @@ class TestDfaProjection(TestCase):
                              self.dfa_projection_test_01_solution)
 
     def test_dfa_projection_full_alphabet_projection(self):
-        """ Tests a dfa projection where all the symbols of the alphabets got projected out """
+        """ Tests a dfa projection where all the symbols of the alphabets
+        got projected out """
         projection = DFA.dfa_projection(self.dfa_projection_test_01,
                                         {'5c', '10c', 'gum'})
         self.assertDictEqual(projection,
                              self.dfa_projection_test_02_solution)
 
     def test_dfa_projection_words_not_in_alphabet(self):
-        """ Tests a dfa projection with word not present in the dfa alphabet """
+        """ Tests a dfa projection with word not present in the dfa alphabet
+        """
         projection = DFA.dfa_projection(self.dfa_projection_test_01,
                                         {"pippo"})
         solution = self.dfa_projection_test_01
@@ -1572,17 +1574,20 @@ class TestDfaProjection(TestCase):
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_input_1(self):
-        """ Tests a dfa projection where the first input is different from a dict representing a dfa. [EXPECTED FAILURE] """
+        """ Tests a dfa projection where the first input is different from a
+        dict representing a dfa. [EXPECTED FAILURE] """
         DFA.dfa_projection(0, {'5c'})
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_dict(self):
-        """ Tests a dfa projection where the first input is different from a well formatted dict representing a dfa. [EXPECTED FAILURE] """
+        """ Tests a dfa projection where the first input is different from a
+        well formatted dict representing a dfa. [EXPECTED FAILURE] """
         DFA.dfa_projection({}, {'5c'})
 
     @unittest.expectedFailure
     def test_dfa_projection_wrong_input_2(self):
-        """ Tests a dfa projection where the second input is different from a set of word. [EXPECTED FAILURE] """
+        """ Tests a dfa projection where the second input is different from
+        a set of word. [EXPECTED FAILURE] """
         DFA.dfa_projection(self.dfa_projection_test_01, 0)
 
     def test_dfa_projection_side_effects(self):
@@ -1637,23 +1642,40 @@ class TestDfaNonemptinessCheck(TestCase):
 
     @unittest.expectedFailure
     def test_dfa_nonemptiness_check_wrong_dict(self):
-        """ Tests the nonemptines of an input dict different from a dict representing a dfa. [EXPECTED FAILURE] """
+        """ Tests the nonemptines of an input dict different from a dict
+        representing a dfa. [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check({}))
 
     def test_dfa_nonemptiness_check_wromg_dict_format(self):
-        """ Tests the nonemptines of a dfa dict object with inconsistent data (transitions not present in alphabet). [EXPECTED FAILURE] """
+        """ Tests the nonemptines of a dfa dict object with inconsistent
+        data (transitions not present in alphabet). [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check(
             self.dfa_nonemptiness_check_test_04))
 
     @unittest.expectedFailure
     def test_dfa_nonemptiness_check_wrong_input(self):
-        """ Tests the nonemptines of an input different from a dict object. [EXPECTED FAILURE] """
+        """ Tests the nonemptines of an input different from a dict object.
+        [EXPECTED FAILURE] """
         self.assertFalse(DFA.dfa_nonemptiness_check(0))
 
     def test_dfa_nonemptiness_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect on the input"""
+        """ Tests that the function doesn't make any side effect on the
+        input"""
         before = copy.deepcopy(self.dfa_nonemptiness_check_test_01)
         DFA.dfa_nonemptiness_check(
             self.dfa_nonemptiness_check_test_01)
         self.assertDictEqual(before,
                              self.dfa_nonemptiness_check_test_01)
+
+
+class TestRenameDfaStates(TestCase):
+    def setUp(self):
+        self.maxDiff = None
+        self.dfa_1 = automata_IO.dfa_dot_importer(
+            './tests/dot/dfa/dfa_renaming_test_01.dot')
+
+    def test_rename_dfa_states(self):
+        """ Tests a correct DFA states renaming """
+        automata_IO.dfa_to_dot(DFA.rename_dfa_states(self.dfa_1, 'TOP_'),
+                               'dfa_renamed_1',
+                               'tests/outputs')
