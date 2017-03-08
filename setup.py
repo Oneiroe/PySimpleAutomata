@@ -13,7 +13,7 @@ setup(
     version='0.1.0',
     author='Alessio Cecconi',
     author_email='alessio.cecconi.1991@gmail.com',
-    url='www.github.com/Oneiroe/PySimpleAutomata/',
+    url='https://github.com/Oneiroe/PySimpleAutomata',
     license=license,
     description='Python library to manage DFA, NFA and AFW automata',
     long_description=readme,
@@ -37,6 +37,7 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords='automata DFA NFA AFW',
 )
