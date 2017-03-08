@@ -25,12 +25,3 @@ DFA
       rename_dfa_states
 
    .. rubric:: Functions
-
-
-Notes
------
-
-*Automata determinization* TALK ABOUT WHY THEY'LL FOUND ENORMOUS GRAPH
-IN OUTPUT IF THEY DON'T MINIMIZE
-
-*nodes with the same name from different automata* should not be considered the same entity

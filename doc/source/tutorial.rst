@@ -17,8 +17,6 @@ Tutorial
 
 .. include:: usage.rst
 
-.. Examples
-
 .. Testing
 
 Testing
@@ -27,7 +25,7 @@ Testing
 If in one hand the library doesn't handle exceptions or perform any
 conformance checking on input, it has been widely tested through
 `unit testing methodology <https://en.wikipedia.org/wiki/Unit_testing>`_,
-firmly decreasing possibilities of unexpected behaviours.
+decreasing possibilities of unexpected behaviours.
 Python `unittest — Unit testing framework <https://docs.python.org/3.5/library/unittest.html>`_
 has been used.
 
