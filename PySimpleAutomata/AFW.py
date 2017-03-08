@@ -367,6 +367,9 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     :math:`ρ_∪ = ρ_1 ∪ ρ_2 ∪ [(root, a): ρ(s^0_1 , a) ∨ ρ(s^0_2 ,
     a)]` accepts :math:`L(A_1) ∪ L(A_2)`.
 
+    Pay attention to avoid having the AFWs with state names in common, in case
+    use :mod:`PySimpleAutomata.AFW.rename_afw_states` function.
+
     :param dict afw_1: first input AFW;
     :param dict afw_2: second input AFW;.
     :return: *(dict)* representing the united AFW.

@@ -19,5 +19,6 @@ NFA
       nfa_union
       run_acceptance
       word_acceptance
+      rename_nfa_states
 
     .. rubric:: Functions

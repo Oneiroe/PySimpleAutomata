@@ -106,6 +106,9 @@ def nfa_union(nfa_1: dict, nfa_2: dict) -> dict:
       :math:`[ s ∈ S_1\ and\ (s, a, s' ) ∈ ρ_1 ]` OR :math:`[ s ∈
       S_2\ and\ (s, a, s' ) ∈ ρ_2 ]`
 
+    Pay attention to avoid having the NFAs with state names in common, in case
+    use :mod:`PySimpleAutomata.NFA.rename_nfa_states` function.
+
     :param dict nfa_1: first input NFA;
     :param dict nfa_2: second input NFA.
     :return: *(dict)* representing the united NFA.
