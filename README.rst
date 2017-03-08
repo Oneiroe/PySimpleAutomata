@@ -61,9 +61,7 @@ Installation
 
 From `PyPi <https://pypi.python.org/pypi>`_ using pip:
 
-SOON
-
-.. `pip install PySimpleAutomata`
+`pip install pysimpleautomata`
 
 From source:
 

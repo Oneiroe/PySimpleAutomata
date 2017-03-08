@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='PySimpleAutomata',
-    version='0.1.1',
+    version='0.1.2',
     author='Alessio Cecconi',
     author_email='alessio.cecconi.1991@gmail.com',
     url='https://github.com/Oneiroe/PySimpleAutomata',
@@ -18,7 +18,8 @@ setup(
     description='Python library to manage DFA, NFA and AFW automata',
     long_description=readme,
     packages=find_packages(exclude=['doc', 'tests']),
-    requires=['graphviz', 'pydot'],
+    install_requires=['graphviz', 'pydot'],
+    setup_requires=['graphviz', 'pydot'],
     data_files=[("", ["LICENSE"])],
     classifiers=[
         # How mature is this project? Common values are

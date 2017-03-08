@@ -44,9 +44,7 @@ is required to be installed and present on system path to input/output DOT files
 
 From `PyPi <https://pypi.python.org/pypi>`_ using pip::
 
-    SOON
-
-.. `pip install PySimpleAutomata`
+   pip install pysimpleautomata
 
 From source::
 
