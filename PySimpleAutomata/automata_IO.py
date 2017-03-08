@@ -9,13 +9,6 @@ import re
 import os
 
 
-# ###
-# TO-DOs
-# TODO automata conformance check in input (eg.:
-#      all transition uses word in alphabet,
-#      all transition involved states in States,..)
-
-
 def __replace_all(repls: dict, input: str) -> str:
     """ Replaces from a string **input** all the occurrences of some
     symbols according to mapping **repls**.

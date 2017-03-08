@@ -247,17 +247,12 @@ class TestDfaComplementation(TestCase):
 
     def test_dfa_complementation_empty_states(self):
         """ Tests a complementation on a DFA without states. """
-        # TODO ask about this behaviour: shouldn't it returns a
-        # dfa that reads Σ* ?
         self.assertDictEqual(DFA.dfa_complementation(
             self.dfa_complementation_test_02),
                              self.dfa_complementation_test_02_complemented)
 
     def test_dfa_complementation_empty_transitions(self):
-        """ Tests a complementation on a DFA without transitions.
-        """
-        # TODO ask about this behaviour: shouldn't it returns a
-        # dfa that reads Σ* ?
+        """ Tests a complementation on a DFA without transitions. """
         self.assertDictEqual(DFA.dfa_complementation(
             self.dfa_complementation_test_03),
                              self.dfa_complementation_test_03_complemented)
@@ -490,8 +485,6 @@ class TestDfaIntersection(TestCase):
 
     def test_dfa_intersection_disjoint(self):
         """ Tests a correct intersection between disjointed DFAs """
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(
             DFA.dfa_intersection(self.dfa_intersection_1_test_01,
                                  self.dfa_intersection_2_test_01),
@@ -500,8 +493,6 @@ class TestDfaIntersection(TestCase):
     def test_dfa_intersection_intersecting(self):
         """ Tests a correct intersection between DFAs partially
         intersected"""
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(
             DFA.dfa_intersection(self.dfa_intersection_1_test_02,
                                  self.dfa_intersection_2_test_02),
@@ -509,8 +500,6 @@ class TestDfaIntersection(TestCase):
 
     def test_dfa_intersection_equals(self):
         """ Tests a correct intersection between the same DFA """
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(
             DFA.dfa_intersection(self.dfa_intersection_1_test_01,
                                  self.dfa_intersection_1_test_01),
@@ -1103,8 +1092,6 @@ class TestDfaUnion(TestCase):
 
     def test_dfa_union_disjoint(self):
         """ Tests a correct union between disjointed DFAs"""
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(DFA.dfa_union(self.dfa_union_1_test_01,
                                            self.dfa_union_2_test_01),
                              self.dfa_test_disjoint)
@@ -1112,16 +1099,12 @@ class TestDfaUnion(TestCase):
     def test_dfa_union_intersecting(self):
         """ Tests a correct union between DFAs partially
         intersected"""
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(DFA.dfa_union(self.dfa_union_1_test_02,
                                            self.dfa_union_2_test_02),
                              self.dfa_test_intersecting)
 
     def test_dfa_union_equals(self):
         """ Tests a correct union between the same DFA """
-        # TODO ask: FORMALLY, should it returns a minimal dfa or
-        # this one with states not reached by initial state?
         self.assertDictEqual(DFA.dfa_union(self.dfa_union_1_test_01,
                                            self.dfa_union_1_test_01),
                              self.dfa_test_equals)

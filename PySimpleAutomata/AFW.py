@@ -136,8 +136,6 @@ def afw_completion(afw):
     return afw
 
 
-# TODO "We take an empty disjunction in the definition of AFW to
-# be equivalent to False."
 def nfa_to_afw_conversion(nfa: dict) -> dict:
     """ Returns a AFW reading the same language of input NFA.
 
@@ -188,8 +186,6 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     return afw
 
 
-# TODO "We take an empty conjunction in the definition of ρ N to
-# be equivalent to true; thus (∅, a, ∅) ∈ NFA[trans.]
 def afw_to_nfa_conversion(afw: dict) -> dict:
     """ Returns a NFA reading the same language of input AFW.
 
@@ -275,8 +271,6 @@ def __replace_all(repls: dict, input: str) -> str:
     return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], input)
 
 
-# TODO shouldn't an empty afw complementation result in an afw
-# reading everything? problem is when alphabet is empty
 def afw_complementation(afw: dict) -> dict:
     """ Returns a AFW reading the complemented language read by
     input AFW.
@@ -352,8 +346,6 @@ def rename_afw_states(afw: dict, suffix: str):
     afw['transitions'] = new_transitions
 
 
-# TODO states with the same name but from different afw should be
-#  considered as distinct state!
 def afw_union(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a AFW that reads the union of the languages read
     by input AFWs.
@@ -414,11 +406,6 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
     return union
 
 
-# - AFW Intersection
-# unsure on correctness of the source material [lecture06a.pdf
-# lemma 6]
-# TODO states with the same name but from different afw should be
-#  considered as distinct state!
 def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
     """ Returns a AFW that reads the intersection of the
     languages read by input AFWs.
