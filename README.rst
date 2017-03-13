@@ -59,14 +59,14 @@ Python packages `pydot <https://pypi.python.org/pypi/pydot/>`_ and
 Installation
 ------------
 
-From `PyPi <https://pypi.python.org/pypi>`_ using pip:
+From `PyPi <https://pypi.python.org/pypi>`_ using pip::
 
-`pip install pysimpleautomata`
+   pip install pysimpleautomata
 
-From source:
+From source::
 
-`python setup.py install`
-`pip install -r requirements`
+   python setup.py install
+   pip install -r requirements
 
 It is advised in any case to use a `Python Virtual environment <https://docs.python.org/3/tutorial/venv.html>`_ instead of a global installation.
 
