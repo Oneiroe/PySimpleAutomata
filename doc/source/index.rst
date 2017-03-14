@@ -67,8 +67,8 @@ Contents
    :maxdepth: -1
    :includehidden:
 
-   modules
    tutorial
+   modules
 
 Indices and tables
 ==================
