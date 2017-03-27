@@ -281,15 +281,15 @@ def dfa_minimization(dfa: dict) -> dict:
 
     # First bisimulation condition check (can be done just once)
     # s ∈ F iff t ∈ F
-    for element in z_current:
+    for (state_s, state_t) in z_current:
         if (
-                element[0] in dfa['accepting_states']
-                and element[1] not in dfa['accepting_states']
+                state_s in dfa['accepting_states']
+                and state_t not in dfa['accepting_states']
         ) or (
-                element[0] not in dfa['accepting_states']
-                and element[1] in dfa['accepting_states']
+                state_s not in dfa['accepting_states']
+                and state_t in dfa['accepting_states']
         ):
-            z_next.remove(element)
+            z_next.remove((state_s, state_t))
     z_current = z_next
 
     # Second and third condition of bisimularity check, while
@@ -312,6 +312,7 @@ def dfa_minimization(dfa: dict) -> dict:
                     # action a not possible in state element[0]
                     # or element[1]
                     z_next.remove(element)
+                    break
 
         if z_next == z_current:
             break
@@ -327,10 +328,13 @@ def dfa_minimization(dfa: dict) -> dict:
     ################################################################
     ### Minimal DFA construction
 
-    dfa_min = dict()
-    dfa_min['alphabet'] = dfa['alphabet'].copy()
-
-    dfa_min['states'] = set()
+    dfa_min = {
+        'alphabet': dfa['alphabet'].copy(),
+        'states': set(),
+        'initial_state': dfa['initial_state'],
+        'accepting_states': set(),
+        'transitions': dfa['transitions'].copy()
+    }
 
     # select one element for each equivalence set
     for equivalence_set in equivalence.values():
@@ -339,17 +343,16 @@ def dfa_minimization(dfa: dict) -> dict:
             dfa_min['states'].add(e)
             equivalence_set.add(e)
 
-    dfa_min['initial_state'] = dfa['initial_state']
     dfa_min['accepting_states'] = \
         dfa_min['states'].intersection(dfa['accepting_states'])
 
-    dfa_min['transitions'] = dfa['transitions'].copy()
     for t in dfa['transitions']:
         if t[0] not in dfa_min['states']:
             dfa_min['transitions'].pop(t)
-        if dfa['transitions'][t] not in dfa_min['states']:
-            dfa_min['transitions'][t] = equivalence[
-                dfa['transitions'][t]].intersection(dfa_min['states']).pop()
+        elif dfa['transitions'][t] not in dfa_min['states']:
+            dfa_min['transitions'][t] = \
+                equivalence[dfa['transitions'][t]]. \
+                    intersection(dfa_min['states']).pop()
 
     return dfa_min
 
@@ -375,16 +378,14 @@ def dfa_reachable(dfa: dict) -> dict:
     """
     reachable_states = set()  # set of reachable states from root
     reachable_states.add(dfa['initial_state'])
-    reachable_state_stack = reachable_states.copy()
-    while reachable_state_stack:
-        s = reachable_state_stack.pop()
+    boundary_stack = reachable_states.copy()
+    while boundary_stack:
+        s = boundary_stack.pop()
         for a in dfa['alphabet']:
             if (s, a) in dfa['transitions']:
                 if dfa['transitions'][s, a] not in reachable_states:
-                    reachable_state_stack.add(dfa['transitions'][s, a])
+                    boundary_stack.add(dfa['transitions'][s, a])
                     reachable_states.add(dfa['transitions'][s, a])
-            else:
-                pass
     dfa['states'] = reachable_states
     dfa['accepting_states'] = \
         dfa['accepting_states'].intersection(dfa['states'])
@@ -421,20 +422,20 @@ def dfa_co_reachable(dfa: dict) -> dict:
     """
 
     co_reachable_states = dfa['accepting_states'].copy()
-    co_reachable_states_stack = co_reachable_states.copy()
+    boundary_stack = co_reachable_states.copy()
 
     # inverse transition function
     inverse_transitions = {}
-    for k, v in dfa['transitions'].items():
-        inverse_transitions.setdefault(v, set()).add(k)
+    for key, value in dfa['transitions'].items():
+        inverse_transitions.setdefault(value, set()).add(key)
 
-    while co_reachable_states_stack:
-        s = co_reachable_states_stack.pop()
+    while boundary_stack:
+        s = boundary_stack.pop()
         if s in inverse_transitions:
-            for s_app in inverse_transitions[s]:
-                if s_app[0] not in co_reachable_states:
-                    co_reachable_states_stack.add(s_app[0])
-                    co_reachable_states.add(s_app[0])
+            for (state, action) in inverse_transitions[s]:
+                if state not in co_reachable_states:
+                    boundary_stack.add(state)
+                    co_reachable_states.add(state)
 
     dfa['states'] = co_reachable_states
 
@@ -450,11 +451,11 @@ def dfa_co_reachable(dfa: dict) -> dict:
         return dfa
 
     transitions = dfa['transitions'].copy()
-    for p in transitions:
-        if p[0] not in dfa['states']:
-            dfa['transitions'].pop(p)
-        elif dfa['transitions'][p] not in dfa['states']:
-            dfa['transitions'].pop(p)
+    for t in transitions:
+        if t[0] not in dfa['states']:
+            dfa['transitions'].pop(t)
+        elif dfa['transitions'][t] not in dfa['states']:
+            dfa['transitions'].pop(t)
 
     return dfa
 
@@ -514,25 +515,27 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
            'alphabet'] to be projected out from DFA.
     :return: *(dict)* representing a NFA.
     """
-    nfa = dfa.copy()
-    nfa['alphabet'] = dfa['alphabet'].difference(symbols_to_project)
-    nfa['transitions'] = dict()
+    nfa = {
+        'alphabet': dfa['alphabet'].difference(symbols_to_project),
+        'states': copy(dfa['states']),
+        'initial_states': set(),
+        'accepting_states': copy(dfa['accepting_states']),
+        'transitions': dict()
+    }
     # ε_X ⊆ S×S formed by the pairs of states (s, s_Y) such that
     # s_Y is reachable from s through transition symbols ∈ X
     e_x = dict()
 
-    # mark each transition using symbol a ∈ symbols_to_project
-    for transition in dfa['transitions']:
-        if transition[1] not in nfa['alphabet']:
-            e_x.setdefault(transition[0], set()).add(
-                dfa['transitions'][transition])
-        else:
-            nfa['transitions'].setdefault(transition, set()).add(
-                dfa['transitions'][transition])
+    # mark states linked through a transition involving projected symbols
+    for (state, action) in dfa['transitions']:
+        if action in symbols_to_project:
+            e_x.setdefault(state, set()).add(
+                dfa['transitions'][state, action])
 
+    # mark states linked through sequence of transitions with projected symbols
     current = deepcopy(e_x)
     while True:
-        for state in current.keys():
+        for state in current:
             for direct in current[state]:
                 if direct in current:
                     for reached in current[direct]:
@@ -542,8 +545,6 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
         current = deepcopy(e_x)
 
     # NFA initial states
-    nfa.pop('initial_state')
-    nfa['initial_states'] = set()
     nfa['initial_states'].add(dfa['initial_state'])
     if dfa['initial_state'] in e_x:
         for state_0 in e_x[dfa['initial_state']]:
@@ -551,29 +552,28 @@ def dfa_projection(dfa: dict, symbols_to_project: set) -> dict:
 
     # inverse transition function
     inv_e_x = dict()
-    for k, v in e_x.items():
-        for s in v:
-            inv_e_x.setdefault(s, set()).add(k)
+    for key, value in e_x.items():
+        for state in value:
+            inv_e_x.setdefault(state, set()).add(key)
 
     # NFA transitions
-    for transition in dfa['transitions']:
-        if transition[1] in nfa['alphabet']:
-            nfa['transitions'].setdefault(transition, set()).add(
-                dfa['transitions'][transition])
+    for (state, action) in dfa['transitions']:
+        if action in nfa['alphabet']:
+            nfa['transitions'].setdefault((state, action), set()).add(
+                dfa['transitions'][state, action])
 
-            # add all forward reachable set
-            if dfa['transitions'][transition] in e_x:
-                for reached in e_x[dfa['transitions'][transition]]:
-                    nfa['transitions'].setdefault(transition,
-                                                  set()).add(reached)
+            # add all states reachable through e_X
+            if dfa['transitions'][state, action] in e_x:
+                for reached in e_x[dfa['transitions'][state, action]]:
+                    nfa['transitions'][(state, action)].add(reached)
 
-            # link all states that reach transition[0] to forward
-            #  reachable set
-            for reached in nfa['transitions'][transition]:
-                if transition[0] in inv_e_x:
-                    for past in inv_e_x[transition[0]]:
+            # all states reachable by state must be directly reachable
+            # also by states that reach state through e_X
+            if state in inv_e_x:
+                for reached in nfa['transitions'][state, action]:
+                    for past in inv_e_x[state]:
                         nfa['transitions'].setdefault(
-                            (past, transition[1]), set()).add(reached)
+                            (past, action), set()).add(reached)
 
     return nfa
 

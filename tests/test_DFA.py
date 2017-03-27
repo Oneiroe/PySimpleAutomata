@@ -1593,7 +1593,8 @@ class TestDfaProjection(TestCase):
     def test_dfa_projection_side_effects(self):
         """ Tests the function doesn't make side effects on input """
         before = copy.deepcopy(self.dfa_projection_test_01)
-        DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
+        p=DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
+        p['states'].pop()
         self.assertDictEqual(before, self.dfa_projection_test_01)
 
 

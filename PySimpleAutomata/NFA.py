@@ -166,15 +166,15 @@ def nfa_determinization(nfa: dict) -> dict:
         dfa['initial_state'] = str(nfa['initial_states'])
         dfa['states'].add(str(nfa['initial_states']))
 
-    states = list()
-    stack = list()
-    stack.append(nfa['initial_states'])
-    states.append(nfa['initial_states'])
-    if len(states[0].intersection(nfa['accepting_states'])) > 0:
-        dfa['accepting_states'].add(str(states[0]))
+    sets_states = list()
+    sets_stack = list()
+    sets_stack.append(nfa['initial_states'])
+    sets_states.append(nfa['initial_states'])
+    if len(sets_states[0].intersection(nfa['accepting_states'])) > 0:
+        dfa['accepting_states'].add(str(sets_states[0]))
 
-    while stack:
-        current_set = stack.pop(0)
+    while sets_stack:
+        current_set = sets_stack.pop(0)
         for a in dfa['alphabet']:
             next_set = set()
             for state in current_set:
@@ -183,11 +183,11 @@ def nfa_determinization(nfa: dict) -> dict:
                         next_set.add(next_state)
             if len(next_set) == 0:
                 continue
-            if next_set not in states:
-                states.append(next_set)
-                stack.append(next_set)
+            if next_set not in sets_states:
+                sets_states.append(next_set)
+                sets_stack.append(next_set)
                 dfa['states'].add(str(next_set))
-                if len(next_set.intersection(nfa['accepting_states'])) > 0:
+                if next_set.intersection(nfa['accepting_states']):
                     dfa['accepting_states'].add(str(next_set))
 
             dfa['transitions'][str(current_set), a] = str(next_set)
@@ -316,7 +316,7 @@ def run_acceptance(nfa: dict, run: list, word: list) -> bool:
     else:
         # If empty input check if the initial state is also
         # accepting
-        if len(nfa['initial_states'].intersection(nfa['accepting_states'])) > 0:
+        if nfa['initial_states'].intersection(nfa['accepting_states']):
             return True
         else:
             return False
@@ -347,7 +347,8 @@ def word_acceptance(nfa: dict, word: list) -> bool:
     for action in word:
         for state in current_level:
             if (state, action) in nfa['transitions']:
-                next_level = next_level.union(nfa['transitions'][state, action])
+                next_level = next_level.union(
+                    nfa['transitions'][state, action])
         if len(next_level) < 1:
             return False
         current_level = next_level

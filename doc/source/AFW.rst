@@ -10,6 +10,7 @@ AFW
 
     .. autosummary::
 
+      formula_dual
       afw_complementation
       afw_completion
       afw_intersection

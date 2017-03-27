@@ -257,18 +257,26 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     return nfa
 
 
-def __replace_all(repls: dict, input: str) -> str:
-    """ Replaces from the string **input** all the occurrence of the
-    keys element of the dictionary **repls** with their relative
-    value.
+def formula_dual(input_formula: str) -> str:
+    """ Returns the dual of the input formula.
 
-    :param dict repls: dictionary containing the mapping
-                  between the values to be changed and their
-                  appropriate substitution;
-    :param str input: original string.
-    :return: *(str)*, string with the appropriate values replaced.
+    The dual operation on formulas in :math:`B^+(X)` is defined as:
+    the dual :math:`\overline{θ}` of a formula :math:`θ` is obtained from θ by
+    switching :math:`∧` and :math:`∨`, and
+    by switching :math:`true` and :math:`false`.
+
+    :param str input_formula: original string.
+    :return: *(str)*, dual of input formula.
     """
-    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], input)
+    conversion_dictionary = {
+        'and': 'or',
+        'or': 'and',
+        'True': 'False',
+        'False': 'True'
+    }
+
+    return re.sub('|'.join(re.escape(key) for key in conversion_dictionary.keys()),
+                  lambda k: conversion_dictionary[k.group(0)], input_formula)
 
 
 def afw_complementation(afw: dict) -> dict:
@@ -299,17 +307,24 @@ def afw_complementation(afw: dict) -> dict:
         'transitions': dict()
     }
 
-    conversion_dictionary = {
-        'and': 'or',
-        'or': 'and',
-        'True': 'False',
-        'False': 'True'
-    }
     for transition in completed_input['transitions']:
         complemented_afw['transitions'][transition] = \
-            __replace_all(conversion_dictionary,
-                          completed_input['transitions'][transition])
+            formula_dual(completed_input['transitions'][transition])
     return complemented_afw
+
+
+def __replace_all(repls: dict, input: str) -> str:
+    """ Replaces from the string **input** all the occurrence of the
+    keys element of the dictionary **repls** with their relative
+    value.
+
+    :param dict repls: dictionary containing the mapping
+                  between the values to be changed and their
+                  appropriate substitution;
+    :param str input: original string.
+    :return: *(str)*, string with the appropriate values replaced.
+    """
+    return re.sub('|'.join(re.escape(key) for key in repls.keys()), lambda k: repls[k.group(0)], input)
 
 
 # SIDE EFFECTS
@@ -387,10 +402,7 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
         union['accepting_states'].add(union['initial_state'])
 
     for trans in afw_2['transitions']:
-        if trans in union['transitions']:
-            union['transitions'][trans] += ' or (' + afw_2['transitions'][trans] + ')'
-        else:
-            union['transitions'][trans] = '(' + afw_2['transitions'][trans] + ')'
+        union['transitions'][trans] = afw_2['transitions'][trans]
 
     for action in union['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
@@ -444,12 +456,8 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
             intersection['initial_state'])
 
     for transition in afw_2['transitions']:
-        if transition in intersection['transitions']:
-            intersection['transitions'][transition] += \
-                ' or (' + afw_2['transitions'][transition] + ')'
-        else:
-            intersection['transitions'][transition] = \
-                afw_2['transitions'][transition]
+        intersection['transitions'][transition] = \
+            afw_2['transitions'][transition]
 
     for action in intersection['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
