@@ -193,27 +193,39 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     :math:`ρ((s_1 , s_2 ), a) = (s_{X1} , s_{X2} )` iff
     :math:`s_{X1} = ρ_1 (s_1 , a)` and :math:`s_{X2}= ρ_2 (s_2 , a)`
 
+    Implementation proposed guarantees the resulting DFA to be **reachable**.
+
     :param dict dfa_1: first input DFA;
     :param dict dfa_2: second input DFA.
     :return: *(dict)* representing the intersected DFA.
     """
     intersection = {
         'alphabet': copy(dfa_1['alphabet']),
-        'states': set(cartesian_product(dfa_1['states'], dfa_2['states'])),
+        'states': {(dfa_1['initial_state'], dfa_2['initial_state'])},
         'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
-        'accepting_states': set(cartesian_product(dfa_1['accepting_states'],
-                                                  dfa_2['accepting_states'])),
+        'accepting_states': set(),
         'transitions': dict()
     }
 
-    for (state_dfa_1, state_dfa_2) in intersection['states']:
+    boundary = set()
+    boundary.add(intersection['initial_state'])
+    while boundary:
+        (state_dfa_1, state_dfa_2) = boundary.pop()
+        if state_dfa_1 in dfa_1['accepting_states'] \
+                and state_dfa_2 in dfa_2['accepting_states']:
+            intersection['accepting_states'].add((state_dfa_1, state_dfa_2))
+
         for a in intersection['alphabet']:
             if (state_dfa_1, a) in dfa_1['transitions'] \
                     and (state_dfa_2, a) in dfa_2['transitions']:
-                destination_1 = dfa_1['transitions'][state_dfa_1, a]
-                destination_2 = dfa_2['transitions'][state_dfa_2, a]
+                next_state_1 = dfa_1['transitions'][state_dfa_1, a]
+                next_state_2 = dfa_2['transitions'][state_dfa_2, a]
+                if (next_state_1, next_state_2) not in intersection['states']:
+                    intersection['states'].add((next_state_1, next_state_2))
+                    boundary.add((next_state_1, next_state_2))
                 intersection['transitions'][(state_dfa_1, state_dfa_2), a] = \
-                    (destination_1, destination_2)
+                    (next_state_1, next_state_2)
+
     return intersection
 
 

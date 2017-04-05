@@ -295,7 +295,7 @@ class TestDfaIntersection(TestCase):
             automata_IO.dfa_dot_importer(
                 './tests/dot/dfa/dfa_intersection_2_test_02.dot')
 
-        self.dfa_test_disjoint = {
+        self.dfa_test_disjoint_full = {
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s3', 't2'),
@@ -343,7 +343,25 @@ class TestDfaIntersection(TestCase):
                 (('s0', 't0'), '5c'): ('s1', 't1')
             }
         }
-        self.dfa_test_intersecting = {
+        self.dfa_test_disjoint = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s0', 't0'),
+                ('s0', 't4'),
+                ('s1', 't1'),
+                ('s2', 't5'),
+                ('s3', 't2')
+            },
+            'initial_state': ('s0', 't0'),
+            'accepting_states': {('s0', 't4')},
+            'transitions': {
+                (('s3', 't2'), 'gum'): ('s0', 't4'),
+                (('s1', 't1'), '10c'): ('s3', 't2'),
+                (('s1', 't1'), '5c'): ('s2', 't5'),
+                (('s0', 't0'), '5c'): ('s1', 't1')
+            }
+        }
+        self.dfa_test_intersecting_full = {
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s1', 'c2'), ('c3', 't2'), ('c2', 'c3'),
@@ -387,7 +405,26 @@ class TestDfaIntersection(TestCase):
                 (('c2', 't0'), '5c'): ('c3', 'c1')
             }
         }
-        self.dfa_test_equals = {
+        self.dfa_test_intersecting = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s0', 't0'),
+                ('c1', 'c1'),
+                ('c2', 'c2'),
+                ('c3', 'c3'),
+                ('c4', 'c4')
+            },
+            'initial_state': ('s0', 't0'),
+            'accepting_states': {('c4', 'c4')},
+            'transitions': {
+                (('s0', 't0'), '5c'): ('c1', 'c1'),
+                (('c1', 'c1'), '10c'): ('c2', 'c2'),
+                (('c2', 'c2'), 'gum'): ('c4', 'c4'),
+                (('c3', 'c3'), 'gum'): ('c1', 'c1'),
+                (('c2', 'c2'), '5c'): ('c3', 'c3')
+            }
+        }
+        self.dfa_test_equals_full = {
             'alphabet': {'5c', '10c', 'gum'},
             'states': {
                 ('s1', 's0'), ('s0', 's1'), ('s3', 's3'),
@@ -417,6 +454,26 @@ class TestDfaIntersection(TestCase):
                 (('s3', 's3'), 'gum'): ('s0', 's0'),
                 (('s1', 's1'), '5c'): ('s2', 's2'),
                 (('s1', 's2'), '10c'): ('s3', 's3'),
+                (('s0', 's0'), '5c'): ('s1', 's1')
+            }
+        }
+        self.dfa_test_equals = {
+            'alphabet': {'5c', '10c', 'gum'},
+            'states': {
+                ('s3', 's3'),
+                ('s2', 's2'),
+                ('s0', 's0'),
+                ('s1', 's1')
+            },
+            'initial_state': ('s0', 's0'),
+            'accepting_states': {('s0', 's0')},
+            'transitions': {
+                (('s1', 's1'), '10c'): ('s3', 's3'),
+                (('s2', 's2'), '5c'): ('s3', 's3'),
+                (('s2', 's2'), '10c'): ('s3', 's3'),
+                (('s0', 's0'), '10c'): ('s2', 's2'),
+                (('s3', 's3'), 'gum'): ('s0', 's0'),
+                (('s1', 's1'), '5c'): ('s2', 's2'),
                 (('s0', 's0'), '5c'): ('s1', 's1')
             }
         }
@@ -485,36 +542,40 @@ class TestDfaIntersection(TestCase):
 
     def test_dfa_intersection_disjoint(self):
         """ Tests a correct intersection between disjointed DFAs """
-        self.assertDictEqual(
-            DFA.dfa_intersection(self.dfa_intersection_1_test_01,
-                                 self.dfa_intersection_2_test_01),
-            self.dfa_test_disjoint)
+        intersection = DFA.dfa_intersection(self.dfa_intersection_1_test_01,
+                                            self.dfa_intersection_2_test_01)
+        self.assertTrue(intersection['states'].issubset(
+            self.dfa_test_disjoint_full['states']))
+        self.assertTrue(intersection['accepting_states'].issubset(
+            self.dfa_test_disjoint_full['accepting_states']))
+        self.assertDictEqual(intersection, self.dfa_test_disjoint)
 
     def test_dfa_intersection_intersecting(self):
         """ Tests a correct intersection between DFAs partially
         intersected"""
-        self.assertDictEqual(
-            DFA.dfa_intersection(self.dfa_intersection_1_test_02,
-                                 self.dfa_intersection_2_test_02),
-            self.dfa_test_intersecting)
+        intersection = DFA.dfa_intersection(self.dfa_intersection_1_test_02,
+                                            self.dfa_intersection_2_test_02)
+        self.assertDictEqual(intersection, self.dfa_test_intersecting)
 
     def test_dfa_intersection_equals(self):
         """ Tests a correct intersection between the same DFA """
-        self.assertDictEqual(
-            DFA.dfa_intersection(self.dfa_intersection_1_test_01,
-                                 self.dfa_intersection_1_test_01),
-            self.dfa_test_equals)
+        intersection = DFA.dfa_intersection(self.dfa_intersection_1_test_01,
+                                            self.dfa_intersection_1_test_01)
+        automata_IO.dfa_to_dot(intersection,
+                               'intersection_same',
+                               './tests/outputs')
+        self.assertDictEqual(intersection, self.dfa_test_equals)
 
     @unittest.expectedFailure
     def test_dfa_intersection_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [
-        EXPECTED FAILURE] """
+        """ Tests an input different from a dict() object.
+        [EXPECTED FAILURE] """
         DFA.dfa_intersection(1, self.dfa_intersection_2_test_01)
 
     @unittest.expectedFailure
     def test_dfa_intersection_wrong_input_2(self):
-        """ Tests an input different from a dict() object. [
-        EXPECTED FAILURE]"""
+        """ Tests an input different from a dict() object.
+        [EXPECTED FAILURE]"""
         DFA.dfa_intersection(self.dfa_intersection_1_test_01, 1)
 
     @unittest.expectedFailure
@@ -538,6 +599,7 @@ class TestDfaIntersection(TestCase):
             self.dfa_test_side_effect_1,
             self.dfa_test_side_effect_2)
         self.dfa_test_side_effect_1['alphabet'].pop()
+        self.dfa_test_side_effect_2['alphabet'].pop()
         self.assertNotEquals(
             self.dfa_test_side_effect_1['alphabet'],
             intersection['alphabet'])
