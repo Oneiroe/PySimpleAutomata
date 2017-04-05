@@ -34,6 +34,7 @@ from copy import deepcopy
 from copy import copy
 
 
+@DeprecationWarning
 def run_acceptance(dfa: dict, run: list, word: list) -> bool:
     """ Checks if the given **run** of states in a DFA accepts the
     given **word**, returning True/False.
@@ -76,6 +77,33 @@ def run_acceptance(dfa: dict, run: list, word: list) -> bool:
         else:
             return False
     return True
+
+
+def run(dfa: dict, word: list) -> list:
+    """ Returns the **run** as list of states that reads the given **word**
+    or the partial **run** before failure if not accepting.
+
+    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗`
+    is a sequence :math:`s_0 · · · s_n` of n+1 states in S
+    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i ,
+    a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic
+    automaton can have at most one run on a given input word.
+    The run r is accepting if :math:`s_n ∈ F`.
+
+    :param dict dfa: input DFA;
+    :param list word: list of actions ∈ dfa['alphabet'].
+    :return: *(bool)*, True if the word is accepted, False in the
+             other case.
+    """
+    current_state = dfa['initial_state']
+    result_run = [dfa['initial_state']]
+    for action in word:
+        if (current_state, action) in dfa['transitions']:
+            current_state = dfa['transitions'][current_state, action]
+            result_run.append(current_state)
+        else:
+            return result_run
+    return result_run
 
 
 def word_acceptance(dfa: dict, word: list) -> bool:
@@ -283,10 +311,10 @@ def dfa_minimization(dfa: dict) -> dict:
     # s ∈ F iff t ∈ F
     for (state_s, state_t) in z_current:
         if (
-                state_s in dfa['accepting_states']
+                        state_s in dfa['accepting_states']
                 and state_t not in dfa['accepting_states']
         ) or (
-                state_s not in dfa['accepting_states']
+                        state_s not in dfa['accepting_states']
                 and state_t in dfa['accepting_states']
         ):
             z_next.remove((state_s, state_t))
@@ -340,7 +368,7 @@ def dfa_minimization(dfa: dict) -> dict:
     for equivalence_set in equivalence.values():
         if dfa_min['states'].isdisjoint(equivalence_set):
             e = equivalence_set.pop()
-            dfa_min['states'].add(e)
+            dfa_min['states'].add(e)  # TODO highlight this instruction
             equivalence_set.add(e)
 
     dfa_min['accepting_states'] = \
@@ -377,20 +405,24 @@ def dfa_reachable(dfa: dict) -> dict:
     :return: *(dict)* representing the pruned DFA.
     """
     reachable_states = set()  # set of reachable states from root
+    boundary = set()
     reachable_states.add(dfa['initial_state'])
-    boundary_stack = reachable_states.copy()
-    while boundary_stack:
-        s = boundary_stack.pop()
+    boundary.add(dfa['initial_state'])
+
+    while boundary:
+        s = boundary.pop()
         for a in dfa['alphabet']:
             if (s, a) in dfa['transitions']:
                 if dfa['transitions'][s, a] not in reachable_states:
-                    boundary_stack.add(dfa['transitions'][s, a])
                     reachable_states.add(dfa['transitions'][s, a])
+                    boundary.add(dfa['transitions'][s, a])
     dfa['states'] = reachable_states
     dfa['accepting_states'] = \
         dfa['accepting_states'].intersection(dfa['states'])
 
-    transitions = dfa['transitions'].copy()
+    transitions = dfa[
+        'transitions'].copy()  # TODO why copy? because for doesn't cycle
+    # mutable set....
     for t in transitions:
         if t[0] not in dfa['states']:
             dfa['transitions'].pop(t)
@@ -599,7 +631,8 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
     visited = set()
     visited.add(dfa['initial_state'])
     while queue:
-        state = queue.pop()
+        state = queue.pop()  # TODO note that this pop is applied to a list
+        # not like in sets
         visited.add(state)
         for a in dfa['alphabet']:
             if (state, a) in dfa['transitions']:

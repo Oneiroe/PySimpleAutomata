@@ -1593,7 +1593,7 @@ class TestDfaProjection(TestCase):
     def test_dfa_projection_side_effects(self):
         """ Tests the function doesn't make side effects on input """
         before = copy.deepcopy(self.dfa_projection_test_01)
-        p=DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
+        p = DFA.dfa_projection(self.dfa_projection_test_01, {'5c'})
         p['states'].pop()
         self.assertDictEqual(before, self.dfa_projection_test_01)
 
@@ -1680,3 +1680,63 @@ class TestRenameDfaStates(TestCase):
         automata_IO.dfa_to_dot(DFA.rename_dfa_states(self.dfa_1, 'TOP_'),
                                'dfa_renamed_1',
                                'tests/outputs')
+
+
+class TestRun(TestCase):
+    def setUp(self):
+        self.dfa_run_test_01 = \
+            automata_IO.dfa_dot_importer(
+                './tests/dot/dfa/dfa_run_test_01.dot')
+        self.dfa_run_test_02 = \
+            automata_IO.dfa_dot_importer(
+                './tests/dot/dfa/dfa_run_test_02.dot')
+
+    def test_run(self):
+        """ Tests a correct word """
+        self.assertListEqual(
+            DFA.run(self.dfa_run_test_01,
+                    ['5c', '10c', 'gum', '5c', '10c', 'gum']),
+            ['s0', 's1', 's3', 's0', 's1', 's3', 's0']
+        )
+
+    def test_run_partial(self):
+        """ Tests a non accepting word, with good alphabet"""
+        self.assertListEqual(
+            DFA.run(self.dfa_run_test_01,
+                    ['5c', '10c', 'gum', '5c', '10c']),
+            ['s0', 's1', 's3', 's0', 's1', 's3']
+        )
+
+    def test_run_wrong_alphabet(self):
+        """ Tests a non correct word, with letters not form the
+        dfa alphabet """
+        self.assertListEqual(
+            DFA.run(self.dfa_run_test_01, ['5c', '10c', 'wrong']),
+            ['s0', 's1', 's3']
+        )
+
+    def test_run_empty_word(self):
+        """ Tests an empty word as input"""
+        self.assertListEqual(
+            DFA.run(self.dfa_run_test_02,[]),
+            ['s0']
+        )
+
+    @unittest.expectedFailure
+    def test_run_wrong_input_1(self):
+        """ Tests an input different from a dict() object.
+        [EXPECTED FAILURE]"""
+        DFA.run(1, ['5c', '10c', 'gum', '5c', '10c'])
+
+    @unittest.expectedFailure
+    def test_run_wrong_input_2(self):
+        """ Tests an input different from a list() object.
+        [EXPECTED FAILURE]"""
+        DFA.run(self.dfa_run_test_01, 1)
+
+    @unittest.expectedFailure
+    def test_run_wrong_dict(self):
+        """ Tests a dict() in input different from a well
+        formatted dict() representing a DFA. [EXPECTED FAILURE]"""
+        DFA.run({'goofy': 'donald'},
+                ['5c', '10c', 'gum', '5c', '10c'])
