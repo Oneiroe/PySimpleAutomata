@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='PySimpleAutomata',
-    version='0.2.1',
+    version='0.2.2',
     author='Alessio Cecconi',
     author_email='alessio.cecconi.1991@gmail.com',
     url='https://github.com/Oneiroe/PySimpleAutomata',
