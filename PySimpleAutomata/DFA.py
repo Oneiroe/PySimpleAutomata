@@ -29,9 +29,7 @@ In this module a DFA is defined as follows
         **value**: (*arriving_state* in states).
 """
 
-from itertools import product as cartesian_product
 from copy import deepcopy
-from copy import copy
 
 
 def dfa_run(dfa: dict, word: list) -> list:
@@ -515,9 +513,9 @@ def dfa_projection(dfa: dict, symbols_to_remove: set) -> dict:
     """
     nfa = {
         'alphabet': dfa['alphabet'].difference(symbols_to_remove),
-        'states': copy(dfa['states']),
+        'states': dfa['states'].copy(),
         'initial_states': {dfa['initial_state']},
-        'accepting_states': copy(dfa['accepting_states']),
+        'accepting_states': dfa['accepting_states'].copy(),
         'transitions': dict()
     }
 
@@ -546,7 +544,7 @@ def dfa_projection(dfa: dict, symbols_to_remove: set) -> dict:
                                 (state, act), set()).add(equivalent_next)
                             # if equivalent_next has equivalent states
                             if equivalent_next in e_x:
-                                # the transition arrive also to these states
+                                # the transition leads also to these states
                                 for other_equivalent in e_x[equivalent_next]:
                                     nfa['transitions'][state, act].add(
                                         other_equivalent)
