@@ -34,54 +34,9 @@ from copy import deepcopy
 from copy import copy
 
 
-@DeprecationWarning
-def run_acceptance(dfa: dict, run: list, word: list) -> bool:
-    """ Checks if the given **run** of states in a DFA accepts the
-    given **word**, returning True/False.
-
-    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗`
-    is a sequence :math:`s_0 · · · s_n` of n+1 states in S
-    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i ,
-    a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic
-    automaton can have at most one run on a given input word.
-    The run r is accepting if :math:`s_n ∈ F`.
-
-    :param dict dfa: input DFA;
-    :param list run: list of states ∈ dfa['states'];
-    :param list word: list of actions ∈ dfa['alphabet'].
-    :return: *(bool)* True if the word is accepted, False in the
-             other case.
-    """
-
-    if len(run) > 0:
-        # If 'run' fist state is not an initial state return False
-        if run[0] != dfa['initial_state']:
-            return False
-        # If last 'run' state is not an accepting state return False
-        if run[-1] not in dfa['accepting_states']:
-            return False
-    else:
-        # If input is empty, checks if the initial state is also
-        # accepting
-        if dfa['initial_state'] in dfa['accepting_states']:
-            return True
-        else:
-            return False
-    if len(word) != len(run) - 1:
-        return False
-
-    for i in range(len(word)):
-        if (run[i], word[i]) in dfa['transitions']:
-            if dfa['transitions'][run[i], word[i]] != run[i + 1]:
-                return False
-        else:
-            return False
-    return True
-
-
-def run(dfa: dict, word: list) -> list:
-    """ Returns the **run** as list of states that reads the given **word**
-    or the partial **run** before failure if not accepting.
+def dfa_run(dfa: dict, word: list) -> list:
+    """ Returns the **run**, as list of states, that reads the given **word**
+    or the **partial run** before failure if not accepting.
 
     A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗`
     is a sequence :math:`s_0 · · · s_n` of n+1 states in S
@@ -96,17 +51,17 @@ def run(dfa: dict, word: list) -> list:
              other case.
     """
     current_state = dfa['initial_state']
-    result_run = [dfa['initial_state']]
+    run = [dfa['initial_state']]
     for action in word:
         if (current_state, action) in dfa['transitions']:
             current_state = dfa['transitions'][current_state, action]
-            result_run.append(current_state)
+            run.append(current_state)
         else:
-            return result_run
-    return result_run
+            return run
+    return run
 
 
-def word_acceptance(dfa: dict, word: list) -> bool:
+def dfa_word_acceptance(dfa: dict, word: list) -> bool:
     """ Checks if a given **word** is accepted by a DFA,
     returning True/false.
 
@@ -119,16 +74,13 @@ def word_acceptance(dfa: dict, word: list) -> bool:
     :return: *(bool)*, True if the word is accepted, False in the
              other case.
     """
-    current_state = dfa['initial_state']
-    for action in word:
-        if (current_state, action) in dfa['transitions']:
-            current_state = dfa['transitions'][current_state, action]
-        else:
-            return False
-    if current_state in dfa['accepting_states']:
-        return True
-    else:
+    run = dfa_run(dfa, word)
+
+    if run[-1] not in dfa['accepting_states'] \
+            or (len(run) - 1) != (len(word)):
         return False
+    else:
+        return True
 
 
 # Side effect on input dfa
@@ -330,10 +282,10 @@ def dfa_minimization(dfa: dict) -> dict:
     for state_s in dfa['states']:
         for state_t in dfa['states']:
             if (
-                        state_s in dfa['accepting_states']
+                            state_s in dfa['accepting_states']
                     and state_t in dfa['accepting_states']
             ) or (
-                        state_s not in dfa['accepting_states']
+                            state_s not in dfa['accepting_states']
                     and state_t not in dfa['accepting_states']
             ):
                 z_next.add((state_s, state_t))

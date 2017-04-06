@@ -20,8 +20,8 @@ DFA
       dfa_reachable
       dfa_trimming
       dfa_union
-      run_acceptance
-      word_acceptance
+      dfa_run
+      dfa_word_acceptance
       rename_dfa_states
 
    .. rubric:: Functions

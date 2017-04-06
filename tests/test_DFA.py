@@ -6,97 +6,7 @@ from PySimpleAutomata import DFA
 from PySimpleAutomata import automata_IO
 
 
-class TestRunAcceptance(TestCase):
-    def setUp(self):
-        self.dfa_run_acceptance_test_01 = \
-            automata_IO.dfa_dot_importer(
-                './tests/dot/dfa/dfa_run_acceptance_test_01.dot')
-        self.dfa_run_acceptance_test_02 = \
-            automata_IO.dfa_dot_importer(
-                './tests/dot/dfa/dfa_run_acceptance_test_02.dot')
-
-    def test_run_acceptance(self):
-        """ Tests a correct run """
-        self.assertTrue(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                               ['s0', 's1', 's3', 's0'],
-                               ['5c', '10c', 'gum']))
-
-    def test_run_acceptance_false(self):
-        """ Tests a non correct run, good alphabet"""
-        self.assertFalse(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                               ['s0', 's1', 's3'], ['5c', '10c']))
-
-    def test_run_acceptance_wrong_alphabet(self):
-        """ Tests a non correct run with letters not present in
-        the alphabet"""
-        self.assertFalse(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                               ['s0', 's1', 's3', 's0'],
-                               ['5c', '10c', 'wrong']))
-
-    def test_run_acceptance_wrong_states(self):
-        """ Tests a non correct run with states not present in
-        the dfa"""
-        self.assertFalse(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                               ['s0', 's1', 'fake', 's0'],
-                               ['5c', '10c', 'gum']))
-
-    def test_run_acceptance_empty_run(self):
-        """ Tests an empty run """
-        self.assertFalse(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_02, [],
-                               []))
-
-    def test_run_acceptance_wrong_sizes(self):
-        """ Tests run and word with wrong sizes """
-        self.assertFalse(
-            DFA.run_acceptance(self.dfa_run_acceptance_test_02,
-                               ['s0', 's1', 's3'], ['5c']))
-
-    @unittest.expectedFailure
-    def test_run_acceptance_wrong_input_1(self):
-        """ Tests an input different from a dict() object. [
-        EXPECTED FAILURE]"""
-        DFA.run_acceptance(1, ['s0', 's1', 's3', 's0'],
-                           ['5c', '10c', 'gum'])
-
-    @unittest.expectedFailure
-    def test_run_acceptance_wrong_input_2(self):
-        """ Tests an input different from a list() object. [
-        EXPECTED FAILURE]"""
-        DFA.run_acceptance(self.dfa_run_acceptance_test_01, 1,
-                           ['5c', '10c', 'gum'])
-
-    @unittest.expectedFailure
-    def test_run_acceptance_wrong_input_3(self):
-        """ Tests an input different from a list() object. [
-        EXPECTED FAILURE]"""
-        DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                           ['s0', 's1', 's3', 's0'], 1)
-
-    @unittest.expectedFailure
-    def test_run_acceptance_wrong_dict(self):
-        """ Tests a dict() in input different from a well
-        formatted dict() representing a DFA. [EXPECTED FAILURE]"""
-        DFA.run_acceptance({'goofy': 'donald'},
-                           ['s0', 's1', 's3', 's0'],
-                           ['5c', '10c', 'gum'])
-
-    def test_run_acceptance_check_side_effects(self):
-        """ Tests that the function doesn't make any side effect
-        on the input"""
-        before = copy.deepcopy(self.dfa_run_acceptance_test_01)
-        DFA.run_acceptance(self.dfa_run_acceptance_test_01,
-                           ['s0', 's1', 's3', 's0'],
-                           ['5c', '10c', 'gum'])
-        self.assertDictEqual(before,
-                             self.dfa_run_acceptance_test_01)
-
-
-class TestWordAcceptance(TestCase):
+class TestDfaWordAcceptance(TestCase):
     def setUp(self):
         self.dfa_word_acceptance_test_01 = \
             automata_IO.dfa_dot_importer(
@@ -108,47 +18,47 @@ class TestWordAcceptance(TestCase):
     def test_word_acceptance(self):
         """ Tests a correct word """
         self.assertTrue(
-            DFA.word_acceptance(self.dfa_word_acceptance_test_01,
-                                ['5c', '10c', 'gum', '5c', '10c',
-                                 'gum']))
+            DFA.dfa_word_acceptance(self.dfa_word_acceptance_test_01,
+                                    ['5c', '10c', 'gum', '5c', '10c',
+                                     'gum']))
 
     def test_word_acceptance_false(self):
         """ Tests a non correct word, with good alphabet"""
         self.assertFalse(
-            DFA.word_acceptance(self.dfa_word_acceptance_test_01,
-                                ['5c', '10c', 'gum', '5c', '10c']))
+            DFA.dfa_word_acceptance(self.dfa_word_acceptance_test_01,
+                                    ['5c', '10c', 'gum', '5c', '10c']))
 
     def test_word_acceptance_wrong_alphabet(self):
         """ Tests a non correct word, with letters not form the
         dfa alphabet """
         self.assertFalse(
-            DFA.word_acceptance(self.dfa_word_acceptance_test_01,
-                                ['5c', '10c', 'wrong']))
+            DFA.dfa_word_acceptance(self.dfa_word_acceptance_test_01,
+                                    ['5c', '10c', 'wrong']))
 
     def test_word_acceptance_empty_word(self):
         """ Tests an empty word"""
         self.assertFalse(
-            DFA.word_acceptance(self.dfa_word_acceptance_test_02,
-                                []))
+            DFA.dfa_word_acceptance(self.dfa_word_acceptance_test_02,
+                                    []))
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_1(self):
         """ Tests an input different from a dict() object. [
         EXPECTED FAILURE]"""
-        DFA.word_acceptance(1, ['5c', '10c', 'gum', '5c', '10c'])
+        DFA.dfa_word_acceptance(1, ['5c', '10c', 'gum', '5c', '10c'])
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_2(self):
         """ Tests an input different from a list() object. [
         EXPECTED FAILURE]"""
-        DFA.word_acceptance(self.dfa_word_acceptance_test_01, 1)
+        DFA.dfa_word_acceptance(self.dfa_word_acceptance_test_01, 1)
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_dict(self):
         """ Tests a dict() in input different from a well
         formatted dict() representing a DFA. [EXPECTED FAILURE]"""
-        DFA.word_acceptance({'goofy': 'donald'},
-                            ['5c', '10c', 'gum', '5c', '10c'])
+        DFA.dfa_word_acceptance({'goofy': 'donald'},
+                                ['5c', '10c', 'gum', '5c', '10c'])
 
 
 class TestDfaCompletion(TestCase):
@@ -1889,7 +1799,7 @@ class TestRenameDfaStates(TestCase):
                                'tests/outputs')
 
 
-class TestRun(TestCase):
+class TestDfaRun(TestCase):
     def setUp(self):
         self.dfa_run_test_01 = \
             automata_IO.dfa_dot_importer(
@@ -1901,16 +1811,16 @@ class TestRun(TestCase):
     def test_run(self):
         """ Tests a correct word """
         self.assertListEqual(
-            DFA.run(self.dfa_run_test_01,
-                    ['5c', '10c', 'gum', '5c', '10c', 'gum']),
+            DFA.dfa_run(self.dfa_run_test_01,
+                        ['5c', '10c', 'gum', '5c', '10c', 'gum']),
             ['s0', 's1', 's3', 's0', 's1', 's3', 's0']
         )
 
     def test_run_partial(self):
         """ Tests a non accepting word, with good alphabet"""
         self.assertListEqual(
-            DFA.run(self.dfa_run_test_01,
-                    ['5c', '10c', 'gum', '5c', '10c']),
+            DFA.dfa_run(self.dfa_run_test_01,
+                        ['5c', '10c', 'gum', '5c', '10c']),
             ['s0', 's1', 's3', 's0', 's1', 's3']
         )
 
@@ -1918,14 +1828,14 @@ class TestRun(TestCase):
         """ Tests a non correct word, with letters not form the
         dfa alphabet """
         self.assertListEqual(
-            DFA.run(self.dfa_run_test_01, ['5c', '10c', 'wrong']),
+            DFA.dfa_run(self.dfa_run_test_01, ['5c', '10c', 'wrong']),
             ['s0', 's1', 's3']
         )
 
     def test_run_empty_word(self):
         """ Tests an empty word as input"""
         self.assertListEqual(
-            DFA.run(self.dfa_run_test_02, []),
+            DFA.dfa_run(self.dfa_run_test_02, []),
             ['s0']
         )
 
@@ -1933,17 +1843,17 @@ class TestRun(TestCase):
     def test_run_wrong_input_1(self):
         """ Tests an input different from a dict() object.
         [EXPECTED FAILURE]"""
-        DFA.run(1, ['5c', '10c', 'gum', '5c', '10c'])
+        DFA.dfa_run(1, ['5c', '10c', 'gum', '5c', '10c'])
 
     @unittest.expectedFailure
     def test_run_wrong_input_2(self):
         """ Tests an input different from a list() object.
         [EXPECTED FAILURE]"""
-        DFA.run(self.dfa_run_test_01, 1)
+        DFA.dfa_run(self.dfa_run_test_01, 1)
 
     @unittest.expectedFailure
     def test_run_wrong_dict(self):
         """ Tests a dict() in input different from a well
         formatted dict() representing a DFA. [EXPECTED FAILURE]"""
-        DFA.run({'goofy': 'donald'},
-                ['5c', '10c', 'gum', '5c', '10c'])
+        DFA.dfa_run({'goofy': 'donald'},
+                    ['5c', '10c', 'gum', '5c', '10c'])
