@@ -322,56 +322,50 @@ def dfa_minimization(dfa: dict) -> dict:
     ################################################################
     ### Greatest-fixpoint
 
-    # cartesian product of DFA states
-    z_current = set(cartesian_product(dfa['states'], dfa['states']))
-
-    z_next = z_current.copy()
+    z_current = set()
+    z_next = set()
 
     # First bisimulation condition check (can be done just once)
     # s ∈ F iff t ∈ F
-    for (state_s, state_t) in z_current:
-        if (
+    for state_s in dfa['states']:
+        for state_t in dfa['states']:
+            if (
                         state_s in dfa['accepting_states']
-                and state_t not in dfa['accepting_states']
-        ) or (
+                    and state_t in dfa['accepting_states']
+            ) or (
                         state_s not in dfa['accepting_states']
-                and state_t in dfa['accepting_states']
-        ):
-            z_next.remove((state_s, state_t))
-    z_current = z_next
+                    and state_t not in dfa['accepting_states']
+            ):
+                z_next.add((state_s, state_t))
 
-    # Second and third condition of bisimularity check, while
-    # succeed or fail
-    while z_current:
+    # Second and third condition of bisimularity check
+    while z_current != z_next:
+        z_current = z_next
         z_next = z_current.copy()
-        for element in z_current:
+        for (state_1, state_2) in z_current:
             # for all s0,a s.t. ρ(s, a) = s_0 , there exists t 0
             # s.t. ρ(t, a) = t 0 and (s_0 , t 0 ) ∈ Z i ;
             for a in dfa['alphabet']:
-                if (element[0], a) in dfa['transitions'] \
-                        and (element[1], a) in dfa['transitions']:
+                if (state_1, a) in dfa['transitions'] \
+                        and (state_2, a) in dfa['transitions']:
                     if (
-                            dfa['transitions'][element[0], a],
-                            dfa['transitions'][element[1], a]
+                            dfa['transitions'][state_1, a],
+                            dfa['transitions'][state_2, a]
                     ) not in z_current:
-                        z_next.remove(element)
+                        z_next.remove((state_1, state_2))
                         break
                 else:
                     # action a not possible in state element[0]
                     # or element[1]
-                    z_next.remove(element)
+                    z_next.remove((state_1, state_2))
                     break
-
-        if z_next == z_current:
-            break
-        z_current = z_next
 
     ################################################################
     ### Equivalence Sets
 
-    equivalence = {}
-    for element in z_current:
-        equivalence.setdefault(element[0], set()).add(element[1])
+    equivalence = dict()
+    for (state_1, state_2) in z_current:
+        equivalence.setdefault(state_1, set()).add(state_2)
 
     ################################################################
     ### Minimal DFA construction
