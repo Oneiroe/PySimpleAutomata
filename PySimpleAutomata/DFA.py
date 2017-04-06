@@ -153,7 +153,7 @@ def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
     :return: *(dict)* representing the intersected DFA.
     """
     intersection = {
-        'alphabet': copy(dfa_1['alphabet']),
+        'alphabet': dfa_1['alphabet'].intersection(dfa_2['alphabet']),
         'states': {(dfa_1['initial_state'], dfa_2['initial_state'])},
         'initial_state': (dfa_1['initial_state'], dfa_2['initial_state']),
         'accepting_states': set(),
