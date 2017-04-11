@@ -45,8 +45,7 @@ def dfa_run(dfa: dict, word: list) -> list:
 
     :param dict dfa: input DFA;
     :param list word: list of actions ∈ dfa['alphabet'].
-    :return: *(bool)*, True if the word is accepted, False in the
-             other case.
+    :return: *(list)*, list of states reading or partially reading the word.
     """
     current_state = dfa['initial_state']
     run = [dfa['initial_state']]
