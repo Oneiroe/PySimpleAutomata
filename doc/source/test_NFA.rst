@@ -17,7 +17,6 @@ Tests NFA
         TestNfaNonemptinessCheck
         TestNfaNonuniversalityCheck
         TestNfaInterestingnessCheck
-        TestRunAcceptance
-        TestWordAcceptance
+        TestNfaWordAcceptance
 
     .. rubric:: Functions

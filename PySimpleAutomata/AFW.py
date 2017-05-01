@@ -104,7 +104,7 @@ def __recursive_acceptance(afw, state, remaining_word):
     return False
 
 
-def word_acceptance(afw: dict, word: list) -> bool:
+def afw_word_acceptance(afw: dict, word: list) -> bool:
     """ Checks if a **word** is accepted by input AFW, returning
     True/False.
 

@@ -20,7 +20,6 @@ DFA
       dfa_reachable
       dfa_trimming
       dfa_union
-      dfa_run
       dfa_word_acceptance
       rename_dfa_states
 

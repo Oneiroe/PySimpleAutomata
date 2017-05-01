@@ -10,7 +10,7 @@ Tests AFW
 
     .. autosummary::
 
-        TestWordAcceptance
+        TestAfwWordAcceptance
         TestNfaToAfwConversion
         TestAfwToNfaConversion
         TestAfwCompletion

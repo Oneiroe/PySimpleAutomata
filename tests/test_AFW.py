@@ -8,7 +8,7 @@ from PySimpleAutomata import AFW
 from PySimpleAutomata import automata_IO
 
 
-class TestWordAcceptance(TestCase):
+class TestAfwWordAcceptance(TestCase):
     def setUp(self):
         self.maxDiff = None
         self.afw_word_acceptance_test_01 = automata_IO.afw_json_importer('./tests/json/afw/afw_word_acceptance_test_01.json')
@@ -22,40 +22,40 @@ class TestWordAcceptance(TestCase):
 
     def test_word_acceptance(self):
         """ Tests a correct word acceptance """
-        self.assertTrue(AFW.word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a']))
+        self.assertTrue(AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a']))
 
     def test_word_acceptance_false(self):
         """ Tests a non correct word to be refused, with good alphabet """
-        self.assertFalse(AFW.word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'a']))
+        self.assertFalse(AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'a']))
 
     def test_word_acceptance_wrong_alphabet(self):
         """ Tests a non correct word, with letters not form the afw alphabet """
-        self.assertFalse(AFW.word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'wrong']))
+        self.assertFalse(AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'wrong']))
 
     def test_word_acceptance_empty_word(self):
         """ Tests an empty word"""
         self.afw_word_acceptance_test_01['initial_state'] = 'q1'
-        self.assertFalse(AFW.word_acceptance(self.afw_word_acceptance_test_01, []))
+        self.assertFalse(AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, []))
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_1(self):
         """ Tests an input different from a dict() object. [EXPECTED FAILURE]"""
-        AFW.word_acceptance(1, ['a', 'b', 'b', 'a', 'b'])
+        AFW.afw_word_acceptance(1, ['a', 'b', 'b', 'a', 'b'])
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_input_2(self):
         """ Tests an input different from a list() object. [EXPECTED FAILURE]"""
-        AFW.word_acceptance(self.afw_word_acceptance_test_01, 1)
+        AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, 1)
 
     @unittest.expectedFailure
     def test_word_acceptance_wrong_dict(self):
         """ Tests a dict() in input different from a well formatted dict() representing a AFW. [EXPECTED FAILURE]"""
-        AFW.word_acceptance({'goofy': 'donald'}, ['a', 'b', 'b', 'a', 'b'])
+        AFW.afw_word_acceptance({'goofy': 'donald'}, ['a', 'b', 'b', 'a', 'b'])
 
     def test_word_acceptance_check_side_effects(self):
         """ Tests that the function doesn't make any side effect on the input"""
         before = copy.deepcopy(self.afw_word_acceptance_test_01)
-        AFW.word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a'])
+        AFW.afw_word_acceptance(self.afw_word_acceptance_test_01, ['a', 'b', 'b', 'a', 'a', 'b', 'a', 'a'])
         self.assertDictEqual(before, self.afw_word_acceptance_test_01)
 
 
@@ -169,8 +169,8 @@ class TestAfwToNfaConversion(TestCase):
             for word in word_set:
                 word = list(word)
                 # print(word)
-                afw_acceptance = AFW.word_acceptance(self.afw_afw_to_nfa_test_01, word)
-                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                afw_acceptance = AFW.afw_word_acceptance(self.afw_afw_to_nfa_test_01, word)
+                nfa_acceptance = NFA.nfa_word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
             i += 1
 
@@ -188,8 +188,8 @@ class TestAfwToNfaConversion(TestCase):
             for word in word_set:
                 word = list(word)
                 # print(word)
-                afw_acceptance = AFW.word_acceptance(self.afw_nonemptiness_check_test_2, word)
-                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                afw_acceptance = AFW.afw_word_acceptance(self.afw_nonemptiness_check_test_2, word)
+                nfa_acceptance = NFA.nfa_word_acceptance(nfa_01, word)
                 self.assertEqual(afw_acceptance, nfa_acceptance)
             i += 1
 
@@ -210,8 +210,8 @@ class TestAfwToNfaConversion(TestCase):
             for word in word_set:
                 word = list(word)
                 # print(word)
-                original_nfa_acceptance = NFA.word_acceptance(self.nfa_afw_to_nfa_test_01, word)
-                nfa_acceptance = NFA.word_acceptance(nfa_01, word)
+                original_nfa_acceptance = NFA.nfa_word_acceptance(self.nfa_afw_to_nfa_test_01, word)
+                nfa_acceptance = NFA.nfa_word_acceptance(nfa_01, word)
                 self.assertEqual(original_nfa_acceptance, nfa_acceptance)
             i += 1
 
@@ -283,8 +283,8 @@ class TestAfwCompletion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance = AFW.word_acceptance(original, word)
-                completed_acceptance = AFW.word_acceptance(self.afw_completion_test_01, word)
+                original_acceptance = AFW.afw_word_acceptance(original, word)
+                completed_acceptance = AFW.afw_word_acceptance(self.afw_completion_test_01, word)
                 self.assertEqual(original_acceptance, completed_acceptance)
             i += 1
 
@@ -352,8 +352,8 @@ class TestAfwComplementation(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                afw_acceptance = AFW.word_acceptance(self.afw_complementation_test_01, word)
-                complement_acceptance = AFW.word_acceptance(afw_complemented, word)
+                afw_acceptance = AFW.afw_word_acceptance(self.afw_complementation_test_01, word)
+                complement_acceptance = AFW.afw_word_acceptance(afw_complemented, word)
                 self.assertNotEqual(afw_acceptance, complement_acceptance)
             i += 1
 
@@ -419,9 +419,9 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_union_2_test_01, word)
-                union_acceptance = AFW.word_acceptance(union, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_union_2_test_01, word)
+                union_acceptance = AFW.afw_word_acceptance(union, word)
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
@@ -440,9 +440,9 @@ class TestAfwUnion(TestCase):
             for word in word_set:
                 word = list(word)
                 # print(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_union_3_test_01, word)
-                union_acceptance = AFW.word_acceptance(union, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_union_3_test_01, word)
+                union_acceptance = AFW.afw_word_acceptance(union, word)
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
@@ -460,9 +460,9 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                union_acceptance = AFW.word_acceptance(union, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                union_acceptance = AFW.afw_word_acceptance(union, word)
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
@@ -478,9 +478,9 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_union_test_empty, word)
-                union_acceptance = AFW.word_acceptance(union, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_union_test_empty, word)
+                union_acceptance = AFW.afw_word_acceptance(union, word)
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
@@ -496,9 +496,9 @@ class TestAfwUnion(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_union_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_union_test_empty, word)
-                union_acceptance = AFW.word_acceptance(union, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_union_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_union_test_empty, word)
+                union_acceptance = AFW.afw_word_acceptance(union, word)
                 self.assertEqual(original_acceptance_1 or original_acceptance_2, union_acceptance)
             i += 1
 
@@ -563,9 +563,9 @@ class TestAfwIntersection(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_2_test_01, word)
-                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_intersection_2_test_01, word)
+                intersection_acceptance = AFW.afw_word_acceptance(intersection, word)
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
@@ -584,9 +584,9 @@ class TestAfwIntersection(TestCase):
             for word in word_set:
                 word = list(word)
                 # print(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_3_test_01, word)
-                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_intersection_3_test_01, word)
+                intersection_acceptance = AFW.afw_word_acceptance(intersection, word)
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
@@ -604,9 +604,9 @@ class TestAfwIntersection(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                intersection_acceptance = AFW.afw_word_acceptance(intersection, word)
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
@@ -622,9 +622,9 @@ class TestAfwIntersection(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_test_empty, word)
-                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_intersection_test_empty, word)
+                intersection_acceptance = AFW.afw_word_acceptance(intersection, word)
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 
@@ -640,9 +640,9 @@ class TestAfwIntersection(TestCase):
             word_set = set(itertools.permutations(base, i))
             for word in word_set:
                 word = list(word)
-                original_acceptance_1 = AFW.word_acceptance(self.afw_intersection_1_test_01, word)
-                original_acceptance_2 = AFW.word_acceptance(self.afw_intersection_test_empty, word)
-                intersection_acceptance = AFW.word_acceptance(intersection, word)
+                original_acceptance_1 = AFW.afw_word_acceptance(self.afw_intersection_1_test_01, word)
+                original_acceptance_2 = AFW.afw_word_acceptance(self.afw_intersection_test_empty, word)
+                intersection_acceptance = AFW.afw_word_acceptance(intersection, word)
                 self.assertEqual(original_acceptance_1 and original_acceptance_2, intersection_acceptance)
             i += 1
 

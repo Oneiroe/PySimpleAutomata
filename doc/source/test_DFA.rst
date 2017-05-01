@@ -10,7 +10,6 @@ Tests DFA
 
     .. autosummary::
 
-        TestDfaRun
         TestDfaWordAcceptance
         TestDfaCompletion
         TestDfaComplementation

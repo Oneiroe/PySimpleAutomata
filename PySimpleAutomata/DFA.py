@@ -32,32 +32,6 @@ In this module a DFA is defined as follows
 from copy import deepcopy
 
 
-def dfa_run(dfa: dict, word: list) -> list:
-    """ Returns the **run**, as list of states, that reads the given **word**
-    or the **partial run** before failure if not accepting.
-
-    A run r of DFA on a finite word :math:`w = a_0 · · · a_{n−1} ∈ Σ∗`
-    is a sequence :math:`s_0 · · · s_n` of n+1 states in S
-    such that :math:`s_0 = s_0` , and :math:`s_{i+1} = ρ(s_i ,
-    a_i )` for :math:`0 ≤ i ≤ n`. Note that a deterministic
-    automaton can have at most one run on a given input word.
-    The run r is accepting if :math:`s_n ∈ F`.
-
-    :param dict dfa: input DFA;
-    :param list word: list of actions ∈ dfa['alphabet'].
-    :return: *(list)*, list of states reading or partially reading the word.
-    """
-    current_state = dfa['initial_state']
-    run = [dfa['initial_state']]
-    for action in word:
-        if (current_state, action) in dfa['transitions']:
-            current_state = dfa['transitions'][current_state, action]
-            run.append(current_state)
-        else:
-            return run
-    return run
-
-
 def dfa_word_acceptance(dfa: dict, word: list) -> bool:
     """ Checks if a given **word** is accepted by a DFA,
     returning True/false.
@@ -71,12 +45,17 @@ def dfa_word_acceptance(dfa: dict, word: list) -> bool:
     :return: *(bool)*, True if the word is accepted, False in the
              other case.
     """
-    run = dfa_run(dfa, word)
+    current_state = dfa['initial_state']
+    for action in word:
+        if (current_state, action) in dfa['transitions']:
+            current_state = dfa['transitions'][current_state, action]
+        else:
+            return False
 
-    if run[-1] not in dfa['accepting_states'] or (len(run) - 1) != (len(word)):
-        return False
-    else:
+    if current_state in dfa['accepting_states']:
         return True
+    else:
+        return False
 
 
 # Side effect on input dfa

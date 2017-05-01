@@ -17,8 +17,7 @@ NFA
       nfa_nonemptiness_check
       nfa_nonuniversality_check
       nfa_union
-      run_acceptance
-      word_acceptance
+      nfa_word_acceptance
       rename_nfa_states
 
     .. rubric:: Functions
