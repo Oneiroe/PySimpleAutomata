@@ -151,9 +151,10 @@ class TestDfaComplementation(TestCase):
 
     def test_dfa_complementation(self):
         """ Tests a correct complementation. """
-        self.assertDictEqual(DFA.dfa_complementation(
-            self.dfa_complementation_test_01),
-            self.dfa_complementation_test_01_complemented)
+        complementation = DFA.dfa_complementation(
+            self.dfa_complementation_test_01)
+        self.assertDictEqual(complementation,
+                             self.dfa_complementation_test_01_complemented)
 
     def test_dfa_complementation_empty_states(self):
         """ Tests a complementation on a DFA without states. """
@@ -182,11 +183,10 @@ class TestDfaComplementation(TestCase):
     def test_dfa_complementation_side_effects(self):
         """ Tests the function doesn't make side effects on input
         """
+        original = copy.deepcopy(self.dfa_complementation_test_01)
         complemented = DFA.dfa_complementation(
             self.dfa_complementation_test_01)
-        complemented['states'].pop()
-        self.assertNotEquals(complemented,
-                             self.dfa_complementation_test_01)
+        self.assertEquals(original, self.dfa_complementation_test_01)
 
 
 class TestDfaIntersection(TestCase):
@@ -1616,6 +1616,8 @@ class TestDfaProjection(TestCase):
         self.maxDiff = None
         self.dfa_projection_test_01 = automata_IO.dfa_dot_importer(
             './tests/dot/dfa/dfa_projection_test_01.dot')
+        self.dfa_projection_test_02 = automata_IO.dfa_dot_importer(
+            './tests/dot/dfa/dfa_projection_test_02.dot')
         self.dfa_projection_test_01_solution = {
             'alphabet': {'10c', 'gum'},
             'states': {'s0', 's1', 's2', 's3'},
@@ -1633,8 +1635,8 @@ class TestDfaProjection(TestCase):
         }
         self.dfa_projection_test_02_solution = {
             'alphabet': set(),
-            'states': {'s0', 's1', 's2', 's3'},
-            'initial_states': {'s0', 's1', 's2', 's3'},
+            'states': {'s0', 's1', 's2', 's3', 's4'},
+            'initial_states': {'s0', 's1', 's2', 's3', 's4'},
             'accepting_states': {'s0'},
             'transitions': dict()
         }
@@ -1649,7 +1651,7 @@ class TestDfaProjection(TestCase):
     def test_dfa_projection_full_alphabet_projection(self):
         """ Tests a dfa projection where all the symbols of the alphabets
         got projected out """
-        projection = DFA.dfa_projection(self.dfa_projection_test_01,
+        projection = DFA.dfa_projection(self.dfa_projection_test_02,
                                         {'5c', '10c', 'gum'})
         self.assertDictEqual(projection,
                              self.dfa_projection_test_02_solution)

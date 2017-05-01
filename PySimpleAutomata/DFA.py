@@ -73,8 +73,7 @@ def dfa_word_acceptance(dfa: dict, word: list) -> bool:
     """
     run = dfa_run(dfa, word)
 
-    if run[-1] not in dfa['accepting_states'] \
-            or (len(run) - 1) != (len(word)):
+    if run[-1] not in dfa['accepting_states'] or (len(run) - 1) != (len(word)):
         return False
     else:
         return True
@@ -118,10 +117,10 @@ def dfa_complementation(dfa: dict) -> dict:
     :param dict dfa: input DFA.
     :return: *(dict)* representing the complement of the input DFA.
     """
-    dfa_complemented = deepcopy(dfa_completion(dfa))
-    dfa_complemented['accepting_states'] = \
-        dfa['states'].difference(dfa['accepting_states'])
-    return dfa_complemented
+    dfa_complement = dfa_completion(deepcopy(dfa))
+    dfa_complement['accepting_states'] = \
+        dfa_complement['states'].difference(dfa_complement['accepting_states'])
+    return dfa_complement
 
 
 def dfa_intersection(dfa_1: dict, dfa_2: dict) -> dict:
@@ -420,7 +419,7 @@ def dfa_co_reachable(dfa: dict) -> dict:
     boundary_stack = co_reachable_states.copy()
 
     # inverse transition function
-    inverse_transitions = {}
+    inverse_transitions = dict()
     for key, value in dfa['transitions'].items():
         inverse_transitions.setdefault(value, set()).add(key)
 
@@ -519,34 +518,37 @@ def dfa_projection(dfa: dict, symbols_to_remove: set) -> dict:
     }
 
     current_nfa_transitions = None
+    current_e_x = None
     e_x = dict()  # equivalence relation dictionary
 
     # while no more changes are possible
-    while current_nfa_transitions != nfa['transitions']:
+    while current_nfa_transitions != nfa['transitions'] or current_e_x != e_x:
         current_nfa_transitions = nfa['transitions'].copy()
+        current_e_x = deepcopy(e_x)
         for (state, a) in dfa['transitions']:
             next_state = dfa['transitions'][state, a]
             if a in symbols_to_remove:
                 # mark next_state as equivalent to state
                 e_x.setdefault(state, set()).add(next_state)
-                # mark states equivalent to next_state as equivalent to state
-                if next_state in e_x:
-                    for next_state_equivalent in e_x[next_state]:
-                        e_x[state].add(next_state_equivalent)
-                # add all transitions of equivalent states to state
+
+                app_set = set()
                 for equivalent in e_x[state]:
+                    # mark states equivalent to next_states also to state
+                    if equivalent in e_x:
+                        app_set.update(e_x[equivalent])
+                    # add all transitions of equivalent states to state
                     for act in nfa['alphabet']:
                         if (equivalent, act) in dfa['transitions']:
-                            equivalent_next = \
-                                dfa['transitions'][equivalent, act]
+                            equivalent_next = dfa['transitions'][
+                                equivalent, act]
                             nfa['transitions'].setdefault(
                                 (state, act), set()).add(equivalent_next)
                             # if equivalent_next has equivalent states
                             if equivalent_next in e_x:
                                 # the transition leads also to these states
-                                for other_equivalent in e_x[equivalent_next]:
-                                    nfa['transitions'][state, act].add(
-                                        other_equivalent)
+                                nfa['transitions'][state, act].update(
+                                    e_x[equivalent_next])
+                e_x[state].update(app_set)
             else:
                 # add the transition to the NFA
                 nfa['transitions'].setdefault((state, a), set()).add(
@@ -554,13 +556,11 @@ def dfa_projection(dfa: dict, symbols_to_remove: set) -> dict:
                 # if next_state has equivalent states
                 if next_state in e_x:
                     # the same transition arrive also to all these other states
-                    for next_state_equivalent in e_x[next_state]:
-                        nfa['transitions'][state, a].add(next_state_equivalent)
+                    nfa['transitions'][state, a].update(e_x[next_state])
 
     # Add all state equivalent to the initial one to NFA initial states set
     if dfa['initial_state'] in e_x:
-        for equivalent_state in e_x[dfa['initial_state']]:
-            nfa['initial_states'].add(equivalent_state)
+        nfa['initial_states'].update(e_x[dfa['initial_state']])
 
     return nfa
 
@@ -611,7 +611,7 @@ def rename_dfa_states(dfa: dict, suffix: str):
     :param dict dfa: input DFA.
     :param str suffix: string to be added at beginning of each state name.
     """
-    conversion_dict = {}
+    conversion_dict = dict()
     new_states = set()
     new_accepting = set()
     for state in dfa['states']:
@@ -624,7 +624,7 @@ def rename_dfa_states(dfa: dict, suffix: str):
     dfa['initial_state'] = '' + suffix + dfa['initial_state']
     dfa['accepting_states'] = new_accepting
 
-    new_transitions = {}
+    new_transitions = dict()
     for transition in dfa['transitions']:
         new_transitions[conversion_dict[transition[0]], transition[1]] = \
             conversion_dict[dfa['transitions'][transition]]
