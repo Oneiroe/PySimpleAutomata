@@ -29,7 +29,6 @@ In this module a NFA is defined as follows
 
 """
 
-from itertools import product as cartesian_product
 from PySimpleAutomata import DFA
 from copy import copy
 
@@ -61,15 +60,24 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
     """
     intersection = {
         'alphabet': nfa_1['alphabet'].intersection(nfa_2['alphabet']),
-        'states': set(cartesian_product(nfa_1['states'], nfa_2['states'])),
-        'initial_states': set(cartesian_product(nfa_1['initial_states'],
-                                                nfa_2['initial_states'])),
-        'accepting_states': set(cartesian_product(nfa_1['accepting_states'],
-                                                  nfa_2['accepting_states'])),
+        'states': set(),
+        'initial_states': set(),
+        'accepting_states': set(),
         'transitions': dict()
     }
+    for init_1 in nfa_1['initial_states']:
+        for init_2 in nfa_2['initial_states']:
+            intersection['initial_states'].add((init_1, init_2))
 
-    for (state_nfa_1, state_nfa_2) in intersection['states']:
+    intersection['states'].update(intersection['initial_states'])
+
+    boundary = set()
+    boundary.update(intersection['initial_states'])
+    while boundary:
+        (state_nfa_1, state_nfa_2) = boundary.pop()
+        if state_nfa_1 in nfa_1['accepting_states'] \
+                and state_nfa_2 in nfa_2['accepting_states']:
+            intersection['accepting_states'].add((state_nfa_1, state_nfa_2))
         for a in intersection['alphabet']:
             if (state_nfa_1, a) not in nfa_1['transitions'] \
                     or (state_nfa_2, a) not in nfa_2['transitions']:
@@ -79,9 +87,15 @@ def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
 
             for destination_1 in s1:
                 for destination_2 in s2:
+                    next_state = (destination_1, destination_2)
+                    if next_state not in intersection['states']:
+                        intersection['states'].add(next_state)
+                        boundary.add(next_state)
                     intersection['transitions'].setdefault(
-                        ((state_nfa_1, state_nfa_2), a), set()).add(
-                        (destination_1, destination_2))
+                        ((state_nfa_1, state_nfa_2), a), set()).add(next_state)
+                    if destination_1 in nfa_1['accepting_states'] \
+                            and destination_2 in nfa_2['accepting_states']:
+                        intersection['accepting_states'].add(next_state)
 
     return intersection
 
