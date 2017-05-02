@@ -65,8 +65,6 @@ class TestNfaIntersection(TestCase):
         intersection = NFA.nfa_intersection(
             self.nfa_intersection_1_test_01,
             self.nfa_intersection_2_test_01)
-        automata_IO.nfa_to_dot(intersection, 'nfa_intersection',
-                               'tests/outputs')
         self.assertDictEqual(intersection,
                              self.nfa_intersection_test_01_solution)
 
