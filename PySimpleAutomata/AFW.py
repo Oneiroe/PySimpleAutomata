@@ -33,7 +33,6 @@ In this module a AFW is defined as follows
 from PySimpleAutomata import NFA
 import itertools
 import re
-from copy import copy
 from copy import deepcopy
 
 
@@ -161,10 +160,10 @@ def nfa_to_afw_conversion(nfa: dict) -> dict:
     :return: *(dict)* representing a AFW.
     """
     afw = {
-        'alphabet': copy(nfa['alphabet']),
-        'states': copy(nfa['states']),
+        'alphabet': nfa['alphabet'].copy(),
+        'states': nfa['states'].copy(),
         'initial_state': 'root',
-        'accepting_states': copy(nfa['accepting_states']),
+        'accepting_states': nfa['accepting_states'].copy(),
         'transitions': dict()
     }
 
@@ -208,7 +207,7 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     """
 
     nfa = {
-        'alphabet': copy(afw['alphabet']),
+        'alphabet': afw['alphabet'].copy(),
         'initial_states': {(afw['initial_state'],)},
         'states': set(),
         'accepting_states': set(),
@@ -394,7 +393,7 @@ def afw_union(afw_1: dict, afw_2: dict) -> dict:
         'initial_state': initial_state,
         'accepting_states':
             afw_1['accepting_states'].union(afw_2['accepting_states']),
-        'transitions': copy(afw_1['transitions'])
+        'transitions': deepcopy(afw_1['transitions'])
     }
 
     if afw_1['initial_state'] in afw_1['accepting_states'] \
@@ -447,7 +446,7 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
         'initial_state': initial_state,
         'accepting_states':
             afw_1['accepting_states'].union(afw_2['accepting_states']),
-        'transitions': copy(afw_1['transitions'])
+        'transitions': deepcopy(afw_1['transitions'])
     }
 
     if afw_1['initial_state'] in afw_1['accepting_states'] \
