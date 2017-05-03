@@ -395,19 +395,19 @@ def dfa_co_reachable(dfa: dict) -> dict:
     """
 
     co_reachable_states = dfa['accepting_states'].copy()
-    boundary_stack = co_reachable_states.copy()
+    boundary = co_reachable_states.copy()
 
     # inverse transition function
     inverse_transitions = dict()
     for key, value in dfa['transitions'].items():
         inverse_transitions.setdefault(value, set()).add(key)
 
-    while boundary_stack:
-        s = boundary_stack.pop()
+    while boundary:
+        s = boundary.pop()
         if s in inverse_transitions:
             for (state, action) in inverse_transitions[s]:
                 if state not in co_reachable_states:
-                    boundary_stack.add(state)
+                    boundary.add(state)
                     co_reachable_states.add(state)
 
     dfa['states'] = co_reachable_states
@@ -565,7 +565,7 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
     visited = set()
     visited.add(dfa['initial_state'])
     while queue:
-        state = queue.pop()  # TODO note that this pop is applied to a list
+        state = queue.pop(0)  # TODO note that this pop is applied to a list
         # not like in sets
         visited.add(state)
         for a in dfa['alphabet']:
@@ -573,7 +573,7 @@ def dfa_nonemptiness_check(dfa: dict) -> bool:
                 if dfa['transitions'][state, a] in dfa['accepting_states']:
                     return True
                 if dfa['transitions'][state, a] not in visited:
-                    queue.insert(0, dfa['transitions'][state, a])
+                    queue.append(dfa['transitions'][state, a])
     return False
 
 

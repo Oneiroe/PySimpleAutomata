@@ -30,7 +30,6 @@ In this module a NFA is defined as follows
 """
 
 from PySimpleAutomata import DFA
-from copy import copy
 
 
 def nfa_intersection(nfa_1: dict, nfa_2: dict) -> dict:
@@ -169,7 +168,7 @@ def nfa_determinization(nfa: dict) -> dict:
     :return: *(dict)* representing a DFA
     """
     dfa = {
-        'alphabet': copy(nfa['alphabet']),
+        'alphabet': nfa['alphabet'].copy(),
         'initial_state': None,
         'states': set(),
         'accepting_states': set(),
@@ -181,14 +180,14 @@ def nfa_determinization(nfa: dict) -> dict:
         dfa['states'].add(str(nfa['initial_states']))
 
     sets_states = list()
-    sets_stack = list()
-    sets_stack.append(nfa['initial_states'])
+    sets_queue = list()
+    sets_queue.append(nfa['initial_states'])
     sets_states.append(nfa['initial_states'])
     if len(sets_states[0].intersection(nfa['accepting_states'])) > 0:
         dfa['accepting_states'].add(str(sets_states[0]))
 
-    while sets_stack:
-        current_set = sets_stack.pop(0)
+    while sets_queue:
+        current_set = sets_queue.pop(0)
         for a in dfa['alphabet']:
             next_set = set()
             for state in current_set:
@@ -199,7 +198,7 @@ def nfa_determinization(nfa: dict) -> dict:
                 continue
             if next_set not in sets_states:
                 sets_states.append(next_set)
-                sets_stack.append(next_set)
+                sets_queue.append(next_set)
                 dfa['states'].add(str(next_set))
                 if next_set.intersection(nfa['accepting_states']):
                     dfa['accepting_states'].add(str(next_set))
@@ -245,13 +244,13 @@ def nfa_nonemptiness_check(nfa: dict) -> bool:
              otherwise.
     """
     # BFS
-    stack = list()
+    queue = list()
     visited = set()
     for state in nfa['initial_states']:
         visited.add(state)
-        stack.insert(0, state)
-    while stack:
-        state = stack.pop()
+        queue.append(state)
+    while queue:
+        state = queue.pop(0)
         visited.add(state)
         for a in nfa['alphabet']:
             if (state, a) in nfa['transitions']:
@@ -259,7 +258,7 @@ def nfa_nonemptiness_check(nfa: dict) -> bool:
                     if next_state in nfa['accepting_states']:
                         return True
                     if next_state not in visited:
-                        stack.insert(0, next_state)
+                        queue.append(next_state)
     return False
 
 
