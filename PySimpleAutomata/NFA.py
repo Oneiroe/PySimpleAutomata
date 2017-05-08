@@ -318,8 +318,7 @@ def nfa_word_acceptance(nfa: dict, word: list) -> bool:
     for action in word:
         for state in current_level:
             if (state, action) in nfa['transitions']:
-                next_level = next_level.union(
-                    nfa['transitions'][state, action])
+                next_level.update(nfa['transitions'][state, action])
         if len(next_level) < 1:
             return False
         current_level = next_level
