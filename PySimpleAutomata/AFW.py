@@ -228,19 +228,13 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
 
     for state in nfa['states']:
         # The state is accepting only if composed exclusively of final states
-        accepting_state = True
-        for s in state:
-            if s not in afw['accepting_states']:
-                accepting_state = False
-                break
-        if accepting_state:
+        if set(state).issubset(afw['accepting_states']):
             nfa['accepting_states'].add(state)
 
         # NAIVE
         for action in nfa['alphabet']:
             boolean_formula = 'True'
-            # Given an action
-            # join the destinations of the single states in a boolean formula
+            # join the boolean formulas of the single states given the action
             for s in state:
                 if (s, action) not in afw['transitions']:
                     boolean_formula += ' and False'
@@ -259,8 +253,8 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
                 # If the formula is satisfied
                 if eval(boolean_formula, mapping):
                     # add the transition to the resulting NFA
-                    nfa['transitions'].setdefault((state, action), set()).add(
-                        evaluation)
+                    nfa['transitions'].setdefault(
+                        (state, action), set()).add(evaluation)
 
                 for e in evaluation:
                     mapping[e] = False
@@ -484,6 +478,8 @@ def afw_intersection(afw_1: dict, afw_2: dict) -> dict:
         intersection['accepting_states'].add(
             intersection['initial_state'])
 
+    # New initial state transitions will be the conjunction of
+    # precedent inital states ones
     for action in intersection['alphabet']:
         if (afw_1['initial_state'], action) in afw_1['transitions']:
             intersection['transitions'][initial_state, action] = \
