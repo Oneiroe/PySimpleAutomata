@@ -211,27 +211,23 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
     nfa = {
         'alphabet': afw['alphabet'].copy(),
         'initial_states': {(afw['initial_state'],)},
-        'states': set(),
+        'states': {(afw['initial_state'],)},
         'accepting_states': set(),
         'transitions': dict()
     }
 
     # State of the NFA are composed by the union of more states of the AFW
-    for state in afw['states']:
-        nfa['states'].add((state,))
 
-    i = len(afw['states'])
-    while i > 1:
-        # all combination of i# states from the AFW
-        nfa['states'].update(set(itertools.combinations(afw['states'], i)))
-        i -= 1
+    boundary = deepcopy(nfa['states'])
+    possible_assignments = set(
+        itertools.product([True, False], repeat=len(afw['states'])))
 
-    for state in nfa['states']:
+    while boundary:
+        state = boundary.pop()
         # The state is accepting only if composed exclusively of final states
         if set(state).issubset(afw['accepting_states']):
             nfa['accepting_states'].add(state)
 
-        # NAIVE
         for action in nfa['alphabet']:
             boolean_formula = 'True'
             # join the boolean formulas of the single states given the action
@@ -244,20 +240,21 @@ def afw_to_nfa_conversion(afw: dict) -> dict:
                         afw['transitions'][s, action] + \
                         ')'
 
-            # evaluate that formula over all the possible NFA states
-            mapping = dict.fromkeys(afw['states'], False)
-            for evaluation in nfa['states']:
-                for e in evaluation:
-                    mapping[e] = True
+            for assignment in possible_assignments:
+                mapping = dict(zip(afw['states'], assignment))
 
                 # If the formula is satisfied
                 if eval(boolean_formula, mapping):
                     # add the transition to the resulting NFA
+
+                    evaluation = \
+                        tuple(k for k in mapping if mapping[k] is True)
+
+                    if evaluation not in nfa['states']:
+                        nfa['states'].add(evaluation)
+                        boundary.add(evaluation)
                     nfa['transitions'].setdefault(
                         (state, action), set()).add(evaluation)
-
-                for e in evaluation:
-                    mapping[e] = False
 
     return nfa
 
