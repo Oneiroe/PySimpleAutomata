@@ -167,6 +167,9 @@ def nfa_determinization(nfa: dict) -> dict:
     :param dict nfa: input NFA.
     :return: *(dict)* representing a DFA
     """
+    def state_name(s):
+        return str(set(sorted(s)))
+
     dfa = {
         'alphabet': nfa['alphabet'].copy(),
         'initial_state': None,
@@ -176,15 +179,15 @@ def nfa_determinization(nfa: dict) -> dict:
     }
 
     if len(nfa['initial_states']) > 0:
-        dfa['initial_state'] = str(nfa['initial_states'])
-        dfa['states'].add(str(nfa['initial_states']))
+        dfa['initial_state'] = state_name(nfa['initial_states'])
+        dfa['states'].add(state_name(nfa['initial_states']))
 
     sets_states = list()
     sets_queue = list()
     sets_queue.append(nfa['initial_states'])
     sets_states.append(nfa['initial_states'])
     if len(sets_states[0].intersection(nfa['accepting_states'])) > 0:
-        dfa['accepting_states'].add(str(sets_states[0]))
+        dfa['accepting_states'].add(state_name(sets_states[0]))
 
     while sets_queue:
         current_set = sets_queue.pop(0)
@@ -199,11 +202,11 @@ def nfa_determinization(nfa: dict) -> dict:
             if next_set not in sets_states:
                 sets_states.append(next_set)
                 sets_queue.append(next_set)
-                dfa['states'].add(str(next_set))
+                dfa['states'].add(state_name(next_set))
                 if next_set.intersection(nfa['accepting_states']):
-                    dfa['accepting_states'].add(str(next_set))
+                    dfa['accepting_states'].add(state_name(next_set))
 
-            dfa['transitions'][str(current_set), a] = str(next_set)
+            dfa['transitions'][state_name(current_set), a] = state_name(next_set)
 
     return dfa
 
