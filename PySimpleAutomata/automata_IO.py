@@ -171,16 +171,19 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-def dfa_to_dot(dfa: dict, name: str, path: str = './'):
+def dfa_to_dot(dfa: dict, name: str, path: str = './', direction='TB'):
     """ Generates a DOT file and a relative SVG image in **path**
     folder of the input DFA using graphviz library.
 
     :param dict dfa: DFA to export;
     :param str name: name of the output file;
     :param str path: path where to save the DOT/SVG files (default:
-                     working directory)
+                     working directory);
+    :param str direction: direction of graph (default: 
+                          TB for vertical).
     """
     g = graphviz.Digraph(format='svg')
+    g.graph_attr['rankdir'] = direction
     g.node('fake', style='invisible')
     for state in dfa['states']:
         if state == dfa['initial_state']:
@@ -378,16 +381,19 @@ def nfa_dot_importer(input_file: str) -> dict:
     return nfa
 
 
-def nfa_to_dot(nfa: dict, name: str, path: str = './'):
+def nfa_to_dot(nfa: dict, name: str, path: str = './', direction='TB'):
     """ Generates a DOT file and a relative SVG image in **path**
     folder of the input NFA using graphviz library.
 
     :param dict nfa: input NFA;
     :param str name: string with the name of the output file;
     :param str path: path where to save the DOT/SVG files (default:
-                     working directory).
+                     working directory);
+    :param str direction: direction of graph (default: 
+                          TB for vertical).
     """
     g = graphviz.Digraph(format='svg')
+    g.graph_attr['rankdir'] = direction
 
     fakes = []
     for i in range(len(nfa['initial_states'])):
