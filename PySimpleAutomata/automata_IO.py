@@ -182,7 +182,7 @@ def dfa_to_dot(dfa: dict, name: str, path: str = './', direction='TB'):
     :param str direction: direction of graph (default: 
                           TB for vertical).
     """
-    g = graphviz.Digraph(format='svg')
+    g = graphviz.Digraph(format='svg', engine='neato')
     g.graph_attr['rankdir'] = direction
     g.node('fake', style='invisible')
     for state in dfa['states']:
