@@ -171,7 +171,7 @@ def dfa_dot_importer(input_file: str) -> dict:
     return dfa
 
 
-def dfa_to_dot(dfa: dict, name: str, path: str = './', direction='TB'):
+def dfa_to_dot(dfa: dict, name: str, path: str = './', direction='TB', engine='dot'):
     """ Generates a DOT file and a relative SVG image in **path**
     folder of the input DFA using graphviz library.
 
@@ -181,8 +181,9 @@ def dfa_to_dot(dfa: dict, name: str, path: str = './', direction='TB'):
                      working directory);
     :param str direction: direction of graph (default: 
                           TB for vertical).
+    :param str engine: Graphviz layout engine to be used (default: dot)
     """
-    g = graphviz.Digraph(format='svg')
+    g = graphviz.Digraph(format='svg', engine=engine)
     g.graph_attr['rankdir'] = direction
     g.node('fake', style='invisible')
     for state in dfa['states']:
@@ -381,7 +382,7 @@ def nfa_dot_importer(input_file: str) -> dict:
     return nfa
 
 
-def nfa_to_dot(nfa: dict, name: str, path: str = './', direction='TB'):
+def nfa_to_dot(nfa: dict, name: str, path: str = './', direction='TB', engine='dot'):
     """ Generates a DOT file and a relative SVG image in **path**
     folder of the input NFA using graphviz library.
 
@@ -391,8 +392,9 @@ def nfa_to_dot(nfa: dict, name: str, path: str = './', direction='TB'):
                      working directory);
     :param str direction: direction of graph (default: 
                           TB for vertical).
+    :param str engine: Graphviz layout engine to be used (default: dot)
     """
-    g = graphviz.Digraph(format='svg')
+    g = graphviz.Digraph(format='svg', engine=engine)
     g.graph_attr['rankdir'] = direction
 
     fakes = []
